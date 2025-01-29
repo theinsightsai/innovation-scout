@@ -23,7 +23,6 @@ export default function RootLayout({ children }) {
           draggable
           pauseOnHover
           theme="light"
-          // transition={Bounce}
         />
       </body>
     </html>

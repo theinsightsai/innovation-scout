@@ -8,12 +8,13 @@ import {
   InputAdornment,
   IconButton,
 } from "@mui/material";
-import { styled, width } from "@mui/system";
+import { styled } from "@mui/system";
 import { WithAuthLayout } from "../hoc";
 import { FilledButton } from "../Button";
 import { useFormik } from "formik";
 import * as Yup from "yup"; // Import Yup
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { postApi } from "@/app/axios/clientApi";
 
 const ErrorSection = ({ touched, errors, fieldName }) => {
   return (
@@ -58,6 +59,13 @@ const RegisterForm = () => {
 
   const onsubmit = (values) => {
     console.log("values==>", values);
+    postApi("/register", {
+      name: "sagar",
+      email: "sagar@gmail.com",
+      password: "Sagar@123456",
+    }).then((data) => {
+      console.log("data==>", data);
+    });
   };
 
   const formik = useFormik({
