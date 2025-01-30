@@ -21,3 +21,6 @@ export { default as SideBar } from "./sideBar";
 export { default as SnackBar } from "./snackbar";
 export { default as ToastMessage } from "./ToastMessage";
 export { default as Dot } from "./Dot";
+export { default as Profile } from "./Profile";
+export { default as Transitions } from "./Transitions";
+export { default as CustomTable } from "./CustomTable";

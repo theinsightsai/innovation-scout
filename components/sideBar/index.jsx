@@ -25,11 +25,14 @@ import UploadIcon from "@mui/icons-material/Upload";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import PrintIcon from "@mui/icons-material/Print";
 import MailIcon from "@mui/icons-material/Mail";
+import GroupIcon from '@mui/icons-material/Group';
+import Diversity3Icon from '@mui/icons-material/Diversity3';
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { toast } from "react-toastify";
+import { Profile } from "..";
 
 const drawerWidth = 240;
 
@@ -38,7 +41,10 @@ const SIDE_BAR_MENU = [
   { label: "Upload Data", route: ROUTE.UPLOAD_DATA, icon: <UploadIcon /> },
   { label: "Run Analysis", route: ROUTE.ANALYSIS, icon: <AnalyticsIcon /> },
   { label: "Results", route: ROUTE.RESULTS, icon: <PrintIcon /> },
+  { label: "User Management", route: ROUTE.USER_MANAGEMENT, icon: <GroupIcon /> },
+  { label: "Team Management", route: ROUTE.TEAM_MANAGEMENT, icon: < Diversity3Icon /> },
 ];
+
 
 const SETTING_MENU = [
   { label: "Profile", identifier: "PROFILE", route: "" },
@@ -191,9 +197,7 @@ export default function SideBar() {
           </Tooltip>
 
           <Tooltip title="Open settings">
-            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              <Avatar alt="Remy Sharp" src="https://picsum.photos/200" />
-            </IconButton>
+            <Profile />
           </Tooltip>
         </Toolbar>
       </AppBar>

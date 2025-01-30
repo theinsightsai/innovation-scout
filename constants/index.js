@@ -11,6 +11,8 @@ export const ROUTE = {
   UPLOAD_DATA: "/upload-data",
   ANALYSIS: "/analysis",
   RESULTS: "/results",
+  USER_MANAGEMENT: "/user-management",
+  TEAM_MANAGEMENT: "/team-management",
 };
 
 export const ERROR_TEXT = {

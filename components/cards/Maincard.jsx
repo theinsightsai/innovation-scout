@@ -41,7 +41,7 @@ function MainCard(
       ref={ref}
       {...others}
       sx={{
-        border: 'none',
+        border: border ? '1px solid lightgray' : 'none',
         borderRadius: 2,
         borderColor: theme.palette.mode === 'dark' ? theme.palette.divider : theme.palette.grey.A800,
         boxShadow: boxShadow && (!border || theme.palette.mode === 'dark') ? shadow || theme.customShadows.z1 : 'inherit',

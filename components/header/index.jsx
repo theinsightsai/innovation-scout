@@ -4,7 +4,7 @@ const PageHeader = ({ text, buttonText, onButtonClick, icon }) => {
       className="text-[30px] capitalize font-medium"
       style={{ display: "flex", justifyContent: "space-between" }}
     >
-      <span>{text}</span>
+      <span style={{ fontFamily: "Outfit, sans-serif" }}>{text}</span>
       {buttonText && (
         <button
           onClick={onButtonClick}
