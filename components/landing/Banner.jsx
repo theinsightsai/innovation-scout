@@ -1,10 +1,10 @@
 "use client";
 import { Box, Grid } from "@mui/material";
 import { IMAGES } from "@/constants";
-import { FilledButton } from "../Button";
+import { FilledButton } from "..";
 
 const Banner = () => {
-  const onGerstartedButtonClick = () => {};
+  const onGerstartedButtonClick = () => { };
 
   return (
     <Box

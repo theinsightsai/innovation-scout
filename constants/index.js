@@ -12,3 +12,7 @@ export const ROUTE = {
   ANALYSIS: "/analysis",
   RESULTS: "/results",
 };
+
+export const ERROR_TEXT = {
+  TERMS_CONDITIONS: "Please agree to the terms and conditions",
+};

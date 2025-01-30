@@ -1,4 +1,4 @@
-export const PageHeader = ({ text, buttonText, onButtonClick, icon }) => {
+const PageHeader = ({ text, buttonText, onButtonClick, icon }) => {
   return (
     <div
       className="text-[30px] capitalize font-medium"
@@ -17,3 +17,4 @@ export const PageHeader = ({ text, buttonText, onButtonClick, icon }) => {
     </div>
   );
 };
+export default PageHeader
