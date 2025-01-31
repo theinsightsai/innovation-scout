@@ -1,25 +1,25 @@
 "use client";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+// import { useEffect } from "react";
+// import { useRouter } from "next/navigation";
 import SideBar from "../sideBar";
-import { ROUTE } from "../../constants/index";
+// import { ROUTE } from "../../constants/index";
 
 const withLayout = (WrappedComponent) => {
   return (props) => {
-    const router = useRouter();
+    // const router = useRouter();
 
     // Replace this with actual authentication logic
-    const isAuthenticated = true;
+    // const isAuthenticated = true;
 
-    useEffect(() => {
-      if (!isAuthenticated) {
-        router.push(ROUTE.LOGIN);
-      }
-    }, [isAuthenticated, router]);
+    // useEffect(() => {
+    //   if (!isAuthenticated) {
+    //     router.push(ROUTE.LOGIN);
+    //   }
+    // }, [isAuthenticated, router]);
 
-    if (!isAuthenticated) {
-      return null;
-    }
+    // if (!isAuthenticated) {
+    //   return null;
+    // }
 
     return (
       <div className="flex min-h-screen">
