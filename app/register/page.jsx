@@ -1,7 +1,14 @@
-// import { RegisterForm } from "@/components";
+"use client"
+import { Fragment } from "react";
+import WithAuthLayout from "@/components/hoc/WithAuthLayout";
+import RegisterForm from "@/components/auth/RegisterForm";
 
 const Register = () => {
-  return <>Register</>;
-  // <RegisterForm />
+  return (
+    <Fragment>
+      <RegisterForm />
+    </Fragment>
+  )
+
 };
-export default Register;
+export default WithAuthLayout(Register);

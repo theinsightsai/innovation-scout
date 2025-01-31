@@ -1,11 +1,16 @@
 "use client";
 import { styled } from "@mui/system";
-// import { WithAuthLayout } from "../"
-import { FilledButton } from "..";
 import { useFormik } from "formik";
-import FormController from "../FormController";
 import * as Yup from "yup";
 import { API } from "@/app/axios/apiConstant";
+import dynamic from "next/dynamic";
+
+const FilledButton = dynamic(() => import("@/components/Button/FilledButton"), {
+  ssr: false,
+});
+const FormController = dynamic(() => import("@/components/FormController"), {
+  ssr: false,
+});
 
 const StyledForm = styled("form")(({ theme }) => ({
   width: "100%",
@@ -57,13 +62,16 @@ const LoginForm = () => {
   const { setFieldValue, values, handleSubmit, touched, errors } = formik;
 
   return (
-    <>
+    <div>
+
       <h1
         style={{
           fontSize: "24px",
           marginBlockStart: "20px",
           marginBottom: "10px",
           fontFamily: "Outfit, sans-serif",
+          textAlign: "center",
+
         }}
       >
         Login
@@ -92,8 +100,7 @@ const LoginForm = () => {
           />
         </div>
       </StyledForm>
-    </>
+    </div>
   );
 };
 export default LoginForm;
-// WithAuthLayout

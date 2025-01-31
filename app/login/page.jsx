@@ -1,7 +1,14 @@
-// import { LoginForm } from "@/components";
+"use client"
+import { Fragment } from "react";
+import WithAuthLayout from "@/components/hoc/WithAuthLayout";
+import LoginForm from "@/components/auth/LoginForm";
 
 const LoginPage = () => {
-  return<>LoginPage</>;
-  // <LoginForm />
+  return (
+    <Fragment>
+      <LoginForm />
+    </Fragment>
+  );
+
 };
-export default LoginPage;
+export default WithAuthLayout(LoginPage);
