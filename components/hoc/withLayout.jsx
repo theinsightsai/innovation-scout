@@ -1,10 +1,10 @@
-"use client"; 
+"use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import SideBar from "../sideBar";
 import { ROUTE } from "../../constants/index";
 
-const withAuth = (WrappedComponent) => {
+const withLayout = (WrappedComponent) => {
   return (props) => {
     const router = useRouter();
 
@@ -35,4 +35,4 @@ const withAuth = (WrappedComponent) => {
   };
 };
 
-export default withAuth;
+export default withLayout;
