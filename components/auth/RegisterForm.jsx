@@ -1,7 +1,7 @@
 "use client";
 import { Typography } from "@mui/material";
 import { styled } from "@mui/system";
-import { WithAuthLayout } from ".."
+// import { WithAuthLayout } from ".."
 import { FilledButton } from ".."
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -123,4 +123,5 @@ const RegisterForm = () => {
   );
 };
 
-export default WithAuthLayout(RegisterForm);
+export default RegisterForm;
+// WithAuthLayout

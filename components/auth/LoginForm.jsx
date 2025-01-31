@@ -1,6 +1,6 @@
 "use client";
 import { styled } from "@mui/system";
-import { WithAuthLayout } from "../"
+// import { WithAuthLayout } from "../"
 import { FilledButton } from "..";
 import { useFormik } from "formik";
 import FormController from "../FormController";
@@ -95,4 +95,5 @@ const LoginForm = () => {
     </>
   );
 };
-export default WithAuthLayout(LoginForm);
+export default LoginForm;
+// WithAuthLayout

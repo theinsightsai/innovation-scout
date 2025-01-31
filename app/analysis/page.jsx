@@ -1,15 +1,18 @@
 "use client";
-import { PageHeader, withLayout } from "@/components";
-import Paper from "@mui/material/Paper";
+// withLayout
+// import { PageHeader } from "@/components";
+// import Paper from "@mui/material/Paper";
 
 const Analysis = () => {
   return (
     <>
-      <PageHeader text="Analysis" />
+    Analysis
+      {/* <PageHeader text="Analysis" />
       <Paper elevation={3} className="mt-5 p-10">
         test
-      </Paper>
+      </Paper> */}
     </>
   );
 };
-export default withLayout(Analysis);
+export default Analysis;
+// withLayout

@@ -1,3 +1,4 @@
+"use client"
 const PageHeader = ({ text, buttonText, onButtonClick, icon }) => {
   return (
     <div

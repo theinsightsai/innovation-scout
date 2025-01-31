@@ -1,15 +1,18 @@
 "use client";
-import { PageHeader,withLayout } from "@/components";
-import Paper from "@mui/material/Paper";
+// withLayout
+// import { PageHeader } from "@/components";
+// import Paper from "@mui/material/Paper";
 
 const UploadData = () => {
   return (
     <>
-      <PageHeader text="Upload Data" />
+    UploadData
+      {/* <PageHeader text="Upload Data" />
       <Paper elevation={3} className="mt-5 p-10">
         test
-      </Paper>
+      </Paper> */}
     </>
   );
 };
-export default withLayout(UploadData);
+export default UploadData;
+// withLayout
