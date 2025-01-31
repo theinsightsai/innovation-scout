@@ -1,5 +1,5 @@
 "use client"
-import { withAuth, PageHeader, CustomTable } from "@/components"
+import { withLayout, PageHeader, CustomTable } from "@/components"
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 
 const UserManagement = () => {
@@ -18,4 +18,4 @@ const UserManagement = () => {
         </>)
 
 }
-export default withAuth(UserManagement);
+export default withLayout(UserManagement);

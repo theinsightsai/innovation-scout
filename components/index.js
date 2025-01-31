@@ -13,7 +13,6 @@ export { default as UniqueVisitorCard } from "./charts/UniqueVisitorCard";
 export { default as FormController } from "./FormController";
 export { default as PageHeader } from "./header";
 export { default as WithAuthLayout } from "./hoc/WithAuthLayout";
-export { default as withAuth } from "./hoc/withLayout";
 export { default as withLayout } from "./hoc/withLayout";
 export { default as LandingPage } from "./landing";
 export { default as UploadCsvModal } from "./modal/UploadCsvModal";
@@ -24,3 +23,4 @@ export { default as Dot } from "./Dot";
 export { default as Profile } from "./Profile";
 export { default as Transitions } from "./Transitions";
 export { default as CustomTable } from "./CustomTable";
+

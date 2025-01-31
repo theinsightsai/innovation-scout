@@ -26,7 +26,7 @@
     SaleReportCard,
     OrdersTable,
     PageHeader,
-    withAuth,
+    withLayout,
     UploadCsvModal
   } from "@/components";
 
@@ -321,7 +321,7 @@
 
     );
   };
-  export default withAuth(Dashboard);
+  export default withLayout(Dashboard);
 
 
   // <>

@@ -1,5 +1,5 @@
 "use client";
-import { withAuth } from "@/components/hoc";
+import { withLayout } from "@/components/hoc";
 import { PageHeader } from "@/components";
 import Paper from "@mui/material/Paper";
 
@@ -13,4 +13,4 @@ const UploadData = () => {
     </>
   );
 };
-export default withAuth(UploadData);
+export default withLayout(UploadData);
