@@ -1,6 +1,5 @@
 "use client";
-import { withLayout } from "@/components/hoc";
-import { PageHeader } from "@/components";
+import { PageHeader, withLayout } from "@/components";
 import Paper from "@mui/material/Paper";
 
 const Analysis = () => {
