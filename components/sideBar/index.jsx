@@ -33,8 +33,8 @@ import { toast } from "react-toastify";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-// import { Profile } from "..";
-  
+import Profile from "@/components/Profile";
+
 const drawerWidth = 240;
 
 const SIDE_BAR_MENU = [
@@ -198,7 +198,7 @@ export default function SideBar() {
           </Tooltip>
 
           <Tooltip title="Open settings">
-            {/* <Profile /> */}
+            <Profile />
           </Tooltip>
         </Toolbar>
       </AppBar>
