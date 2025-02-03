@@ -1,14 +1,14 @@
-"use client"
+"use client";
 import { Fragment } from "react";
-import WithAuthLayout from "@/components/hoc/WithAuthLayout";
 import RegisterForm from "@/components/auth/RegisterForm";
+import WithAuthLayout from "@/components/hoc/WithAuthLayout";
 
 const Register = () => {
   return (
     <Fragment>
       <RegisterForm />
     </Fragment>
-  )
-
+  );
 };
+
 export default WithAuthLayout(Register);

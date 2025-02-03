@@ -4,6 +4,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { API } from "@/app/axios/apiConstant";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import { ROUTE } from "@/constants";
 
 const FilledButton = dynamic(() => import("@/components/Button/FilledButton"), {
   ssr: false,
@@ -29,17 +31,19 @@ const validationSchema = Yup.object({
 });
 
 const LoginForm = () => {
+  const router = useRouter()
   const onSubmit = (values) => {
-    if (values?.isChecked) {
-      postApi(API.REGISTER, {
-        email: values?.email,
-        password: values?.password,
-      }).then((data) => {
-        ToastMessage("success", data?.message);
-      });
-    } else {
-      ToastMessage("error", ERROR_TEXT.TERMS_CONDITIONS);
-    }
+    router.push(ROUTE.DASHBOARD)
+    // if (values?.isChecked) {
+    //   postApi(API.REGISTER, {
+    //     email: values?.email,
+    //     password: values?.password,
+    //   }).then((data) => {
+    //     ToastMessage("success", data?.message);
+    //   });
+    // } else {
+    //   ToastMessage("error", ERROR_TEXT.TERMS_CONDITIONS);
+    // }
   };
 
   const REGISTER_FORM = [

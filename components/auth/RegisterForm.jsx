@@ -1,22 +1,16 @@
-"use client";
+'use client';
 import { styled } from "@mui/system";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { postApi } from "@/app/axios/clientApi";
 import { ERROR_TEXT } from "@/constants";
 import { API } from "@/app/axios/apiConstant";
 import dynamic from "next/dynamic";
 
 
-const FilledButton = dynamic(() => import("@/components/Button/FilledButton"), {
-  ssr: false,
-});
-const FormController = dynamic(() => import("@/components/FormController"), {
-  ssr: false,
-});
-const ToastMessage = dynamic(() => import("@/components/ToastMessage"), {
-  ssr: false,
-});
+const postApi = dynamic(() => import("@/app/axios/clientApi"), { ssr: false });
+const FilledButton = dynamic(() => import("@/components/Button/FilledButton"), { ssr: false });
+const FormController = dynamic(() => import("@/components/FormController"), { ssr: false });
+const ToastMessage = dynamic(() => import("@/components/ToastMessage"), { ssr: false });
 
 const initialValues = {
   isChecked: false,
