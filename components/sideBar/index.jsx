@@ -27,13 +27,14 @@ import PrintIcon from "@mui/icons-material/Print";
 import MailIcon from "@mui/icons-material/Mail";
 import GroupIcon from '@mui/icons-material/Group';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
+import { toast } from "react-toastify";
+
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { toast } from "react-toastify";
-import { Profile } from "..";
-
+// import { Profile } from "..";
+  
 const drawerWidth = 240;
 
 const SIDE_BAR_MENU = [
@@ -197,7 +198,7 @@ export default function SideBar() {
           </Tooltip>
 
           <Tooltip title="Open settings">
-            <Profile />
+            {/* <Profile /> */}
           </Tooltip>
         </Toolbar>
       </AppBar>

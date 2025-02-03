@@ -1,5 +1,8 @@
 "use client";
 
+
+import withLayout from "@/components/hoc/withLayout";
+
 // import { useState } from "react";
 // import { ExcelIcon } from "@/constants/assets";
 
@@ -317,7 +320,7 @@ const Dashboard = () => {
 
   );
 };
-export default Dashboard;
+export default withLayout(Dashboard);
 // withLayout
 
 // <>
