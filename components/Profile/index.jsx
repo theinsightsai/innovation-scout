@@ -24,11 +24,16 @@ import ProfileTab from "@/components/Profile/ProfileTab"
 import SettingTab from '@/components/Profile/SettingTab';
 import Transitions from "@/components/Transitions"
 import MainCard from '@/components/cards/Maincard'
+import { geTypeByRoleId } from "@/utils"
 
 // assets
 import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
 import SettingOutlined from '@ant-design/icons/SettingOutlined';
 import UserOutlined from '@ant-design/icons/UserOutlined';
+
+
+import { useSelector } from 'react-redux';
+
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -50,9 +55,14 @@ function a11yProps(index) {
 
 export default function Profile() {
   const theme = useTheme();
+  const userData = useSelector(state => state.auth)
 
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
+
+
+  console.log("userData==>", userData)
+
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
   };
@@ -84,7 +94,7 @@ export default function Profile() {
         <Stack direction="row" spacing={1.25} alignItems="center" sx={{ p: 0.5 }}>
           <Avatar alt="profile user" src={'https://picsum.photos/200'} size="sm" />
           <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
-            John Doe
+            <div>{userData.user.name}</div>
           </Typography>
         </Stack>
       </ButtonBase>
@@ -106,7 +116,6 @@ export default function Profile() {
           ]
         }}
       >
-        {/* boxShadow: theme.customShadows.z1, */}
         {({ TransitionProps }) => (
           <Transitions type="grow" position="top-right" in={open} {...TransitionProps}>
             <Paper sx={{ width: 290, minWidth: 240, maxWidth: { xs: 250, md: 290 } }} >
@@ -118,9 +127,10 @@ export default function Profile() {
                       <Stack direction="row" spacing={1.25} alignItems="center">
                         <Avatar alt="profile user" src={'https://picsum.photos/200'} sx={{ width: 32, height: 32 }} />
                         <Stack>
-                          <Typography variant="h6">John Doe</Typography>
+                          <Typography variant="h6" className='capitalize'>{userData.user.name}
+                            <span className='text-sm font-medium ml-1'>({geTypeByRoleId(userData?.role_id)})</span></Typography>
                           <Typography variant="body2" color="text.secondary">
-                            UI/UX Designer
+                            {userData.user.email}
                           </Typography>
                         </Stack>
                       </Stack>

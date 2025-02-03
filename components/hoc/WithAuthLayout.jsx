@@ -1,8 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { CssBaseline, Paper, Box } from "@mui/material";
 import { styled } from "@mui/system";
-import { IMAGES } from "@/constants";
+import { IMAGES, ROUTE } from "@/constants";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -37,6 +39,21 @@ const StyledContent = styled(Box)(({ theme }) => ({
 
 const withAuthLayout = (Component) => {
   return function AuthLayoutWrapper(props) {
+    const router = useRouter();
+    const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
+
+    useEffect(() => {
+      if (isAuthenticated) {
+
+        router.push(ROUTE.DASHBOARD);
+      }
+    }, [isAuthenticated, router]);
+
+    if (isAuthenticated) {
+
+      return null;
+    }
+
     return (
       <StyledBox>
         <CssBaseline />

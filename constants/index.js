@@ -17,4 +17,5 @@ export const ROUTE = {
 
 export const ERROR_TEXT = {
   TERMS_CONDITIONS: "Please agree to the terms and conditions",
+  SUCCESSFULLY_LOGOUT: "Successfully logged out",
 };

@@ -8,6 +8,10 @@ import { useRouter } from "next/navigation";
 import { ROUTE } from "@/constants";
 import { API } from "@/app/api/apiConstant";
 import ToastMessage from "@/components/ToastMessage/";
+import { useDispatch } from "react-redux";
+import { loginStart, loginSuccess, loginFailure } from "@/store/authSlice";
+
+
 
 const FilledButton = dynamic(() => import("@/components/Button/FilledButton"), {
   ssr: false,
@@ -33,7 +37,9 @@ const validationSchema = Yup.object({
 });
 
 const LoginForm = () => {
+  const dispatch = useDispatch()
   const router = useRouter();
+
   const [postApi, setPostApi] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -54,7 +60,7 @@ const LoginForm = () => {
         ToastMessage("error", "API is still loading. Please try again.");
         return;
       }
-
+      dispatch(loginStart());
       setSubmitting(true);
 
       const response = await postApi(API.LOGIN, {
@@ -64,12 +70,24 @@ const LoginForm = () => {
 
 
       if (response?.error) {
-        ToastMessage("error", response?.message);
+        dispatch(loginFailure(response?.data?.message));
+        ToastMessage("error", response?.data?.message);
       } else if (!response?.error) {
+        dispatch(
+          loginSuccess({
+            user: { name: response?.data?.username, email: response?.data?.email },
+            token: response?.data?.token,
+            permissions: response?.data?.permissions,
+            role_id: response?.data?.role_id
+
+          })
+        );
         ToastMessage("success", response?.data?.message);
-        router.push(ROUTE.HOME);
+        router.push(ROUTE.DASHBOARD);
+
       }
     } catch (error) {
+      dispatch(loginFailure("Something went wrong. Please try again."));
       ToastMessage("error", "Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
