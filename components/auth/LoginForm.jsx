@@ -1,11 +1,13 @@
 "use client";
+import { useEffect, useState } from "react";
 import { styled } from "@mui/system";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { API } from "@/app/axios/apiConstant";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { ROUTE } from "@/constants";
+import { API } from "@/app/api/apiConstant";
+import ToastMessage from "@/components/ToastMessage/";
 
 const FilledButton = dynamic(() => import("@/components/Button/FilledButton"), {
   ssr: false,
@@ -31,19 +33,47 @@ const validationSchema = Yup.object({
 });
 
 const LoginForm = () => {
-  const router = useRouter()
-  const onSubmit = (values) => {
-    router.push(ROUTE.DASHBOARD)
-    // if (values?.isChecked) {
-    //   postApi(API.REGISTER, {
-    //     email: values?.email,
-    //     password: values?.password,
-    //   }).then((data) => {
-    //     ToastMessage("success", data?.message);
-    //   });
-    // } else {
-    //   ToastMessage("error", ERROR_TEXT.TERMS_CONDITIONS);
-    // }
+  const router = useRouter();
+  const [postApi, setPostApi] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadApi = async () => {
+      const { postApi } = await import("@/app/api/clientApi");
+      setPostApi(() => postApi);
+      setLoading(false);
+    };
+
+    loadApi();
+  }, []);
+
+  const onSubmit = async (values, { setSubmitting }) => {
+    try {
+
+      if (!postApi) {
+        ToastMessage("error", "API is still loading. Please try again.");
+        return;
+      }
+
+      setSubmitting(true);
+
+      const response = await postApi(API.LOGIN, {
+        email: values?.email,
+        password: values?.password,
+      });
+
+
+      if (response?.error) {
+        ToastMessage("error", response?.message);
+      } else if (!response?.error) {
+        ToastMessage("success", response?.data?.message);
+        router.push(ROUTE.HOME);
+      }
+    } catch (error) {
+      ToastMessage("error", "Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const REGISTER_FORM = [
@@ -67,21 +97,11 @@ const LoginForm = () => {
 
   return (
     <div>
-
-      <h1
-        style={{
-          fontSize: "24px",
-          marginBlockStart: "20px",
-          marginBottom: "10px",
-          fontFamily: "Outfit, sans-serif",
-          textAlign: "center",
-
-        }}
-      >
+      <h1 className="text-xl mt-5 mb-2 font-outfit flex justify-center">
         Login
       </h1>
       <StyledForm noValidate onSubmit={handleSubmit} sx={{ marginTop: "20px" }}>
-        {REGISTER_FORM.map((fieldObj, index, arr) => {
+        {REGISTER_FORM.map((fieldObj) => {
           return (
             <FormController
               key={fieldObj?.id}
@@ -94,17 +114,17 @@ const LoginForm = () => {
           );
         })}
 
-        <div
-          style={{ width: "100%", display: "flex", justifyContent: "center" }}
-        >
+        <div className="flex justify-center w-full mt-8">
           <FilledButton
-            label={"Login"}
-            onClick={handleSubmit}
-            style={{ width: "35%", marginTop: "30px" }}
+            type="submit"
+            label={loading ? "Loading..." : "Login"}
+            disabled={loading}
+            style={{ width: "35%" }}
           />
         </div>
       </StyledForm>
     </div>
   );
 };
+
 export default LoginForm;
