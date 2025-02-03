@@ -1,16 +1,11 @@
 import "./globals.css";
-import { Outfit } from "next/font/google";
 import { ToastContainer } from "react-toastify";
-
-const outfit = Outfit({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
+import "react-toastify/dist/ReactToastify.css";
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={outfit.className}>
-      <body className={`antialiased`} style={{ fontFamily: "Outfit" }}>
+    <html lang="en">
+      <body className="antialiased font-[Outfit]">
         {children}
         <ToastContainer
           position="top-right"
