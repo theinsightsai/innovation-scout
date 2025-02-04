@@ -1,5 +1,5 @@
 'use client';
-import { margin, styled } from "@mui/system";
+import { styled } from "@mui/system";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { ERROR_TEXT, ROUTE } from "@/constants";
@@ -67,7 +67,7 @@ const RegisterForm = () => {
 
 
       if (!postApi) {
-        ToastMessage("error", "API is still loading. Please try again.");
+        ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
         return;
       }
 
@@ -75,6 +75,7 @@ const RegisterForm = () => {
         username: values?.name,
         email: values?.email,
         password: values?.password,
+        role_id: "3"
       });
 
       if (response?.error) {
@@ -84,7 +85,7 @@ const RegisterForm = () => {
         ToastMessage("success", response?.data?.message);
       }
     } catch (error) {
-      ToastMessage("error", "Something went wrong. Please try again.");
+      ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
     } finally {
       setSubmitting(false);
     }
