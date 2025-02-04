@@ -4,7 +4,7 @@ import { PageHeader, CustomTable, ConfirmationModal } from "@/components";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import withLayout from "@/components/hoc/withLayout";
 import { useRouter } from "next/navigation";
-import { ROUTE, TABEL_ACTION, COLUMNS } from "@/constants";
+import { ERROR_TEXT, ROUTE, TABEL_ACTION } from "@/constants";
 import { getApi } from "@/app/api/clientApi";
 import { API } from "@/app/api/apiConstant";
 import { createData } from "@/utils";
@@ -17,6 +17,19 @@ const UserManagement = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
+  const [deleteApi, setDeleteApi] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(false);
+
+  useEffect(() => {
+    const loadApi = async () => {
+      const { deleteApi } = await import("@/app/api/clientApi");
+      setDeleteApi(() => deleteApi);
+      setLoading(false);
+    };
+
+    loadApi();
+  }, []);
 
   const handleCloseModal = () => {
     setOpenConfirmation(false);
@@ -24,7 +37,6 @@ const UserManagement = () => {
   };
 
   const onActionClick = (event, identifier, row) => {
-    console.log("row==>", row);
     if (identifier == "EDIT") {
       alert("Edit click");
     } else {
@@ -33,9 +45,28 @@ const UserManagement = () => {
     }
   };
 
-  const handleConfirmClick = () => {
-    alert("Delete APi functionality will be here ");
-    handleCloseModal();
+  const handleConfirmClick = async () => {
+    try {
+      setLoading(true);
+      if (!deleteApi) {
+        ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
+        return;
+      }
+      const response = await deleteApi(
+        `${API.DELETE_USER}/${selectedData?.id}`
+      );
+      if (response?.error) {
+        ToastMessage("error", response?.message);
+      } else if (!response?.error) {
+        setRefresh(!refresh);
+        ToastMessage("success", response?.data?.message);
+      }
+    } catch (error) {
+      ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
+    } finally {
+      handleCloseModal();
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -63,7 +94,42 @@ const UserManagement = () => {
     };
 
     fetchData();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage, refresh]);
+
+  const COLUMNS = [
+    {
+      id: "sno",
+      label: "S.No",
+      minWidth: 70,
+      maxWidth: 70,
+      align: "left",
+      isVisible: true,
+    },
+    {
+      id: "name",
+      label: "Full Name",
+      minWidth: 120,
+      maxWidth: 120,
+      align: "left",
+      isVisible: true,
+    },
+    {
+      id: "created_at",
+      label: "Registered Date",
+      minWidth: 100,
+      maxWidth: 100,
+      align: "left",
+      isVisible: true,
+    },
+    {
+      id: "action",
+      label: "Action",
+      minWidth: 100,
+      maxWidth: 100,
+      align: "left",
+      isVisible: true,
+    },
+  ];
 
   return (
     <Fragment>
@@ -90,7 +156,7 @@ const UserManagement = () => {
         open={openConfirmation}
         handleClose={handleCloseModal}
         handleConfirmClick={handleConfirmClick}
-        buttontext="Delete"
+        buttontext={loading ? "Deleting" : "Delete"}
         user={{
           user: selectedData,
           userType: "Client",

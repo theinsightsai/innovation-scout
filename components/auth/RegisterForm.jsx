@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import { styled } from "@mui/system";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -11,8 +11,12 @@ import { Tick } from "@/constants/assets";
 import { useRouter } from "next/navigation";
 
 // Dynamically import the postApi
-const FilledButton = dynamic(() => import("@/components/Button/FilledButton"), { ssr: false });
-const FormController = dynamic(() => import("@/components/FormController"), { ssr: false });
+const FilledButton = dynamic(() => import("@/components/Button/FilledButton"), {
+  ssr: false,
+});
+const FormController = dynamic(() => import("@/components/FormController"), {
+  ssr: false,
+});
 
 const initialValues = {
   isChecked: false,
@@ -41,11 +45,10 @@ const validationSchema = Yup.object({
 });
 
 const RegisterForm = () => {
-  const router = useRouter()
+  const router = useRouter();
   const [postApi, setPostApi] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [successPage, setSuccessPage] = useState(false)
-
+  const [successPage, setSuccessPage] = useState(false);
 
   useEffect(() => {
     const loadApi = async () => {
@@ -65,7 +68,6 @@ const RegisterForm = () => {
       }
       setSubmitting(true);
 
-
       if (!postApi) {
         ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
         return;
@@ -75,13 +77,13 @@ const RegisterForm = () => {
         username: values?.name,
         email: values?.email,
         password: values?.password,
-        role_id: "3"
+        role_id: "3",
       });
 
       if (response?.error) {
         ToastMessage("error", response?.message);
       } else if (!response?.error) {
-        setSuccessPage(true)
+        setSuccessPage(true);
         ToastMessage("success", response?.data?.message);
       }
     } catch (error) {
@@ -98,7 +100,8 @@ const RegisterForm = () => {
     enableReinitialize: true,
   });
 
-  const { setFieldValue, values, handleSubmit, touched, errors, isSubmitting } = formik;
+  const { setFieldValue, values, handleSubmit, touched, errors, isSubmitting } =
+    formik;
 
   const REGISTER_FORM = [
     { id: "name", label: "Name", component: "TEXT" },
@@ -128,19 +131,20 @@ const RegisterForm = () => {
       <h1 class="text-xl mt-5 mb-2 font-outfit">
         {successPage ? "Registered" : "Register"}
       </h1>
-      {successPage ? <div className="w-full flex flex-col items-center">
-        <div className="my-5" >
-          <Tick />
+      {successPage ? (
+        <div className="w-full flex flex-col items-center">
+          <div className="my-5">
+            <Tick />
+          </div>
+          <div>Registration Completed Successfully</div>
+          <FilledButton
+            type="button"
+            label={"Login"}
+            style={{ width: "35%", marginTop: "30px" }}
+            onClick={() => router.push(ROUTE.LOGIN)}
+          />
         </div>
-        <div>Registration Completed Successfully</div>
-        <FilledButton
-          type="button"
-          label={"Login"}
-          style={{ width: "35%", marginTop: "30px" }}
-          onClick={() => router.push(ROUTE.LOGIN)}
-
-        />
-      </div> :
+      ) : (
         <StyledForm noValidate onSubmit={handleSubmit}>
           {REGISTER_FORM.map((fieldObj) => (
             <FormController
@@ -152,7 +156,9 @@ const RegisterForm = () => {
               setFieldValue={setFieldValue}
             />
           ))}
-          <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+          <div
+            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+          >
             <FilledButton
               type="submit"
               label={isSubmitting ? "Submitting..." : "Register"}
@@ -160,8 +166,8 @@ const RegisterForm = () => {
               disabled={isSubmitting || loading}
             />
           </div>
-        </StyledForm>}
-
+        </StyledForm>
+      )}
     </>
   );
 };

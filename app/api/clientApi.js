@@ -30,3 +30,18 @@ export const getApi = async (api) => {
     };
   }
 };
+
+export const deleteApi = async (api) => {
+  try {
+    const response = await axiosInstance.delete(api);
+    return {
+      error: false,
+      data: response.data,
+    };
+  } catch (error) {
+    return {
+      error: true,
+      message: error?.response?.data?.message || "Something went wrong.",
+    };
+  }
+};

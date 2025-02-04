@@ -77,7 +77,7 @@ const AddMember = () => {
         ToastMessage("error", response?.message);
       } else if (!response?.error) {
         router.push(ROUTE.TEAM_MANAGEMENT);
-        ToastMessage("success", response?.data?.message);
+        ToastMessage("success", ERROR_TEXT.MEMBER_ADDED);
       }
     } catch (error) {
       ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);

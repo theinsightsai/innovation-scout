@@ -5,13 +5,11 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { ROUTE } from "@/constants";
+import { ERROR_TEXT, ROUTE } from "@/constants";
 import { API } from "@/app/api/apiConstant";
 import ToastMessage from "@/components/ToastMessage/";
 import { useDispatch } from "react-redux";
 import { loginStart, loginSuccess, loginFailure } from "@/store/authSlice";
-
-
 
 const FilledButton = dynamic(() => import("@/components/Button/FilledButton"), {
   ssr: false,
@@ -37,7 +35,7 @@ const validationSchema = Yup.object({
 });
 
 const LoginForm = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const router = useRouter();
 
   const [postApi, setPostApi] = useState(null);
@@ -55,9 +53,8 @@ const LoginForm = () => {
 
   const onSubmit = async (values, { setSubmitting }) => {
     try {
-
       if (!postApi) {
-        ToastMessage("error", "API is still loading. Please try again.");
+        ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
         return;
       }
       dispatch(loginStart());
@@ -68,27 +65,27 @@ const LoginForm = () => {
         password: values?.password,
       });
 
-
       if (response?.error) {
-        dispatch(loginFailure(response?.data?.message));
-        ToastMessage("error", response?.data?.message);
+        dispatch(loginFailure(response?.message));
+        ToastMessage("error", response?.message);
       } else if (!response?.error) {
         dispatch(
           loginSuccess({
-            user: { name: response?.data?.username, email: response?.data?.email },
+            user: {
+              name: response?.data?.username,
+              email: response?.data?.email,
+            },
             token: response?.data?.token,
             permissions: response?.data?.permissions,
-            role_id: response?.data?.role_id
-
+            role_id: response?.data?.role_id,
           })
         );
         ToastMessage("success", response?.data?.message);
         router.push(ROUTE.DASHBOARD);
-
       }
     } catch (error) {
-      dispatch(loginFailure("Something went wrong. Please try again."));
-      ToastMessage("error", "Something went wrong. Please try again.");
+      dispatch(loginFailure(ERROR_TEXT.SOMETHING_WENT_WRONG));
+      ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
     } finally {
       setSubmitting(false);
     }

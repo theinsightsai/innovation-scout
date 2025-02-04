@@ -18,17 +18,17 @@ import {
   Badge,
   MenuItem,
 } from "@mui/material";
-import { IMAGES, ROUTE } from "@/constants";
+import { IMAGES, ROUTE, ROLE_ID_BY_NAME } from "@/constants";
 import MenuIcon from "@mui/icons-material/Menu";
 import HomeIcon from "@mui/icons-material/Home";
 import UploadIcon from "@mui/icons-material/Upload";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import PrintIcon from "@mui/icons-material/Print";
 import MailIcon from "@mui/icons-material/Mail";
-import GroupIcon from '@mui/icons-material/Group';
-import Diversity3Icon from '@mui/icons-material/Diversity3';
+import GroupIcon from "@mui/icons-material/Group";
+import Diversity3Icon from "@mui/icons-material/Diversity3";
 import { toast } from "react-toastify";
-
+import { useSelector } from "react-redux";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -36,16 +36,6 @@ import { usePathname } from "next/navigation";
 import Profile from "@/components/Profile";
 
 const drawerWidth = 240;
-
-const SIDE_BAR_MENU = [
-  { label: "Home", route: ROUTE.DASHBOARD, icon: <HomeIcon /> },
-  { label: "Upload Data", route: ROUTE.UPLOAD_DATA, icon: <UploadIcon /> },
-  { label: "Run Analysis", route: ROUTE.ANALYSIS, icon: <AnalyticsIcon /> },
-  { label: "Results", route: ROUTE.RESULTS, icon: <PrintIcon /> },
-  { label: "User Management", route: ROUTE.USER_MANAGEMENT, icon: <GroupIcon /> },
-  { label: "Team Management", route: ROUTE.TEAM_MANAGEMENT, icon: < Diversity3Icon /> },
-];
-
 
 const SETTING_MENU = [
   { label: "Profile", identifier: "PROFILE", route: "" },
@@ -57,6 +47,7 @@ const SETTING_MENU = [
 export default function SideBar() {
   const router = useRouter();
   const pathname = usePathname();
+  const role_id = useSelector((state) => state?.auth?.role_id);
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
@@ -94,6 +85,47 @@ export default function SideBar() {
     }
   };
 
+  const SIDE_BAR_MENU = [
+    {
+      label: "Home",
+      route: ROUTE.DASHBOARD,
+      icon: <HomeIcon />,
+      isVisible: true,
+    },
+    {
+      label: "Upload Data",
+      route: ROUTE.UPLOAD_DATA,
+      icon: <UploadIcon />,
+      isVisible: true,
+    },
+    {
+      label: "Run Analysis",
+      route: ROUTE.ANALYSIS,
+      icon: <AnalyticsIcon />,
+      isVisible: true,
+    },
+    {
+      label: "Results",
+      route: ROUTE.RESULTS,
+      icon: <PrintIcon />,
+      isVisible: true,
+    },
+    {
+      label: "User Management",
+      route: ROUTE.USER_MANAGEMENT,
+      icon: <GroupIcon />,
+      isVisible:
+        role_id === ROLE_ID_BY_NAME.ADMIN || role_id === ROLE_ID_BY_NAME.TEAM,
+    },
+    {
+      label: "Team Management",
+      route: ROUTE.TEAM_MANAGEMENT,
+      icon: <Diversity3Icon />,
+      isVisible:
+        role_id === ROLE_ID_BY_NAME.ADMIN || role_id === ROLE_ID_BY_NAME.TEAM,
+    },
+  ];
+
   const drawer = (
     <div>
       <div className="py-4 flex justify-center">
@@ -109,6 +141,7 @@ export default function SideBar() {
               background: pathname === menuObj.route && "#005B96",
               color: pathname === menuObj.route && "white",
               borderRadius: "0px 15px 15px 0px",
+              display: menuObj?.isVisible ? "flex" : "none",
             }}
           >
             <ListItemButton>

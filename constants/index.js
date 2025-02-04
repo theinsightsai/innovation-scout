@@ -24,6 +24,7 @@ export const ERROR_TEXT = {
   SUCCESSFULLY_LOGOUT: "Successfully logged out",
   API_LOAD_ERROR: "API is still loading. Please try again.",
   SOMETHING_WENT_WRONG: "Something went wrong. Please try again.",
+  MEMBER_ADDED: "Team Member Added Successfully",
 };
 
 export const TABEL_ACTION = [
@@ -39,27 +40,8 @@ export const TABEL_ACTION = [
   },
 ];
 
-export const COLUMNS = [
-  { id: "sno", label: "S.No", minWidth: 70, maxWidth: 70, align: "left" },
-  {
-    id: "name",
-    label: "Full Name",
-    minWidth: 120,
-    maxWidth: 120,
-    align: "left",
-  },
-  {
-    id: "created_at",
-    label: "Registered Date",
-    minWidth: 100,
-    maxWidth: 100,
-    align: "left",
-  },
-  {
-    id: "action",
-    label: "Action",
-    minWidth: 100,
-    maxWidth: 100,
-    align: "left",
-  },
-];
+export const ROLE_ID_BY_NAME = {
+  ADMIN: 1,
+  TEAM: 2,
+  CLIENT: 3,
+};

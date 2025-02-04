@@ -1,4 +1,4 @@
-"use client"
+"use client";
 const PageHeader = ({ text, buttonText, onButtonClick, icon }) => {
   return (
     <div
@@ -18,4 +18,4 @@ const PageHeader = ({ text, buttonText, onButtonClick, icon }) => {
     </div>
   );
 };
-export default PageHeader
+export default PageHeader;

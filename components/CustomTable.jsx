@@ -76,9 +76,6 @@ export default function CustomTable({
     );
   };
 
-  console.log("page==>", page);
-  console.log("rowsPerPage==>", rowsPerPage);
-
   return (
     <Paper sx={{ width: "100%", overflow: "hidden", marginTop: "50px" }}>
       <TableContainer sx={{ maxHeight: 600, minHeight: 600 }}>
@@ -94,6 +91,7 @@ export default function CustomTable({
                     fontFamily: "Outfit, sans-serif",
                     background: "lightgray",
                     textTransform: "uppercase",
+                    display: column?.isVisible ? "-ms-flexbox" : "none",
                   }}
                 >
                   {column.label}
@@ -121,7 +119,7 @@ export default function CustomTable({
                       );
                     }
 
-                    if (column.id === "action") {
+                    if (column.id === "action" && column.isVisible) {
                       return (
                         <TableCell
                           key={column.id}
@@ -135,21 +133,35 @@ export default function CustomTable({
                         </TableCell>
                       );
                     }
+                    if (column.id === "created_at" && column.isVisible) {
+                      return (
+                        <TableCell
+                          key={column.id}
+                          align={column.align}
+                          style={{
+                            maxWidth: column.maxWidth,
+                            minWidth: column.minWidth,
+                          }}
+                        >
+                          {row[column.id]}
+                        </TableCell>
+                      );
+                    }
 
-                    return (
-                      <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{
-                          maxWidth: column.maxWidth,
-                          minWidth: column.minWidth,
-                        }}
-                      >
-                        {column.id === "created_at"
-                          ? row[column.id]
-                          : index + 1}
-                      </TableCell>
-                    );
+                    if (column.id === "sno" && column.isVisible) {
+                      return (
+                        <TableCell
+                          key={column.id}
+                          align={column.align}
+                          style={{
+                            maxWidth: column.maxWidth,
+                            minWidth: column.minWidth,
+                          }}
+                        >
+                          {index + 1}
+                        </TableCell>
+                      );
+                    }
                   })}
                 </TableRow>
               ))}

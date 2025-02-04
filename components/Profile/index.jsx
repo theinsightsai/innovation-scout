@@ -31,7 +31,12 @@ import LogoutOutlined from "@ant-design/icons/LogoutOutlined";
 import SettingOutlined from "@ant-design/icons/SettingOutlined";
 import UserOutlined from "@ant-design/icons/UserOutlined";
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { logout } from "@/store/authSlice";
+import ToastMessage from "@/components/ToastMessage";
+import { ERROR_TEXT } from "@/constants";
+import { ROUTE } from "@/constants/index";
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -58,6 +63,8 @@ function a11yProps(index) {
 // ==============================|| HEADER CONTENT - PROFILE ||============================== //
 
 export default function Profile() {
+  const dispatch = useDispatch();
+  const router = useRouter();
   const theme = useTheme();
   const userData = useSelector((state) => state.auth);
 
@@ -164,7 +171,19 @@ export default function Profile() {
                     </Grid>
                     <Grid item>
                       <Tooltip title="Logout">
-                        <IconButton size="large" sx={{ color: "text.primary" }}>
+                        <IconButton
+                          size="large"
+                          sx={{ color: "text.primary" }}
+                          onClick={() => {
+                            dispatch(logout());
+                            localStorage.clear();
+                            router.push(ROUTE.LOGIN);
+                            ToastMessage(
+                              "success",
+                              ERROR_TEXT.SUCCESSFULLY_LOGOUT
+                            );
+                          }}
+                        >
                           <LogoutOutlined />
                         </IconButton>
                       </Tooltip>
