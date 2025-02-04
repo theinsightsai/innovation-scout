@@ -18,9 +18,9 @@ const ConfirmationModal = ({
           </div>
           <DialogContent>
             Are you sure you want to delete{" "}
-            <sapn className="font-medium text-black">
+            <span className="font-medium text-black">
               {user?.user?.username} ({user?.userType})
-            </sapn>
+            </span>
             ?
           </DialogContent>
           <DialogActions className="mt-6">

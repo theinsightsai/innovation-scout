@@ -9,6 +9,7 @@ import { getApi } from "@/app/api/clientApi";
 import { API } from "@/app/api/apiConstant";
 import { createData } from "@/utils";
 import { useSelector } from "react-redux";
+import ToastMessage  from "@/components/ToastMessage"
 
 const TeamManagement = () => {
   const router = useRouter();
@@ -138,7 +139,7 @@ const TeamManagement = () => {
     <Fragment>
       <PageHeader
         text="Team Management"
-        buttonText="Add Member"
+        buttonText={role_id === ROLE_ID_BY_NAME.ADMIN ? "Add Member" : ""}
         onButtonClick={() =>
           router.push(`${ROUTE.TEAM_MANAGEMENT}${ROUTE.ADD}`)
         }
