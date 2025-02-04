@@ -1,49 +1,22 @@
 "use client";
-import { Fragment, useState } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { PageHeader, CustomTable, ConfirmationModal } from "@/components";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import withLayout from "@/components/hoc/withLayout";
 import { useRouter } from "next/navigation";
-import { ROUTE } from "@/constants";
-import CreateIcon from "@mui/icons-material/Create";
-import DeleteIcon from "@mui/icons-material/Delete";
+import { ROUTE, TABEL_ACTION, COLUMNS } from "@/constants";
+import { getApi } from "@/app/api/clientApi";
+import { API } from "@/app/api/apiConstant";
+import { createData } from "@/utils";
 
-const ACTION_MENU = [
-  {
-    toolTipLabel: "Edit",
-    icon: <CreateIcon className="cursor-pointer hover:text-[#005B96]" />,
-    identifier: "EDIT",
-  },
-  {
-    toolTipLabel: "Delete",
-    icon: <DeleteIcon className="cursor-pointer hover:text-[#005B96]" />,
-    identifier: "DELETE",
-  },
-];
-
-const columns = [
-  { id: "sno", label: "S.No", minWidth: 100, maxWidth: 100 },
-  { id: "name", label: "Full Name", minWidth: 50, maxWidth: 50 },
-  {
-    id: "createdAt",
-    label: "Registered Date",
-    minWidth: 150,
-    maxWidth: 150,
-    align: "right",
-  },
-  {
-    id: "action",
-    label: "Action",
-    minWidth: 200,
-    maxWidth: 200,
-    align: "center",
-  },
-];
-
-const UserManagement = () => {
+const TeamManagement = () => {
   const router = useRouter();
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
+  const [rows, setRows] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
 
   const handleCloseModal = () => {
     setOpenConfirmation(false);
@@ -64,30 +37,32 @@ const UserManagement = () => {
     handleCloseModal();
   };
 
-  // Function to create user data
-  function createData(id, name, email, createdAt) {
-    const date = new Date(createdAt);
-    const formattedDate = isNaN(date)
-      ? "Invalid Date"
-      : date.toLocaleDateString("en-US");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const role_id = "2";
+        const response = await getApi(
+          `${API.GET_USERS}?role_id=${role_id}&page=${
+            page + 1
+          }&per_page=${rowsPerPage}`
+        );
 
-    return {
-      id,
-      name,
-      email,
-      createdAt: formattedDate,
+        if (!response.error) {
+          const formattedData = response?.data?.data?.map((user) =>
+            createData(user.id, user.username, user.email, user.created_at)
+          );
+          setTotalCount(response?.data?.pagination?.total_items);
+          setRows(formattedData);
+        } else {
+          console.error(response.message);
+        }
+      } catch (error) {
+        console.error("An unexpected error occurred:", error);
+      }
     };
-  }
 
-  // Sample user data
-  const rows = [
-    createData(
-      1,
-      "Team Member 1",
-      "teamMember@gmail.com",
-      "2024-01-15T12:30:00Z"
-    ),
-  ];
+    fetchData();
+  }, [page, rowsPerPage]);
 
   return (
     <Fragment>
@@ -97,13 +72,24 @@ const UserManagement = () => {
         onButtonClick={() =>
           router.push(`${ROUTE.TEAM_MANAGEMENT}${ROUTE.ADD}`)
         }
-        icon={<PersonAddAltIcon height={20} width={20} />}
+        icon={
+          <PersonAddAltIcon
+            height={20}
+            width={20}
+            style={{ marginBottom: "4px" }}
+          />
+        }
       />
       <CustomTable
-        ACTION_MENU={ACTION_MENU}
+        ACTION_MENU={TABEL_ACTION}
         onActionClick={onActionClick}
-        columns={columns}
+        columns={COLUMNS}
         rows={rows}
+        setPage={setPage}
+        page={page}
+        setRowsPerPage={setRowsPerPage}
+        rowsPerPage={rowsPerPage}
+        totalCount={totalCount}
       />
       <ConfirmationModal
         open={openConfirmation}
@@ -118,4 +104,4 @@ const UserManagement = () => {
     </Fragment>
   );
 };
-export default withLayout(UserManagement);
+export default withLayout(TeamManagement);

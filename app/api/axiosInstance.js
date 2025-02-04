@@ -10,9 +10,16 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    const state = localStorage.getItem("persist:root");
+    if (state) {
+      const stringState = JSON.parse(state);
+      const stringAuth = stringState.auth;
+
+      const token = stringAuth?.token;
+
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },

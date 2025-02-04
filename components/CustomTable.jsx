@@ -43,11 +43,12 @@ export default function CustomTable({
   onActionClick,
   columns,
   rows,
+  setPage,
+  page,
+  setRowsPerPage,
+  rowsPerPage,
+  totalCount,
 }) {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  console.log("rows==>", rows);
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -60,22 +61,23 @@ export default function CustomTable({
   const ActionSection = ({ ACTION_MENU, row }) => {
     return (
       <>
-        {ACTION_MENU.map((actionObj, i, arr) => {
-          return (
-            <Tooltip
-              key={i}
-              title={actionObj.toolTipLabel}
-              onClick={(event) =>
-                onActionClick(event, actionObj?.identifier, row)
-              }
-            >
-              {actionObj.icon}
-            </Tooltip>
-          );
-        })}
+        {ACTION_MENU.map((actionObj, i) => (
+          <Tooltip
+            key={i}
+            title={actionObj.toolTipLabel}
+            onClick={(event) =>
+              onActionClick(event, actionObj?.identifier, row)
+            }
+          >
+            {actionObj.icon}
+          </Tooltip>
+        ))}
       </>
     );
   };
+
+  console.log("page==>", page);
+  console.log("rowsPerPage==>", rowsPerPage);
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden", marginTop: "50px" }}>
@@ -99,14 +101,11 @@ export default function CustomTable({
               ))}
             </TableRow>
           </TableHead>
-          <TableBody>
-            {rows
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((row) => (
+          {rows?.length > 0 ? (
+            <TableBody>
+              {rows.map((row, index) => (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                  {columns.map((column, index) => {
-                    let value = index + 1;
-
+                  {columns.map((column, ind) => {
                     if (column.id === "name") {
                       return (
                         <TableCell
@@ -146,21 +145,40 @@ export default function CustomTable({
                           minWidth: column.minWidth,
                         }}
                       >
-                        {column.id === "createdAt"
-                          ? new Date(row[column.id]).toLocaleDateString("en-US")
-                          : value}
+                        {column.id === "created_at"
+                          ? row[column.id]
+                          : index + 1}
                       </TableCell>
                     );
                   })}
                 </TableRow>
               ))}
-          </TableBody>
+            </TableBody>
+          ) : (
+            <TableBody>
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  style={{ textAlign: "center", padding: "20px" }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "Outfit, sans-serif",
+                      textTransform: "uppercase",
+                    }}
+                  >
+                    No Data Found
+                  </div>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          )}
         </Table>
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={rows.length}
+        count={totalCount}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
@@ -169,14 +187,3 @@ export default function CustomTable({
     </Paper>
   );
 }
-
-// Render Chip for status column
-// if (column.id === "status") {
-//   value = (
-//     <Chip
-//       label={row.status}
-//       color={getChipByStatus(row.status)}
-//       variant="outlined"
-//     />
-//   );
-// }

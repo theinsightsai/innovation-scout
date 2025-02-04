@@ -1,44 +1,48 @@
-"use client"
-import PropTypes from 'prop-types';
-import { useRef, useState } from 'react';
+"use client";
+import PropTypes from "prop-types";
+import { useRef, useState } from "react";
 
 // material-ui
-import { useTheme } from '@mui/material/styles';
-import ButtonBase from '@mui/material/ButtonBase';
-import CardContent from '@mui/material/CardContent';
-import ClickAwayListener from '@mui/material/ClickAwayListener';
-import Grid from '@mui/material/Grid';
-import Paper from '@mui/material/Paper';
-import IconButton from '@mui/material/IconButton';
-import Popper from '@mui/material/Popper';
-import Stack from '@mui/material/Stack';
-import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs';
-import Tooltip from '@mui/material/Tooltip';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import { Avatar, } from '@mui/material';
+import { useTheme } from "@mui/material/styles";
+import ButtonBase from "@mui/material/ButtonBase";
+import CardContent from "@mui/material/CardContent";
+import ClickAwayListener from "@mui/material/ClickAwayListener";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import IconButton from "@mui/material/IconButton";
+import Popper from "@mui/material/Popper";
+import Stack from "@mui/material/Stack";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import { Avatar } from "@mui/material";
 
 // project import
-import ProfileTab from "@/components/Profile/ProfileTab"
-import SettingTab from '@/components/Profile/SettingTab';
-import Transitions from "@/components/Transitions"
-import MainCard from '@/components/cards/Maincard'
-import { geTypeByRoleId } from "@/utils"
+import ProfileTab from "@/components/Profile/ProfileTab";
+import SettingTab from "@/components/Profile/SettingTab";
+import Transitions from "@/components/Transitions";
+import MainCard from "@/components/cards/Maincard";
+import { geTypeByRoleId } from "@/utils";
 
 // assets
-import LogoutOutlined from '@ant-design/icons/LogoutOutlined';
-import SettingOutlined from '@ant-design/icons/SettingOutlined';
-import UserOutlined from '@ant-design/icons/UserOutlined';
+import LogoutOutlined from "@ant-design/icons/LogoutOutlined";
+import SettingOutlined from "@ant-design/icons/SettingOutlined";
+import UserOutlined from "@ant-design/icons/UserOutlined";
 
-
-import { useSelector } from 'react-redux';
-
+import { useSelector } from "react-redux";
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
   return (
-    <div role="tabpanel" hidden={value !== index} id={`profile-tabpanel-${index}`} aria-labelledby={`profile-tab-${index}`} {...other}>
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`profile-tabpanel-${index}`}
+      aria-labelledby={`profile-tab-${index}`}
+      {...other}
+    >
       {value === index && children}
     </div>
   );
@@ -47,7 +51,7 @@ function TabPanel({ children, value, index, ...other }) {
 function a11yProps(index) {
   return {
     id: `profile-tab-${index}`,
-    'aria-controls': `profile-tabpanel-${index}`
+    "aria-controls": `profile-tabpanel-${index}`,
   };
 }
 
@@ -55,13 +59,10 @@ function a11yProps(index) {
 
 export default function Profile() {
   const theme = useTheme();
-  const userData = useSelector(state => state.auth)
+  const userData = useSelector((state) => state.auth);
 
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
-
-
-  console.log("userData==>", userData)
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -80,20 +81,27 @@ export default function Profile() {
     setValue(newValue);
   };
 
-
   return (
     <Box sx={{ flexShrink: 0, ml: 0.75 }}>
       <ButtonBase
-
         aria-label="open profile"
         ref={anchorRef}
-        aria-controls={open ? 'profile-grow' : undefined}
+        aria-controls={open ? "profile-grow" : undefined}
         aria-haspopup="true"
         onClick={handleToggle}
       >
-        <Stack direction="row" spacing={1.25} alignItems="center" sx={{ p: 0.5 }}>
-          <Avatar alt="profile user" src={'https://picsum.photos/200'} size="sm" />
-          <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
+        <Stack
+          direction="row"
+          spacing={1.25}
+          alignItems="center"
+          sx={{ p: 0.5 }}
+        >
+          <Avatar
+            alt="profile user"
+            src={"https://picsum.photos/200"}
+            size="sm"
+          />
+          <Typography variant="subtitle1" sx={{ textTransform: "capitalize" }}>
             <div>{userData.user.name}</div>
           </Typography>
         </Stack>
@@ -108,27 +116,46 @@ export default function Profile() {
         popperOptions={{
           modifiers: [
             {
-              name: 'offset',
+              name: "offset",
               options: {
-                offset: [0, 9]
-              }
-            }
-          ]
+                offset: [0, 9],
+              },
+            },
+          ],
         }}
       >
         {({ TransitionProps }) => (
-          <Transitions type="grow" position="top-right" in={open} {...TransitionProps}>
-            <Paper sx={{ width: 290, minWidth: 240, maxWidth: { xs: 250, md: 290 } }} >
+          <Transitions
+            type="grow"
+            position="top-right"
+            in={open}
+            {...TransitionProps}
+          >
+            <Paper
+              sx={{ width: 290, minWidth: 240, maxWidth: { xs: 250, md: 290 } }}
+            >
               {/* <ClickAwayListener onClickAway={handleClose}> */}
               <MainCard elevation={0} border={false} content={false}>
                 <CardContent sx={{ px: 2.5, pt: 3 }}>
-                  <Grid container justifyContent="space-between" alignItems="center">
+                  <Grid
+                    container
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
                     <Grid item>
                       <Stack direction="row" spacing={1.25} alignItems="center">
-                        <Avatar alt="profile user" src={'https://picsum.photos/200'} sx={{ width: 32, height: 32 }} />
+                        <Avatar
+                          alt="profile user"
+                          src={"https://picsum.photos/200"}
+                          sx={{ width: 32, height: 32 }}
+                        />
                         <Stack>
-                          <Typography variant="h6" className='capitalize'>{userData.user.name}
-                            <span className='text-sm font-medium ml-1'>({geTypeByRoleId(userData?.role_id)})</span></Typography>
+                          <Typography variant="h6" className="capitalize">
+                            {userData.user.name}
+                            <span className="text-sm font-medium ml-1">
+                              ({geTypeByRoleId(userData?.role_id)})
+                            </span>
+                          </Typography>
                           <Typography variant="body2" color="text.secondary">
                             {userData.user.email}
                           </Typography>
@@ -137,7 +164,7 @@ export default function Profile() {
                     </Grid>
                     <Grid item>
                       <Tooltip title="Logout">
-                        <IconButton size="large" sx={{ color: 'text.primary' }}>
+                        <IconButton size="large" sx={{ color: "text.primary" }}>
                           <LogoutOutlined />
                         </IconButton>
                       </Tooltip>
@@ -145,29 +172,42 @@ export default function Profile() {
                   </Grid>
                 </CardContent>
 
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                  <Tabs variant="fullWidth" value={value} onChange={handleChange} aria-label="profile tabs">
+                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                  <Tabs
+                    variant="fullWidth"
+                    value={value}
+                    onChange={handleChange}
+                    aria-label="profile tabs"
+                  >
                     <Tab
                       sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        textTransform: 'capitalize'
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        textTransform: "capitalize",
                       }}
-                      icon={<UserOutlined style={{ marginBottom: 0, marginRight: '10px' }} />}
+                      icon={
+                        <UserOutlined
+                          style={{ marginBottom: 0, marginRight: "10px" }}
+                        />
+                      }
                       label="Profile"
                       {...a11yProps(0)}
                     />
                     <Tab
                       sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        textTransform: 'capitalize'
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        textTransform: "capitalize",
                       }}
-                      icon={<SettingOutlined style={{ marginBottom: 0, marginRight: '10px' }} />}
+                      icon={
+                        <SettingOutlined
+                          style={{ marginBottom: 0, marginRight: "10px" }}
+                        />
+                      }
                       label="Setting"
                       {...a11yProps(1)}
                     />
@@ -189,4 +229,9 @@ export default function Profile() {
   );
 }
 
-TabPanel.propTypes = { children: PropTypes.node, value: PropTypes.number, index: PropTypes.number, other: PropTypes.any };
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  value: PropTypes.number,
+  index: PropTypes.number,
+  other: PropTypes.any,
+};
