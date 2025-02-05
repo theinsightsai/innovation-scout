@@ -17,6 +17,8 @@ export const ROUTE = {
   USER_MANAGEMENT: "/user-management",
   TEAM_MANAGEMENT: "/team-management",
   ADD: "/add",
+  TASK_MANAGEMENT: "/task-management",
+  LOGS: "/logs",
 };
 
 export const ERROR_TEXT = {

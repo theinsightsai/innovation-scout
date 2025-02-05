@@ -1,44 +1,41 @@
 "use client";
 
-
 import withLayout from "@/components/hoc/withLayout";
 
-// import { useState } from "react";
-// import { ExcelIcon } from "@/constants/assets";
-
+import { useState } from "react";
+import { ExcelIcon } from "@/constants/assets";
 
 // material-ui
-// import Avatar from "@mui/material/Avatar";
-// import AvatarGroup from "@mui/material/AvatarGroup";
-// import Button from "@mui/material/Button";
-// import Grid from "@mui/material/Grid";
-// import List from "@mui/material/List";
-// import ListItemAvatar from "@mui/material/ListItemAvatar";
-// import ListItemButton from "@mui/material/ListItemButton";
-// import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
-// import ListItemText from "@mui/material/ListItemText";
-// import Stack from "@mui/material/Stack";
-// import Typography from "@mui/material/Typography";
-// import Box from "@mui/material/Box";
+import Avatar from "@mui/material/Avatar";
+import AvatarGroup from "@mui/material/AvatarGroup";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import List from "@mui/material/List";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import ListItemText from "@mui/material/ListItemText";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
 // project import
-// import {
-//   AnalyticEcommerce, MainCard, MonthlyBarChart,
-//   ReportAreaChart,
-//   UniqueVisitorCard,
-//   SaleReportCard,
-//   OrdersTable,
-//   PageHeader,
-//   UploadCsvModal
-// } from "@/components";
-// withLayout,
-
+import {
+  AnalyticEcommerce,
+  MainCard,
+  MonthlyBarChart,
+  ReportAreaChart,
+  UniqueVisitorCard,
+  SaleReportCard,
+  OrdersTable,
+  PageHeader,
+  UploadCsvModal,
+} from "@/components";
 
 // assets
-// import GiftOutlined from "@ant-design/icons/GiftOutlined";
-// import MessageOutlined from "@ant-design/icons/MessageOutlined";
-// import SettingOutlined from "@ant-design/icons/SettingOutlined";
-
+import GiftOutlined from "@ant-design/icons/GiftOutlined";
+import MessageOutlined from "@ant-design/icons/MessageOutlined";
+import SettingOutlined from "@ant-design/icons/SettingOutlined";
 
 // avatar style
 const avatarSX = {
@@ -58,16 +55,14 @@ const actionSX = {
 };
 
 const Dashboard = () => {
-  // const [openUploadModal, setOpenUploadModal] = useState(false);
+  const [openUploadModal, setOpenUploadModal] = useState(false);
 
   const handleOpenModal = () => setOpenUploadModal(true);
   const handleCloseModal = () => setOpenUploadModal(false);
 
   return (
     <>
-      Dashboard
-
-      {/* <Grid container rowSpacing={4.5} columnSpacing={2.75}>
+      <Grid container rowSpacing={4.5} columnSpacing={2.75}>
         <Grid item xs={12} sx={{ mb: -2.25 }}>
           <PageHeader
             text="Home"
@@ -257,7 +252,9 @@ const Dashboard = () => {
               </ListItemButton>
               <ListItemButton>
                 <ListItemAvatar>
-                  <Avatar sx={{ color: "error.main", bgcolor: "error.lighter" }}>
+                  <Avatar
+                    sx={{ color: "error.main", bgcolor: "error.lighter" }}
+                  >
                     <SettingOutlined />
                   </Avatar>
                 </ListItemAvatar>
@@ -282,7 +279,11 @@ const Dashboard = () => {
           </MainCard>
           <MainCard sx={{ mt: 2 }}>
             <Stack spacing={3}>
-              <Grid container justifyContent="space-between" alignItems="center">
+              <Grid
+                container
+                justifyContent="space-between"
+                alignItems="center"
+              >
                 <Grid item>
                   <Stack>
                     <Typography variant="h5" noWrap>
@@ -297,10 +298,22 @@ const Dashboard = () => {
                   <AvatarGroup
                     sx={{ "& .MuiAvatar-root": { width: 32, height: 32 } }}
                   >
-                    <Avatar alt="Remy Sharp" src={"https://picsum.photos/200"} />
-                    <Avatar alt="Travis Howard" src={'https://picsum.photos/200'} />
-                    <Avatar alt="Cindy Baker" src={'https://picsum.photos/200'} />
-                    <Avatar alt="Agnes Walker" src={'https://picsum.photos/200'} />
+                    <Avatar
+                      alt="Remy Sharp"
+                      src={"https://picsum.photos/200"}
+                    />
+                    <Avatar
+                      alt="Travis Howard"
+                      src={"https://picsum.photos/200"}
+                    />
+                    <Avatar
+                      alt="Cindy Baker"
+                      src={"https://picsum.photos/200"}
+                    />
+                    <Avatar
+                      alt="Agnes Walker"
+                      src={"https://picsum.photos/200"}
+                    />
                   </AvatarGroup>
                 </Grid>
               </Grid>
@@ -314,14 +327,12 @@ const Dashboard = () => {
             </Stack>
           </MainCard>
         </Grid>
-      </Grid >
-      <UploadCsvModal open={openUploadModal} handleClose={handleCloseModal} /> */}
+      </Grid>
+      <UploadCsvModal open={openUploadModal} handleClose={handleCloseModal} />
     </>
-
   );
 };
 export default withLayout(Dashboard);
-// withLayout
 
 // <>
 //   <PageHeader

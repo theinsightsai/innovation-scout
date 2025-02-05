@@ -141,105 +141,109 @@ export default function Profile() {
             <Paper
               sx={{ width: 290, minWidth: 240, maxWidth: { xs: 250, md: 290 } }}
             >
-              {/* <ClickAwayListener onClickAway={handleClose}> */}
-              <MainCard elevation={0} border={false} content={false}>
-                <CardContent sx={{ px: 2.5, pt: 3 }}>
-                  <Grid
-                    container
-                    justifyContent="space-between"
-                    alignItems="center"
-                  >
-                    <Grid item>
-                      <Stack direction="row" spacing={1.25} alignItems="center">
-                        <Avatar
-                          alt="profile user"
-                          src={"https://picsum.photos/200"}
-                          sx={{ width: 32, height: 32 }}
-                        />
-                        <Stack>
-                          <Typography variant="h6" className="capitalize">
-                            {userData.user.name}
-                            <span className="text-sm font-medium ml-1">
-                              ({geTypeByRoleId(userData?.role_id)})
-                            </span>
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {userData.user.email}
-                          </Typography>
-                        </Stack>
-                      </Stack>
-                    </Grid>
-                    <Grid item>
-                      <Tooltip title="Logout">
-                        <IconButton
-                          size="large"
-                          sx={{ color: "text.primary" }}
-                          onClick={() => {
-                            dispatch(logout());
-                            localStorage.clear();
-                            router.push(ROUTE.LOGIN);
-                            ToastMessage(
-                              "success",
-                              ERROR_TEXT.SUCCESSFULLY_LOGOUT
-                            );
-                          }}
+              <ClickAwayListener onClickAway={handleClose}>
+                <MainCard elevation={0} border={false} content={false}>
+                  <CardContent sx={{ px: 2.5, pt: 3 }}>
+                    <Grid
+                      container
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <Grid item>
+                        <Stack
+                          direction="row"
+                          spacing={1.25}
+                          alignItems="center"
                         >
-                          <LogoutOutlined />
-                        </IconButton>
-                      </Tooltip>
+                          <Avatar
+                            alt="profile user"
+                            src={"https://picsum.photos/200"}
+                            sx={{ width: 32, height: 32 }}
+                          />
+                          <Stack>
+                            <Typography variant="h6" className="capitalize">
+                              {userData.user.name}
+                              <span className="text-sm font-medium ml-1">
+                                ({geTypeByRoleId(userData?.role_id)})
+                              </span>
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {userData.user.email}
+                            </Typography>
+                          </Stack>
+                        </Stack>
+                      </Grid>
+                      <Grid item>
+                        <Tooltip title="Logout">
+                          <IconButton
+                            size="large"
+                            sx={{ color: "text.primary" }}
+                            onClick={() => {
+                              dispatch(logout());
+                              localStorage.clear();
+                              router.push(ROUTE.LOGIN);
+                              ToastMessage(
+                                "success",
+                                ERROR_TEXT.SUCCESSFULLY_LOGOUT
+                              );
+                            }}
+                          >
+                            <LogoutOutlined />
+                          </IconButton>
+                        </Tooltip>
+                      </Grid>
                     </Grid>
-                  </Grid>
-                </CardContent>
+                  </CardContent>
 
-                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                  <Tabs
-                    variant="fullWidth"
-                    value={value}
-                    onChange={handleChange}
-                    aria-label="profile tabs"
-                  >
-                    <Tab
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        textTransform: "capitalize",
-                      }}
-                      icon={
-                        <UserOutlined
-                          style={{ marginBottom: 0, marginRight: "10px" }}
-                        />
-                      }
-                      label="Profile"
-                      {...a11yProps(0)}
-                    />
-                    <Tab
-                      sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        textTransform: "capitalize",
-                      }}
-                      icon={
-                        <SettingOutlined
-                          style={{ marginBottom: 0, marginRight: "10px" }}
-                        />
-                      }
-                      label="Setting"
-                      {...a11yProps(1)}
-                    />
-                  </Tabs>
-                </Box>
-                <TabPanel value={value} index={0} dir={theme.direction}>
-                  <ProfileTab />
-                </TabPanel>
-                <TabPanel value={value} index={1} dir={theme.direction}>
-                  <SettingTab />
-                </TabPanel>
-              </MainCard>
-              {/* </ClickAwayListener> */}
+                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                    <Tabs
+                      variant="fullWidth"
+                      value={value}
+                      onChange={handleChange}
+                      aria-label="profile tabs"
+                    >
+                      <Tab
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          textTransform: "capitalize",
+                        }}
+                        icon={
+                          <UserOutlined
+                            style={{ marginBottom: 0, marginRight: "10px" }}
+                          />
+                        }
+                        label="Profile"
+                        {...a11yProps(0)}
+                      />
+                      <Tab
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          textTransform: "capitalize",
+                        }}
+                        icon={
+                          <SettingOutlined
+                            style={{ marginBottom: 0, marginRight: "10px" }}
+                          />
+                        }
+                        label="Setting"
+                        {...a11yProps(1)}
+                      />
+                    </Tabs>
+                  </Box>
+                  <TabPanel value={value} index={0} dir={theme.direction}>
+                    <ProfileTab />
+                  </TabPanel>
+                  <TabPanel value={value} index={1} dir={theme.direction}>
+                    <SettingTab />
+                  </TabPanel>
+                </MainCard>
+              </ClickAwayListener>
             </Paper>
           </Transitions>
         )}

@@ -24,6 +24,8 @@ import HomeIcon from "@mui/icons-material/Home";
 import UploadIcon from "@mui/icons-material/Upload";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
 import PrintIcon from "@mui/icons-material/Print";
+import TaskIcon from "@mui/icons-material/Task";
+import FeedIcon from "@mui/icons-material/Feed";
 import MailIcon from "@mui/icons-material/Mail";
 import GroupIcon from "@mui/icons-material/Group";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
@@ -93,22 +95,17 @@ export default function SideBar() {
       isVisible: true,
     },
     {
-      label: "Upload Data",
-      route: ROUTE.UPLOAD_DATA,
-      icon: <UploadIcon />,
-      isVisible: true,
+      label: "Task Management",
+      route: ROUTE.TASK_MANAGEMENT,
+      icon: <TaskIcon />,
+      isVisible:
+        role_id === ROLE_ID_BY_NAME.ADMIN || role_id === ROLE_ID_BY_NAME.TEAM,
     },
     {
-      label: "Run Analysis",
-      route: ROUTE.ANALYSIS,
-      icon: <AnalyticsIcon />,
-      isVisible: true,
-    },
-    {
-      label: "Results",
-      route: ROUTE.RESULTS,
-      icon: <PrintIcon />,
-      isVisible: true,
+      label: "Logs",
+      route: ROUTE.TASK_MANAGEMENT,
+      icon: <FeedIcon />,
+      isVisible: role_id === ROLE_ID_BY_NAME.ADMIN,
     },
     {
       label: "User Management",
@@ -276,3 +273,22 @@ export default function SideBar() {
     </Box>
   );
 }
+
+// {
+//   label: "Upload Data",
+//   route: ROUTE.UPLOAD_DATA,
+//   icon: <UploadIcon />,
+//   isVisible: true,
+// },
+// {
+//   label: "Run Analysis",
+//   route: ROUTE.ANALYSIS,
+//   icon: <AnalyticsIcon />,
+//   isVisible: true,
+// },
+// {
+//   label: "Results",
+//   route: ROUTE.RESULTS,
+//   icon: <PrintIcon />,
+//   isVisible: true,
+// },
