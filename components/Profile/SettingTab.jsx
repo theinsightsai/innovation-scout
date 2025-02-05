@@ -1,55 +1,69 @@
-"use client"
-import { useState } from 'react';
+"use client";
+import { useState } from "react";
 
 // material-ui
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
 
 // assets
-import { CommentOutlined, LockOutlined, QuestionCircleOutlined, UserOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import {
+  CommentOutlined,
+  LockOutlined,
+  QuestionCircleOutlined,
+  UserOutlined,
+  UnorderedListOutlined,
+} from "@ant-design/icons";
+
+import { FONT_STYLES } from "@/constants";
 
 // ==============================|| HEADER PROFILE - SETTING TAB ||============================== //
 
+const MENU = [
+  { icon: <QuestionCircleOutlined />, label: "Support", identifier: "SUPPORT" },
+  {
+    icon: <UserOutlined />,
+    label: "Account Settings",
+    identifier: "ACCOUNT_SETTING",
+  },
+  {
+    icon: <LockOutlined />,
+    label: "Privacy Center",
+    identifier: "PRIVACY_CENTER",
+  },
+  { icon: <CommentOutlined />, label: "Feedback", identifier: "FEEDBACK" },
+  { icon: <UnorderedListOutlined />, label: "History", identifier: "HISTORY" },
+];
+
 export default function SettingTab() {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const handleListItemClick = (event, index) => {
-    setSelectedIndex(index);
+  const [selectedMenu, setSelectedMenu] = useState(0);
+
+  const handleListItemClick = (event, identifier) => {
+    setSelectedMenu(identifier);
   };
 
   return (
-    <List component="nav" sx={{ p: 0, '& .MuiListItemIcon-root': { minWidth: 32 } }}>
-      <ListItemButton selected={selectedIndex === 0} onClick={(event) => handleListItemClick(event, 0)}>
-        <ListItemIcon>
-          <QuestionCircleOutlined />
-        </ListItemIcon>
-        <ListItemText primary="Support" />
-      </ListItemButton>
-      <ListItemButton selected={selectedIndex === 1} onClick={(event) => handleListItemClick(event, 1)}>
-        <ListItemIcon>
-          <UserOutlined />
-        </ListItemIcon>
-        <ListItemText primary="Account Settings" />
-      </ListItemButton>
-      <ListItemButton selected={selectedIndex === 2} onClick={(event) => handleListItemClick(event, 2)}>
-        <ListItemIcon>
-          <LockOutlined />
-        </ListItemIcon>
-        <ListItemText primary="Privacy Center" />
-      </ListItemButton>
-      <ListItemButton selected={selectedIndex === 3} onClick={(event) => handleListItemClick(event, 3)}>
-        <ListItemIcon>
-          <CommentOutlined />
-        </ListItemIcon>
-        <ListItemText primary="Feedback" />
-      </ListItemButton>
-      <ListItemButton selected={selectedIndex === 4} onClick={(event) => handleListItemClick(event, 4)}>
-        <ListItemIcon>
-          <UnorderedListOutlined />
-        </ListItemIcon>
-        <ListItemText primary="History" />
-      </ListItemButton>
+    <List
+      component="nav"
+      sx={{
+        p: 0,
+        "& .MuiListItemIcon-root": { minWidth: 32 },
+        paddingTop: "7px",
+        paddingBottom: "7px",
+      }}
+    >
+      {MENU.map((menuObj, i, arr) => {
+        return (
+          <ListItemButton
+            selected={selectedMenu === menuObj.identifier}
+            onClick={(event) => handleListItemClick(event, menuObj.identifier)}
+            key={`${menuObj.label}-${i}`}
+          >
+            <ListItemIcon>{menuObj.icon}</ListItemIcon>
+            <div style={{ ...FONT_STYLES }}>{menuObj.label}</div>
+          </ListItemButton>
+        );
+      })}
     </List>
   );
 }

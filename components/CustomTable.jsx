@@ -8,29 +8,26 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { Chip, Tooltip, Avatar, Typography } from "@mui/material";
-
-export const getChipByStatus = (status) => {
-  switch (status) {
-    case "Active":
-      return "success";
-    case "Inactive":
-      return "warning";
-    case "Banned":
-      return "error";
-    default:
-      return "default";
-  }
-};
+import { getTaskStatusById, getColorByTaskId } from "@/utils";
+import { FONT_STYLES } from "@/constants";
 
 const NameSection = ({ row }) => {
   return (
-    <div className="flex items-center">
-      <Avatar alt={row.name} sx={{ marginRight: 2 }}>
-        {row?.name?.[0]}
+    <div className="flex items-center" style={FONT_STYLES}>
+      <Avatar
+        alt={row.name}
+        sx={{ marginRight: 2, textTransform: "capitalize" }}
+      >
+        {row?.username?.[0]}
       </Avatar>
       <div>
-        <Typography variant="body1">{row.name}</Typography>
-        <Typography variant="body2" color="textSecondary">
+        <Typography
+          variant="body1"
+          sx={{ textTransform: "capitalize", ...FONT_STYLES }}
+        >
+          {row.username}
+        </Typography>
+        <Typography variant="body2" color="textSecondary" sx={FONT_STYLES}>
           {row.email}
         </Typography>
       </div>
@@ -77,7 +74,14 @@ export default function CustomTable({
   };
 
   return (
-    <Paper sx={{ width: "100%", overflow: "hidden", marginTop: "50px" }}>
+    <Paper
+      sx={{
+        width: "100%",
+        overflow: "hidden",
+        marginTop: "50px",
+        ...FONT_STYLES,
+      }}
+    >
       <TableContainer sx={{ maxHeight: 600, minHeight: 600 }}>
         <Table stickyHeader aria-label="sticky table" sx={{ minWidth: 650 }}>
           <TableHead>
@@ -88,10 +92,10 @@ export default function CustomTable({
                   align={column.align}
                   style={{
                     minWidth: column.minWidth,
-                    fontFamily: "Outfit, sans-serif",
                     background: "lightgray",
                     textTransform: "uppercase",
                     display: column?.isVisible ? "-ms-flexbox" : "none",
+                    ...FONT_STYLES, // Apply font styles here
                   }}
                 >
                   {column.label}
@@ -103,52 +107,61 @@ export default function CustomTable({
             <TableBody>
               {rows.map((row, index) => (
                 <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                  {columns.map((column, ind) => {
-                    if (column.id === "name") {
-                      return (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          style={{
-                            maxWidth: column.maxWidth,
-                            minWidth: column.minWidth,
-                          }}
-                        >
-                          <NameSection row={row} />
-                        </TableCell>
-                      );
-                    }
+                  {columns.map((column) => {
+                    if (column.isVisible) {
+                      let cellContent;
 
-                    if (column.id === "action" && column.isVisible) {
-                      return (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          style={{
-                            maxWidth: column.maxWidth,
-                            minWidth: column.minWidth,
-                          }}
-                        >
-                          <ActionSection ACTION_MENU={ACTION_MENU} row={row} />
-                        </TableCell>
-                      );
-                    }
-                    if (column.id === "created_at" && column.isVisible) {
-                      return (
-                        <TableCell
-                          key={column.id}
-                          align={column.align}
-                          style={{
-                            maxWidth: column.maxWidth,
-                            minWidth: column.minWidth,
-                          }}
-                        >
-                          {row[column.id]}
-                        </TableCell>
-                      );
-                    }
+                      // Check the column ID and render the corresponding content
+                      switch (column.id) {
+                        case "name":
+                          cellContent = <NameSection row={row} />;
+                          break;
+                        case "action":
+                          if (column.isVisible) {
+                            cellContent = (
+                              <ActionSection
+                                ACTION_MENU={ACTION_MENU}
+                                row={row}
+                              />
+                            );
+                          }
+                          break;
+                        case "created_at":
+                          cellContent = row[column.id];
+                          break;
+                        case "taskId":
+                          cellContent = (
+                            <div style={{ fontWeight: 600 }}>
+                              {row[column.id]}
+                            </div>
+                          );
+                          break;
+                        case "taskStatus":
+                          cellContent = (
+                            <Tooltip title={getTaskStatusById(row[column.id])}>
+                              <Chip
+                                sx={{ cursor: "pointer" }}
+                                label={getTaskStatusById(row[column.id])}
+                                color={getColorByTaskId(row[column.id])}
+                                variant="outlined"
+                              />
+                            </Tooltip>
+                          );
+                          break;
+                        case "taskDesc":
+                          cellContent = (
+                            <div className="italic">{row[column.id]}</div>
+                          );
+                          break;
+                        case "sno":
+                          cellContent = (
+                            <div style={{ fontWeight: 600 }}>{index + 1}.</div>
+                          );
+                          break;
+                        default:
+                          break;
+                      }
 
-                    if (column.id === "sno" && column.isVisible) {
                       return (
                         <TableCell
                           key={column.id}
@@ -156,12 +169,14 @@ export default function CustomTable({
                           style={{
                             maxWidth: column.maxWidth,
                             minWidth: column.minWidth,
+                            ...FONT_STYLES, // Apply font styles to table cells
                           }}
                         >
-                          {index + 1}
+                          {cellContent}
                         </TableCell>
                       );
                     }
+                    return null;
                   })}
                 </TableRow>
               ))}
@@ -171,11 +186,14 @@ export default function CustomTable({
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  style={{ textAlign: "center", padding: "20px" }}
+                  style={{
+                    textAlign: "center",
+                    padding: "20px",
+                    ...FONT_STYLES, // Apply font styles here too
+                  }}
                 >
                   <div
                     style={{
-                      fontFamily: "Outfit, sans-serif",
                       textTransform: "uppercase",
                     }}
                   >

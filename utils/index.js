@@ -30,3 +30,25 @@ export const createData = (id, username, email, created_at) => {
     created_at: formattedDate,
   };
 };
+
+export const getTaskStatusById = (statusId) => {
+  switch (statusId) {
+    case 1:
+      return "Pending";
+    case 2:
+      return "Completed";
+    default:
+      return "N/A";
+  }
+};
+
+export const getColorByTaskId = (statusId) => {
+  switch (statusId) {
+    case 1:
+      return "error";
+    case 2:
+      return "success";
+    default:
+      return "N/A";
+  }
+};

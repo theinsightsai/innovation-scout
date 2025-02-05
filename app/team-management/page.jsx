@@ -168,7 +168,7 @@ const TeamManagement = () => {
         handleConfirmClick={handleConfirmClick}
         buttontext="Delete"
         user={{
-          user: selectedData,
+          user: selectedData?.username,
           userType: "Team Member",
         }}
       />

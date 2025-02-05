@@ -19,7 +19,7 @@ const ConfirmationModal = ({
           <DialogContent>
             Are you sure you want to delete{" "}
             <span className="font-medium text-black">
-              {user?.user?.username} ({user?.userType})
+              {user?.user} ({user?.userType})
             </span>
             ?
           </DialogContent>

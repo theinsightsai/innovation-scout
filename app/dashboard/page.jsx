@@ -1,9 +1,14 @@
 "use client";
 
 import withLayout from "@/components/hoc/withLayout";
-
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { ExcelIcon } from "@/constants/assets";
+import {
+  ADMIN_CLIENT_COUNTERS_DATA,
+  ADMIN_TEAM_COUNTERS_DATA,
+  TEAM_COUNTERS_DATA,
+} from "@/constants";
 
 // material-ui
 import Avatar from "@mui/material/Avatar";
@@ -55,6 +60,7 @@ const actionSX = {
 };
 
 const Dashboard = () => {
+  const role_id = useSelector((state) => state?.auth?.role_id);
   const [openUploadModal, setOpenUploadModal] = useState(false);
 
   const handleOpenModal = () => setOpenUploadModal(true);
@@ -71,42 +77,68 @@ const Dashboard = () => {
             icon={<ExcelIcon height={30} width={30} />}
           />
         </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce
-            title="Total Page Views"
-            count="4,42,236"
-            percentage={59.3}
-            extra="35,000"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce
-            title="Total Users"
-            count="78,250"
-            percentage={70.5}
-            extra="8,900"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce
-            title="Total Order"
-            count="18,800"
-            percentage={27.4}
-            isLoss
-            color="warning"
-            extra="1,943"
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4} lg={3}>
-          <AnalyticEcommerce
-            title="Total Sales"
-            count="$35,078"
-            percentage={27.4}
-            isLoss
-            color="warning"
-            extra="$20,395"
-          />
-        </Grid>
+
+        {role_id === 1 && (
+          <>
+            {ADMIN_CLIENT_COUNTERS_DATA.map((counterObj, i, arr) => {
+              return (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  lg={3}
+                  key={`${counterObj.title}-${i}`}
+                >
+                  <AnalyticEcommerce
+                    title={counterObj.title}
+                    count={counterObj.counts}
+                    description={counterObj.description}
+                  />
+                </Grid>
+              );
+            })}
+
+            {ADMIN_TEAM_COUNTERS_DATA.map((counterObj, i, arr) => {
+              return (
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  lg={3}
+                  key={`${counterObj.title}-${i}`}
+                >
+                  <AnalyticEcommerce
+                    title={counterObj.title}
+                    count={counterObj.counts}
+                    description={counterObj.description}
+                  />
+                </Grid>
+              );
+            })}
+          </>
+        )}
+
+        {role_id === 2 &&
+          TEAM_COUNTERS_DATA.map((counterObj, i, arr) => {
+            return (
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                lg={3}
+                key={`${counterObj.title}-${i}`}
+              >
+                <AnalyticEcommerce
+                  title={counterObj.title}
+                  count={counterObj.counts}
+                  description={counterObj.description}
+                />
+              </Grid>
+            );
+          })}
 
         <Grid
           item

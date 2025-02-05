@@ -13,7 +13,6 @@ import {
   ListItemIcon,
   Toolbar,
   Tooltip,
-  Avatar,
   Menu,
   Badge,
   MenuItem,
@@ -32,7 +31,6 @@ import Diversity3Icon from "@mui/icons-material/Diversity3";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import Profile from "@/components/Profile";
@@ -95,17 +93,17 @@ export default function SideBar() {
       isVisible: true,
     },
     {
+      label: "Logs",
+      route: ROUTE.LOGS,
+      icon: <FeedIcon />,
+      isVisible: role_id === ROLE_ID_BY_NAME.ADMIN,
+    },
+    {
       label: "Task Management",
       route: ROUTE.TASK_MANAGEMENT,
       icon: <TaskIcon />,
       isVisible:
         role_id === ROLE_ID_BY_NAME.ADMIN || role_id === ROLE_ID_BY_NAME.TEAM,
-    },
-    {
-      label: "Logs",
-      route: ROUTE.TASK_MANAGEMENT,
-      icon: <FeedIcon />,
-      isVisible: role_id === ROLE_ID_BY_NAME.ADMIN,
     },
     {
       label: "User Management",
@@ -132,6 +130,7 @@ export default function SideBar() {
       <List>
         {SIDE_BAR_MENU.map((menuObj, index) => (
           <ListItem
+            onClick={() => router.push(menuObj.route)}
             key={`${menuObj?.label}-${index}`}
             disablePadding
             sx={{
@@ -142,14 +141,12 @@ export default function SideBar() {
             }}
           >
             <ListItemButton>
-              <Link href={menuObj.route} className="w-full flex">
-                <ListItemIcon
-                  sx={{ color: pathname === menuObj.route ? "white" : "black" }}
-                >
-                  {menuObj?.icon}
-                </ListItemIcon>
-                <div>{menuObj?.label}</div>
-              </Link>
+              <ListItemIcon
+                sx={{ color: pathname === menuObj.route ? "white" : "black" }}
+              >
+                {menuObj?.icon}
+              </ListItemIcon>
+              <div>{menuObj?.label}</div>
             </ListItemButton>
           </ListItem>
         ))}

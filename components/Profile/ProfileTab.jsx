@@ -9,7 +9,6 @@ import { logout } from "@/store/authSlice";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 
 // assets
 import EditOutlined from "@ant-design/icons/EditOutlined";
@@ -18,7 +17,7 @@ import LogoutOutlined from "@ant-design/icons/LogoutOutlined";
 import UserOutlined from "@ant-design/icons/UserOutlined";
 import WalletOutlined from "@ant-design/icons/WalletOutlined";
 
-import { ROUTE, ERROR_TEXT } from "@/constants";
+import { ROUTE, ERROR_TEXT, FONT_STYLES } from "@/constants";
 import { ToastMessage } from "..";
 
 const PROFILE_MENU = [
@@ -59,17 +58,22 @@ export default function ProfileTab() {
   return (
     <List
       component="nav"
-      sx={{ p: 0, "& .MuiListItemIcon-root": { minWidth: 32 } }}
+      sx={{
+        p: 0,
+        "& .MuiListItemIcon-root": { minWidth: 32 },
+        paddingTop: "7px",
+        paddingBottom: "7px",
+      }}
     >
       {PROFILE_MENU.map((menuObj, i, arr) => {
         return (
           <ListItemButton
-            key={i}
+            key={`${menuObj.indentifier}-${i}`}
             selected={menuObj.indentifier === selectedMenu}
             onClick={(event) => onMenuClick(event, menuObj)}
           >
             <ListItemIcon>{menuObj.icon}</ListItemIcon>
-            <ListItemText primary={menuObj.label} />
+            <div style={{ ...FONT_STYLES }}>{menuObj.label}</div>
           </ListItemButton>
         );
       })}

@@ -35,8 +35,19 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { logout } from "@/store/authSlice";
 import ToastMessage from "@/components/ToastMessage";
-import { ERROR_TEXT } from "@/constants";
+import { ERROR_TEXT, FONT_STYLES } from "@/constants";
 import { ROUTE } from "@/constants/index";
+
+const TAB = [
+  {
+    label: "Profile",
+    icon: <UserOutlined style={{ marginBottom: 0, marginRight: "10px" }} />,
+  },
+  {
+    label: "Setting",
+    icon: <SettingOutlined style={{ marginBottom: 0, marginRight: "10px" }} />,
+  },
+];
 
 // tab panel wrapper
 function TabPanel({ children, value, index, ...other }) {
@@ -109,7 +120,7 @@ export default function Profile() {
             size="sm"
           />
           <Typography variant="subtitle1" sx={{ textTransform: "capitalize" }}>
-            <div>{userData.user.name}</div>
+            <div style={{ ...FONT_STYLES }}>{userData.user.name}</div>
           </Typography>
         </Stack>
       </ButtonBase>
@@ -161,13 +172,21 @@ export default function Profile() {
                             sx={{ width: 32, height: 32 }}
                           />
                           <Stack>
-                            <Typography variant="h6" className="capitalize">
+                            <Typography
+                              variant="h6"
+                              className="capitalize"
+                              style={{ ...FONT_STYLES }}
+                            >
                               {userData.user.name}
                               <span className="text-sm font-medium ml-1">
                                 ({geTypeByRoleId(userData?.role_id)})
                               </span>
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              style={{ ...FONT_STYLES }}
+                            >
                               {userData.user.email}
                             </Typography>
                           </Stack>
@@ -202,38 +221,24 @@ export default function Profile() {
                       onChange={handleChange}
                       aria-label="profile tabs"
                     >
-                      <Tab
-                        sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          textTransform: "capitalize",
-                        }}
-                        icon={
-                          <UserOutlined
-                            style={{ marginBottom: 0, marginRight: "10px" }}
+                      {TAB.map((tab, i, arr) => {
+                        return (
+                          <Tab
+                            key={`${tab.label}-${i}`}
+                            sx={{
+                              display: "flex",
+                              flexDirection: "row",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              textTransform: "capitalize",
+                              ...FONT_STYLES,
+                            }}
+                            icon={tab.icon}
+                            label={tab.label}
+                            {...a11yProps(i)}
                           />
-                        }
-                        label="Profile"
-                        {...a11yProps(0)}
-                      />
-                      <Tab
-                        sx={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          textTransform: "capitalize",
-                        }}
-                        icon={
-                          <SettingOutlined
-                            style={{ marginBottom: 0, marginRight: "10px" }}
-                          />
-                        }
-                        label="Setting"
-                        {...a11yProps(1)}
-                      />
+                        );
+                      })}
                     </Tabs>
                   </Box>
                   <TabPanel value={value} index={0} dir={theme.direction}>

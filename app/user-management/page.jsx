@@ -159,7 +159,7 @@ const UserManagement = () => {
         handleConfirmClick={handleConfirmClick}
         buttontext={loading ? "Deleting" : "Delete"}
         user={{
-          user: selectedData,
+          user: selectedData?.username,
           userType: "Client",
         }}
       />

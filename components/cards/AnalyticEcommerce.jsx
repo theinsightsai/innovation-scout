@@ -1,66 +1,56 @@
-import PropTypes from 'prop-types';
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { DollarIcon } from "@/constants/assets";
 
-// material-ui
-import Chip from '@mui/material/Chip';
-import Grid from '@mui/material/Grid';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
+const AnimatedCounter = ({ count }) => {
+  const [displayCount, setDisplayCount] = useState(0);
 
-// project import
-import MainCard from "./Maincard"
+  useEffect(() => {
+    let start = 0;
+    const end = parseInt(count, 10);
 
-// assets
-import RiseOutlined from '@ant-design/icons/RiseOutlined';
-import FallOutlined from '@ant-design/icons/FallOutlined';
+    if (isNaN(end)) return;
 
-const iconSX = { fontSize: '0.75rem', color: 'inherit', marginLeft: 0, marginRight: 0 };
+    const duration = 2000;
+    const incrementTime = 50;
+    const totalSteps = duration / incrementTime;
+    const increment = end / totalSteps;
 
-export default function AnalyticEcommerce({ color = 'primary', title, count, percentage, isLoss, extra }) {
-    return (
-        <MainCard contentSX={{ p: 2.25 }}>
-            <Stack spacing={0.5}>
-                <Typography variant="h6" color="text.secondary">
-                    {title}
-                </Typography>
-                <Grid container alignItems="center">
-                    <Grid item>
-                        <Typography variant="h4" color="inherit">
-                            {count}
-                        </Typography>
-                    </Grid>
-                    {percentage && (
-                        <Grid item>
-                            <Chip
-                                variant="combined"
-                                color={color}
-                                icon={isLoss ? <FallOutlined style={iconSX} /> : <RiseOutlined style={iconSX} />}
-                                label={`${percentage}%`}
-                                sx={{ ml: 1.25, pl: 1 }}
-                                size="small"
-                            />
-                        </Grid>
-                    )}
-                </Grid>
-            </Stack>
-            <Box sx={{ pt: 2.25 }}>
-                <Typography variant="caption" color="text.secondary">
-                    You made an extra{' '}
-                    <Typography variant="caption" sx={{ color: `${color || 'primary'}.main` }}>
-                        {extra}
-                    </Typography>{' '}
-                    this year
-                </Typography>
-            </Box>
-        </MainCard>
-    );
-}
+    const counter = setInterval(() => {
+      start += increment;
+      if (start >= end) {
+        clearInterval(counter);
+        start = end;
+      }
+      setDisplayCount(Math.floor(start));
+    }, incrementTime);
 
-AnalyticEcommerce.propTypes = {
-    color: PropTypes.string,
-    title: PropTypes.string,
-    count: PropTypes.string,
-    percentage: PropTypes.number,
-    isLoss: PropTypes.bool,
-    extra: PropTypes.string
+    return () => clearInterval(counter);
+  }, [count]);
+
+  return (
+    <motion.span animate={{ opacity: [0, 1] }}>
+      {displayCount.toLocaleString()}
+    </motion.span>
+  );
 };
+
+const MainCard = ({ title, count, description }) => {
+  return (
+    <div className="bg-white p-4 rounded-lg shadow-lg">
+      <div className="text-gray-500 text-lg font-medium">{title}</div>
+      <div className="flex items-center text-[32px] font-bold mt-3">
+        <DollarIcon />
+        <AnimatedCounter count={count} />
+      </div>
+      <div
+        className="pt-2 text-gray-500 mt-2"
+        style={{ visibility: description === "" ? "hidden" : "visible" }}
+      >
+        {description !== "" ? description : "text help"}
+      </div>
+    </div>
+  );
+};
+
+export default MainCard;
