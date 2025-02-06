@@ -10,8 +10,9 @@ import { createData } from "@/utils";
 import { useSelector } from "react-redux";
 import ToastMessage from "@/components/ToastMessage";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 
-const TaskManagement = () => {
+const RoleManagement = () => {
   const router = useRouter();
   const role_id = useSelector((state) => state?.auth?.role_id);
 
@@ -104,22 +105,18 @@ const TaskManagement = () => {
 
   const rows = [
     {
-      taskId: "Task3457",
-      created_at: "Tue, 01 February 2025",
-      taskStatus: 1,
-      taskDesc: "Delete Client XYZ",
-    },
-    {
-      taskId: "Task1003",
+      roleId: 2,
       created_at: "Tue, 02 February 2025",
-      taskStatus: 2,
-      taskDesc: "Update the name and email for client XYZ",
+      roleStatus: 2,
+      roleDesc:
+        "Update the name and email for client XYZ – Task to modify client XYZ's personal details.",
     },
     {
-      taskId: "Task1520",
+      roleId: 3,
       created_at: "Tue, 03 February 2025",
-      taskStatus: 2,
-      taskDesc: "Update the password for client XYZ",
+      roleStatus: 1,
+      roleDesc:
+        "Update the password for client XYZ – Task to reset the password for client XYZ's account.",
     },
   ];
 
@@ -133,31 +130,32 @@ const TaskManagement = () => {
       isVisible: true,
     },
     {
-      id: "taskId",
-      label: "Task Id",
+      id: "roleId",
+      label: "Role",
       minWidth: 120,
       maxWidth: 120,
       align: "left",
       isVisible: true,
     },
+
     {
       id: "created_at",
-      label: "Assigned Date",
+      label: "Created Date",
       minWidth: 100,
       maxWidth: 100,
       align: "left",
       isVisible: true,
     },
     {
-      id: "taskStatus",
-      label: "Task Status",
+      id: "roleStatus",
+      label: "Role Status",
       minWidth: 100,
       maxWidth: 100,
       align: "left",
       isVisible: true,
     },
     {
-      id: "taskDesc",
+      id: "roleDesc",
       label: "Details",
       minWidth: 100,
       maxWidth: 100,
@@ -177,13 +175,17 @@ const TaskManagement = () => {
   return (
     <Fragment>
       <PageHeader
-        text="Task Management"
-        buttonText={role_id === ROLE_ID_BY_NAME.ADMIN ? "Assign Task" : ""}
+        text="Role Management"
+        buttonText={"Add Role"}
         onButtonClick={() =>
-          router.push(`${ROUTE.TASK_MANAGEMENT}${ROUTE.ADD}`)
+          router.push(`${ROUTE.ROLE_MANAGEMENT}${ROUTE.ADD}`)
         }
         icon={
-          <TaskAltIcon height={20} width={20} style={{ marginBottom: "4px" }} />
+          <ManageAccountsIcon
+            height={20}
+            width={20}
+            style={{ marginBottom: "4px" }}
+          />
         }
       />
       <CustomTable
@@ -204,10 +206,10 @@ const TaskManagement = () => {
         buttontext="Delete"
         user={{
           user: selectedData?.taskId,
-          userType: "Task",
+          userType: "Role",
         }}
       />
     </Fragment>
   );
 };
-export default withLayout(TaskManagement);
+export default withLayout(RoleManagement);

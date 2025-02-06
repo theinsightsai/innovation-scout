@@ -8,7 +8,13 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { Chip, Tooltip, Avatar, Typography } from "@mui/material";
-import { getTaskStatusById, getColorByTaskId } from "@/utils";
+import {
+  getTaskStatusById,
+  getColorByTaskId,
+  getRoleStatusById,
+  getRoleColorById,
+  getRoleNameById,
+} from "@/utils";
 import { FONT_STYLES } from "@/constants";
 
 const NameSection = ({ row }) => {
@@ -126,14 +132,32 @@ export default function CustomTable({
                             );
                           }
                           break;
-                        case "created_at":
-                          cellContent = row[column.id];
-                          break;
+
                         case "taskId":
                           cellContent = (
                             <div style={{ fontWeight: 600 }}>
                               {row[column.id]}
                             </div>
+                          );
+                          break;
+                        case "roleId":
+                          cellContent = (
+                            <div style={{ fontWeight: 600 }}>
+                              {getRoleNameById(row[column.id])}
+                            </div>
+                          );
+
+                          break;
+                        case "roleStatus":
+                          cellContent = (
+                            <Tooltip title={getRoleStatusById(row[column.id])}>
+                              <Chip
+                                sx={{ cursor: "pointer" }}
+                                label={getRoleStatusById(row[column.id])}
+                                color={getRoleColorById(row[column.id])}
+                                variant="outlined"
+                              />
+                            </Tooltip>
                           );
                           break;
                         case "taskStatus":
@@ -149,6 +173,7 @@ export default function CustomTable({
                           );
                           break;
                         case "taskDesc":
+                        case "roleDesc":
                           cellContent = (
                             <div className="italic">{row[column.id]}</div>
                           );
@@ -159,7 +184,7 @@ export default function CustomTable({
                           );
                           break;
                         default:
-                          break;
+                          cellContent = row[column.id];
                       }
 
                       return (

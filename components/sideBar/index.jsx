@@ -30,6 +30,7 @@ import GroupIcon from "@mui/icons-material/Group";
 import Diversity3Icon from "@mui/icons-material/Diversity3";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
@@ -118,6 +119,12 @@ export default function SideBar() {
       icon: <Diversity3Icon />,
       isVisible:
         role_id === ROLE_ID_BY_NAME.ADMIN || role_id === ROLE_ID_BY_NAME.TEAM,
+    },
+    {
+      label: "Role Management",
+      route: ROUTE.ROLE_MANAGEMENT,
+      icon: <ManageAccountsIcon />,
+      isVisible: role_id === ROLE_ID_BY_NAME.ADMIN,
     },
   ];
 

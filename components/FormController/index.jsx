@@ -5,9 +5,19 @@ import {
   IconButton,
   FormControlLabel,
   Checkbox,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import dayjs from "dayjs";
+
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
+import { FONT_STYLES } from "@/constants";
 
 const ErrorSection = ({ touched, errors, fieldName }) => {
   return (
@@ -58,7 +68,7 @@ const FormController = ({
               errors={errors}
             />
           }
-          style={{ marginTop: "2px", fontFamily: "Outfit, sans-serif" }}
+          style={{ marginTop: "2px", ...FONT_STYLES }}
         />
       )}
       {fieldObj?.component === "PASSWORD" && (
@@ -97,11 +107,12 @@ const FormController = ({
               </InputAdornment>
             ),
           }}
-          style={{ fontFamily: "Outfit, sans-serif" }}
+          style={{ ...FONT_STYLES }}
         />
       )}
       {fieldObj?.component === "LABEL_CHECK" && (
         <FormControlLabel
+          key={fieldObj?.id}
           control={
             <Checkbox
               value={values?.[fieldObj.id]}
@@ -110,6 +121,49 @@ const FormController = ({
             />
           }
           label={fieldObj?.label}
+        />
+      )}
+      {fieldObj?.component === "SELECT" && (
+        <FormControl fullWidth key={fieldObj?.id}>
+          <InputLabel id={fieldObj?.id}>{fieldObj.label}</InputLabel>
+          <Select
+            labelId={fieldObj?.id}
+            id={fieldObj?.id}
+            value={values?.[fieldObj.id]}
+            label={fieldObj.label}
+            onChange={(event) => setFieldValue(fieldObj.id, event.target.value)}
+          >
+            {fieldObj?.options.map((opt, i, arr) => {
+              return (
+                <MenuItem key={i} value={opt.value} style={{ ...FONT_STYLES }}>
+                  {opt.label}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+      )}
+      {fieldObj?.component === "DATE_PICKER" && (
+        <LocalizationProvider dateAdapter={AdapterDayjs} key={fieldObj?.id}>
+          <DatePicker
+            label={fieldObj.label}
+            id={fieldObj.id}
+            value={dayjs(values?.[fieldObj.id])}
+            onChange={(newValue) => setFieldValue(fieldObj.id, newValue)}
+          />
+        </LocalizationProvider>
+      )}
+
+      {fieldObj?.component === "TEXT_AREA" && (
+        <TextField
+          key={fieldObj?.id}
+          label={fieldObj.label}
+          multiline
+          rows={4}
+          fullWidth
+          value={values?.[fieldObj.id]}
+          onChange={(event) => setFieldValue(fieldObj.id, event.target.value)}
+          variant="outlined"
         />
       )}
     </>
