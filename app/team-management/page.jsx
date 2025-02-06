@@ -9,7 +9,7 @@ import { getApi } from "@/app/api/clientApi";
 import { API } from "@/app/api/apiConstant";
 import { createData } from "@/utils";
 import { useSelector } from "react-redux";
-import ToastMessage  from "@/components/ToastMessage"
+import ToastMessage from "@/components/ToastMessage";
 
 const TeamManagement = () => {
   const router = useRouter();
@@ -42,7 +42,7 @@ const TeamManagement = () => {
 
   const onActionClick = (event, identifier, row) => {
     if (identifier == "EDIT") {
-      alert("Edit click");
+      router.push(`${ROUTE.TEAM_MANAGEMENT}${ROUTE.EDIT}/${row?.id}`);
     } else {
       setOpenConfirmation(true);
       setSelectedData({ ...row });

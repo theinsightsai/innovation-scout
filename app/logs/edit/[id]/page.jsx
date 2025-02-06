@@ -43,7 +43,7 @@ const validationSchema = Yup.object({
     .required("Confirm password is required"),
 });
 
-const AddLogs = () => {
+const EditLogs = () => {
   const router = useRouter();
   const [postApi, setPostApi] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -138,7 +138,7 @@ const AddLogs = () => {
   return (
     <Fragment>
       <PageHeader
-        text="Add Logs"
+        text="Edit Logs"
         buttonText="Back"
         onButtonClick={() => router.back()}
         icon={
@@ -178,4 +178,4 @@ const AddLogs = () => {
     </Fragment>
   );
 };
-export default withLayout(AddLogs);
+export default withLayout(EditLogs);

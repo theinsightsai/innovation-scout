@@ -22,6 +22,7 @@ export const ROUTE = {
   TASK_MANAGEMENT: "/task-management",
   LOGS: "/logs",
   ROLE_MANAGEMENT: "/role-management",
+  EDIT: "/edit",
 };
 
 export const ERROR_TEXT = {

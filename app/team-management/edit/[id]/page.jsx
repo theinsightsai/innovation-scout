@@ -19,10 +19,10 @@ const FormController = dynamic(() => import("@/components/FormController"), {
 });
 
 const initialValues = {
-  operation: "",
-  log_date: new Date(),
-  action_performed: "",
-  details: "",
+  name: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
 };
 
 const StyledForm = styled("form")(({ theme }) => ({
@@ -43,7 +43,7 @@ const validationSchema = Yup.object({
     .required("Confirm password is required"),
 });
 
-const AddLogs = () => {
+const EditMember = () => {
   const router = useRouter();
   const [postApi, setPostApi] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -97,57 +97,19 @@ const AddLogs = () => {
     formik;
 
   const REGISTER_FORM = [
-    {
-      id: "operation",
-      label: "Operation",
-      component: "SELECT",
-      options: [
-        { label: "User Deleted", value: "user_deleted" },
-        { label: "Password Updated", value: "password_updated" },
-        { label: "Role Assigned", value: "role_assigned" },
-        { label: "User Created", value: "user_created" },
-        { label: "Email Updated", value: "email_updated" },
-        { label: "User Suspended", value: "user_suspended" },
-      ],
-    },
-    {
-      id: "log_date",
-      label: "Log Date",
-      component: "DATE_PICKER",
-    },
-    {
-      id: "action_performed",
-      label: "Action Perfomed",
-      component: "SELECT",
-      options: [
-        { label: "Jimmy", value: "jimmy" },
-        { label: "Sophia", value: "sophia" },
-        { label: "Michael", value: "michael" },
-        { label: "Rachel", value: "rachel" },
-        { label: "David", value: "david" },
-        { label: "Olivia", value: "olivia" },
-      ],
-    },
-    {
-      id: "details",
-      label: "Enter Details",
-      component: "TEXT_AREA",
-    },
+    { id: "name", label: "Name", component: "TEXT" },
+    { id: "email", label: "Email Address", component: "TEXT" },
+    { id: "password", label: "Password", component: "PASSWORD" },
+    { id: "confirmPassword", label: "Confirm Password", component: "PASSWORD" },
   ];
 
   return (
     <Fragment>
       <PageHeader
-        text="Add Logs"
+        text="Edit Team Member"
         buttonText="Back"
         onButtonClick={() => router.back()}
-        icon={
-          <ArrowBackIcon
-            height={20}
-            width={20}
-            style={{ marginBottom: "3px" }}
-          />
-        }
+        icon={<ArrowBackIcon height={20} width={20} />}
       />
       <Paper className="mt-5 min-h-[60vh] p-12 bg-white shadow-md rounded-lg">
         <StyledForm
@@ -178,4 +140,4 @@ const AddLogs = () => {
     </Fragment>
   );
 };
-export default withLayout(AddLogs);
+export default withLayout(EditMember);

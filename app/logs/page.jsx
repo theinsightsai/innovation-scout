@@ -44,7 +44,7 @@ const Logs = () => {
 
   const onActionClick = (event, identifier, row) => {
     if (identifier == "EDIT") {
-      alert("Working over this functionality");
+      router.push(`${ROUTE.LOGS}${ROUTE.EDIT}/${row?.id}`);
     } else {
       setOpenConfirmation(true);
       setSelectedData({ ...row });
@@ -106,36 +106,42 @@ const Logs = () => {
 
   const rows = [
     {
+      id: "log-123",
       logAction: "User Deleted",
       created_at: "Tue, 02 February 2025",
       actionPerfomedBy: "Jimmy",
       actionDesc: "User XYZ deleted",
     },
     {
+      id: "log-456",
       logAction: "Password Updated",
       created_at: "Tue, 03 February 2025",
       actionPerfomedBy: "Sophia",
       actionDesc: "Password updated for User ABC",
     },
     {
+      id: "log-789",
       logAction: "Role Assigned",
       created_at: "Wed, 04 February 2025",
       actionPerfomedBy: "Michael",
       actionDesc: "Assigned 'Admin' role to User DEF",
     },
     {
+      id: "log-1011",
       logAction: "User Created",
       created_at: "Thu, 05 February 2025",
       actionPerfomedBy: "Rachel",
       actionDesc: "New User GHI created with 'Client' role",
     },
     {
+      id: "log-1213",
       logAction: "Email Updated",
       created_at: "Fri, 06 February 2025",
       actionPerfomedBy: "David",
       actionDesc: "Updated email for User XYZ to newemail@example.com",
     },
     {
+      id: "log-1314",
       logAction: "User Suspended",
       created_at: "Sat, 07 February 2025",
       actionPerfomedBy: "Olivia",
@@ -222,8 +228,8 @@ const Logs = () => {
         handleConfirmClick={handleConfirmClick}
         buttontext="Delete"
         user={{
-          user: selectedData?.taskId,
-          userType: "Role",
+          user: "this Log",
+          userType: "Log",
         }}
       />
     </Fragment>

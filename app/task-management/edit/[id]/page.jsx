@@ -19,9 +19,7 @@ const FormController = dynamic(() => import("@/components/FormController"), {
 });
 
 const initialValues = {
-  operation: "",
-  log_date: new Date(),
-  action_performed: "",
+  task_status: "",
   details: "",
 };
 
@@ -43,7 +41,7 @@ const validationSchema = Yup.object({
     .required("Confirm password is required"),
 });
 
-const AddLogs = () => {
+const EditTask = () => {
   const router = useRouter();
   const [postApi, setPostApi] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -98,34 +96,12 @@ const AddLogs = () => {
 
   const REGISTER_FORM = [
     {
-      id: "operation",
-      label: "Operation",
+      id: "task_status",
+      label: "Status",
       component: "SELECT",
       options: [
-        { label: "User Deleted", value: "user_deleted" },
-        { label: "Password Updated", value: "password_updated" },
-        { label: "Role Assigned", value: "role_assigned" },
-        { label: "User Created", value: "user_created" },
-        { label: "Email Updated", value: "email_updated" },
-        { label: "User Suspended", value: "user_suspended" },
-      ],
-    },
-    {
-      id: "log_date",
-      label: "Log Date",
-      component: "DATE_PICKER",
-    },
-    {
-      id: "action_performed",
-      label: "Action Perfomed",
-      component: "SELECT",
-      options: [
-        { label: "Jimmy", value: "jimmy" },
-        { label: "Sophia", value: "sophia" },
-        { label: "Michael", value: "michael" },
-        { label: "Rachel", value: "rachel" },
-        { label: "David", value: "david" },
-        { label: "Olivia", value: "olivia" },
+        { label: "Completed", value: 2 },
+        { label: "Pending", value: 1 },
       ],
     },
     {
@@ -138,7 +114,7 @@ const AddLogs = () => {
   return (
     <Fragment>
       <PageHeader
-        text="Add Logs"
+        text="Edit Task"
         buttonText="Back"
         onButtonClick={() => router.back()}
         icon={
@@ -178,4 +154,4 @@ const AddLogs = () => {
     </Fragment>
   );
 };
-export default withLayout(AddLogs);
+export default withLayout(EditTask);

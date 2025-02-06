@@ -42,7 +42,7 @@ const TaskManagement = () => {
 
   const onActionClick = (event, identifier, row) => {
     if (identifier == "EDIT") {
-      alert("Working over this functionality");
+      router.push(`${ROUTE.TASK_MANAGEMENT}${ROUTE.EDIT}/${row?.id}`);
     } else {
       setOpenConfirmation(true);
       setSelectedData({ ...row });
@@ -104,18 +104,21 @@ const TaskManagement = () => {
 
   const rows = [
     {
+      id: "TASK123",
       taskId: "Task3457",
       created_at: "Tue, 01 February 2025",
       taskStatus: 1,
       taskDesc: "Delete Client XYZ",
     },
     {
+      id: "TASK456",
       taskId: "Task1003",
       created_at: "Tue, 02 February 2025",
       taskStatus: 2,
       taskDesc: "Update the name and email for client XYZ",
     },
     {
+      id: "TASK789",
       taskId: "Task1520",
       created_at: "Tue, 03 February 2025",
       taskStatus: 2,

@@ -114,7 +114,7 @@ const AddTask = () => {
   return (
     <Fragment>
       <PageHeader
-        text="Assign task"
+        text="Assign Task"
         buttonText="Back"
         onButtonClick={() => router.back()}
         icon={
