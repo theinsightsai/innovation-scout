@@ -17,7 +17,8 @@ const ConfirmationModal = ({
             Alert
           </div>
           <DialogContent>
-            Are you sure you want to delete{" "}
+            Are you sure you want to{" "}
+            <span style={{ textTransform: "lowercase" }}>{buttontext}</span>{" "}
             <span className="font-medium text-black">
               {user?.user} ({user?.userType})
             </span>
@@ -32,9 +33,9 @@ const ConfirmationModal = ({
             </button>
 
             <button
-              onClick={handleConfirmClick}
+              onClick={(event) => handleConfirmClick(event, buttontext)}
               className={`gap-1 flex justify-center items-center rounded-[5px] text-md font-semibold no-underline p-2 px-5 transition duration-300 ease-in-out group
-                bg-[#005B96] border-2 border-[#005B96] text-white hover:bg-white hover:text-[#005B96]`}
+                bg-[#005B96] border-2 border-[#005B96] text-white hover:bg-white hover:text-[#005B96] capitalize`}
             >
               {buttontext}
             </button>

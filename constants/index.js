@@ -18,11 +18,11 @@ export const ROUTE = {
   RESULTS: "/results",
   USER_MANAGEMENT: "/user-management",
   TEAM_MANAGEMENT: "/team-management",
+  ADD_EDIT: "/add-edit",
   ADD: "/add",
   TASK_MANAGEMENT: "/task-management",
   LOGS: "/logs",
   ROLE_MANAGEMENT: "/role-management",
-  EDIT: "/edit",
 };
 
 export const ERROR_TEXT = {
@@ -127,4 +127,11 @@ export const TEAM_COUNTERS_DATA = [
 
 export const FONT_STYLES = {
   fontFamily: "Outfit, sans-serif",
+};
+
+export const ACTION_IDENTIFIER = {
+  ADD: "add",
+  EDIT: "edit",
+  CLONE: "clone",
+  DELETE: "delete",
 };

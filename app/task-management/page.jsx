@@ -42,7 +42,7 @@ const TaskManagement = () => {
 
   const onActionClick = (event, identifier, row) => {
     if (identifier == "EDIT") {
-      router.push(`${ROUTE.TASK_MANAGEMENT}${ROUTE.EDIT}/${row?.id}`);
+      router.push(`${ROUTE.TASK_MANAGEMENT}${ROUTE.ADD_EDIT}?id=${row?.id}`);
     } else {
       setOpenConfirmation(true);
       setSelectedData({ ...row });
@@ -104,25 +104,44 @@ const TaskManagement = () => {
 
   const rows = [
     {
-      id: "TASK123",
+      id: "123",
       taskId: "Task3457",
       created_at: "Tue, 01 February 2025",
       taskStatus: 1,
       taskDesc: "Delete Client XYZ",
+      taskPriority: 1, // Highest priority
     },
     {
-      id: "TASK456",
+      id: "456",
       taskId: "Task1003",
       created_at: "Tue, 02 February 2025",
       taskStatus: 2,
       taskDesc: "Update the name and email for client XYZ",
+      taskPriority: 2, // High
     },
     {
-      id: "TASK789",
+      id: "789",
       taskId: "Task1520",
       created_at: "Tue, 03 February 2025",
       taskStatus: 2,
       taskDesc: "Update the password for client XYZ",
+      taskPriority: 3, // Medium
+    },
+    {
+      id: "999",
+      taskId: "Task9999",
+      created_at: "Tue, 04 February 2025",
+      taskStatus: 1,
+      taskDesc: "Urgently reset security settings for client XYZ",
+      taskPriority: 4, // Low
+    },
+    {
+      id: "555",
+      taskId: "Task5555",
+      created_at: "Tue, 05 February 2025",
+      taskStatus: 1,
+      taskDesc: "Send a courtesy email to client XYZ",
+      taskPriority: 5, // Lowest priority
     },
   ];
 
@@ -160,6 +179,15 @@ const TaskManagement = () => {
       isVisible: true,
     },
     {
+      id: "taskPriority",
+      label: "Task Priority",
+      minWidth: 100,
+      maxWidth: 100,
+      align: "left",
+      isVisible: true,
+    },
+
+    {
       id: "taskDesc",
       label: "Details",
       minWidth: 100,
@@ -183,7 +211,7 @@ const TaskManagement = () => {
         text="Task Management"
         buttonText={role_id === ROLE_ID_BY_NAME.ADMIN ? "Assign Task" : ""}
         onButtonClick={() =>
-          router.push(`${ROUTE.TASK_MANAGEMENT}${ROUTE.ADD}`)
+          router.push(`${ROUTE.TASK_MANAGEMENT}${ROUTE.ADD_EDIT}`)
         }
         icon={
           <TaskAltIcon height={20} width={20} style={{ marginBottom: "4px" }} />

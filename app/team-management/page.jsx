@@ -4,12 +4,33 @@ import { PageHeader, CustomTable, ConfirmationModal } from "@/components";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import withLayout from "@/components/hoc/withLayout";
 import { useRouter } from "next/navigation";
-import { ROUTE, TABEL_ACTION, ROLE_ID_BY_NAME } from "@/constants";
+import { ROUTE, ROLE_ID_BY_NAME, ACTION_IDENTIFIER } from "@/constants";
 import { getApi } from "@/app/api/clientApi";
 import { API } from "@/app/api/apiConstant";
 import { createData } from "@/utils";
 import { useSelector } from "react-redux";
 import ToastMessage from "@/components/ToastMessage";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import CreateIcon from "@mui/icons-material/Create";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+const TABEL_ACTION = [
+  {
+    toolTipLabel: "Edit",
+    icon: <CreateIcon className="cursor-pointer hover:text-[#005B96]" />,
+    identifier: ACTION_IDENTIFIER.EDIT,
+  },
+  {
+    toolTipLabel: "Delete",
+    icon: <DeleteIcon className="cursor-pointer hover:text-[#005B96]" />,
+    identifier: ACTION_IDENTIFIER.DELETE,
+  },
+  {
+    toolTipLabel: "Clone",
+    icon: <FileCopyIcon className="cursor-pointer hover:text-[#005B96]" />,
+    identifier: ACTION_IDENTIFIER.CLONE,
+  },
+];
 
 const TeamManagement = () => {
   const router = useRouter();
@@ -41,35 +62,57 @@ const TeamManagement = () => {
   };
 
   const onActionClick = (event, identifier, row) => {
-    if (identifier == "EDIT") {
-      router.push(`${ROUTE.TEAM_MANAGEMENT}${ROUTE.EDIT}/${row?.id}`);
-    } else {
-      setOpenConfirmation(true);
-      setSelectedData({ ...row });
+    switch (identifier) {
+      case ACTION_IDENTIFIER.EDIT:
+        router.push(`${ROUTE.TEAM_MANAGEMENT}${ROUTE.ADD_EDIT}?id=${row?.id}`);
+
+        break;
+
+      case ACTION_IDENTIFIER.CLONE:
+      case ACTION_IDENTIFIER.DELETE:
+        setOpenConfirmation(true);
+        setSelectedData({ ...row, action: identifier });
+        break;
+
+      default:
+        ToastMessage("error", "Invalid action identifier");
+        break;
     }
   };
 
-  const handleConfirmClick = async () => {
-    try {
-      setLoading(true);
-      if (!deleteApi) {
-        ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
-        return;
-      }
-      const response = await deleteApi(
-        `${API.DELETE_USER}/${selectedData?.id}`
-      );
-      if (response?.error) {
-        ToastMessage("error", response?.message);
-      } else if (!response?.error) {
-        setRefresh(!refresh);
-        ToastMessage("success", response?.data?.message);
-      }
-    } catch (error) {
-      ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
-    } finally {
-      handleCloseModal();
-      setLoading(false);
+  const handleConfirmClick = async (event, identifier) => {
+    switch (identifier) {
+      case ACTION_IDENTIFIER.DELETE:
+        try {
+          setLoading(true);
+          if (!deleteApi) {
+            ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
+            return;
+          }
+          const response = await deleteApi(
+            `${API.DELETE_USER}/${selectedData?.id}`
+          );
+          if (response?.error) {
+            ToastMessage("error", response?.message);
+          } else {
+            setRefresh(!refresh);
+            ToastMessage("success", response?.data?.message);
+          }
+        } catch (error) {
+          ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
+        } finally {
+          handleCloseModal();
+          setLoading(false);
+        }
+        break;
+
+      case ACTION_IDENTIFIER.CLONE:
+        ToastMessage("error", "Functionality Pending");
+        break;
+
+      default:
+        ToastMessage("error", "Invalid action identifier");
+        break;
     }
   };
 
@@ -141,7 +184,7 @@ const TeamManagement = () => {
         text="Team Management"
         buttonText={role_id === ROLE_ID_BY_NAME.ADMIN ? "Add Member" : ""}
         onButtonClick={() =>
-          router.push(`${ROUTE.TEAM_MANAGEMENT}${ROUTE.ADD}`)
+          router.push(`${ROUTE.TEAM_MANAGEMENT}${ROUTE.ADD_EDIT}`)
         }
         icon={
           <PersonAddAltIcon
@@ -166,7 +209,7 @@ const TeamManagement = () => {
         open={openConfirmation}
         handleClose={handleCloseModal}
         handleConfirmClick={handleConfirmClick}
-        buttontext="Delete"
+        buttontext={selectedData?.action}
         user={{
           user: selectedData?.username,
           userType: "Team Member",

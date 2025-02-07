@@ -14,6 +14,8 @@ import {
   getRoleStatusById,
   getRoleColorById,
   getRoleNameById,
+  getPriorityIconById,
+  getPriorityById,
 } from "@/utils";
 import { FONT_STYLES } from "@/constants";
 
@@ -23,9 +25,8 @@ const NameSection = ({ row }) => {
       <Avatar
         alt={row.name}
         sx={{ marginRight: 2, textTransform: "capitalize" }}
-      >
-        {row?.username?.[0]}
-      </Avatar>
+        src={"https://picsum.photos/200/300"}
+      />
       <div>
         <Typography
           variant="body1"
@@ -72,7 +73,7 @@ export default function CustomTable({
               onActionClick(event, actionObj?.identifier, row)
             }
           >
-            {actionObj.icon}
+            <span className="ml-1"> {actionObj.icon}</span>
           </Tooltip>
         ))}
       </>
@@ -160,6 +161,18 @@ export default function CustomTable({
                             </Tooltip>
                           );
                           break;
+
+                        case "taskPriority":
+                          cellContent = (
+                            <div className="flex items-center gap-1">
+                              {getPriorityIconById(row[column.id])}
+                              <Tooltip title={getPriorityById(row[column.id])}>
+                                {getPriorityById(row[column.id])}
+                              </Tooltip>
+                            </div>
+                          );
+                          break;
+
                         case "taskStatus":
                           cellContent = (
                             <Tooltip title={getTaskStatusById(row[column.id])}>

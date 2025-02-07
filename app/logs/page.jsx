@@ -3,7 +3,7 @@ import { Fragment, useState, useEffect } from "react";
 import { PageHeader, CustomTable, ConfirmationModal } from "@/components";
 import withLayout from "@/components/hoc/withLayout";
 import { useRouter } from "next/navigation";
-import { ROUTE, TABEL_ACTION, ROLE_ID_BY_NAME } from "@/constants";
+import { ROUTE, TABEL_ACTION, ROLE_ID_BY_NAME, FONT_STYLES } from "@/constants";
 import { getApi } from "@/app/api/clientApi";
 import { API } from "@/app/api/apiConstant";
 import { createData } from "@/utils";
@@ -12,6 +12,13 @@ import ToastMessage from "@/components/ToastMessage";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import FeedIcon from "@mui/icons-material/Feed";
+import {
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+} from "@mui/material";
 
 const Logs = () => {
   const router = useRouter();
@@ -27,6 +34,10 @@ const Logs = () => {
   const [deleteApi, setDeleteApi] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const [filterValue, setFilterValue] = useState({
+    search: "",
+    action: "",
+  });
   // useEffect(() => {
   //   const loadApi = async () => {
   //     const { deleteApi } = await import("@/app/api/clientApi");
@@ -44,7 +55,7 @@ const Logs = () => {
 
   const onActionClick = (event, identifier, row) => {
     if (identifier == "EDIT") {
-      router.push(`${ROUTE.LOGS}${ROUTE.EDIT}/${row?.id}`);
+      router.push(`${ROUTE.LOGS}${ROUTE.ADD_EDIT}?id=${row?.id}`);
     } else {
       setOpenConfirmation(true);
       setSelectedData({ ...row });
@@ -106,42 +117,42 @@ const Logs = () => {
 
   const rows = [
     {
-      id: "log-123",
+      id: "123",
       logAction: "User Deleted",
       created_at: "Tue, 02 February 2025",
       actionPerfomedBy: "Jimmy",
       actionDesc: "User XYZ deleted",
     },
     {
-      id: "log-456",
+      id: "456",
       logAction: "Password Updated",
       created_at: "Tue, 03 February 2025",
       actionPerfomedBy: "Sophia",
       actionDesc: "Password updated for User ABC",
     },
     {
-      id: "log-789",
+      id: "789",
       logAction: "Role Assigned",
       created_at: "Wed, 04 February 2025",
       actionPerfomedBy: "Michael",
       actionDesc: "Assigned 'Admin' role to User DEF",
     },
     {
-      id: "log-1011",
+      id: "1011",
       logAction: "User Created",
       created_at: "Thu, 05 February 2025",
       actionPerfomedBy: "Rachel",
       actionDesc: "New User GHI created with 'Client' role",
     },
     {
-      id: "log-1213",
+      id: "1213",
       logAction: "Email Updated",
       created_at: "Fri, 06 February 2025",
       actionPerfomedBy: "David",
       actionDesc: "Updated email for User XYZ to newemail@example.com",
     },
     {
-      id: "log-1314",
+      id: "1314",
       logAction: "User Suspended",
       created_at: "Sat, 07 February 2025",
       actionPerfomedBy: "Olivia",
@@ -201,16 +212,75 @@ const Logs = () => {
     },
   ];
 
+  const OPTIONS = [
+    { label: "User Deleted", value: "user_deleted" },
+    { label: "Password Updated", value: "password_updated" },
+    { label: "Role Assigned", value: "role_assigned" },
+    { label: "User Created", value: "user_created" },
+    { label: "Email Updated", value: "email_updated" },
+    { label: "User Suspended", value: "user_suspended" },
+  ];
+
   return (
     <Fragment>
       <PageHeader
         text="Logs"
         buttonText={"Add Logs"}
-        onButtonClick={() => router.push(`${ROUTE.LOGS}${ROUTE.ADD}`)}
+        onButtonClick={() => router.push(`${ROUTE.LOGS}${ROUTE.ADD_EDIT}`)}
         icon={
           <FeedIcon height={20} width={20} style={{ marginBottom: "4px" }} />
         }
       />
+      <div className="grid grid-cols-1 mt-7 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+        <FormControl fullWidth>
+          <InputLabel id={"filter-by-action"}>Filter By Action</InputLabel>
+          <Select
+            labelId={"filter-by-action"}
+            id={"filter-by-action"}
+            value={filterValue.action}
+            label="Filter By Action"
+            onChange={(event) =>
+              setFilterValue({
+                ...filterValue,
+                action: event.target.value,
+              })
+            }
+          >
+            {OPTIONS.map((obj, i, arr) => {
+              return (
+                <MenuItem
+                  key={`${obj.value}-${i}`}
+                  value={obj.value}
+                  style={{ ...FONT_STYLES }}
+                >
+                  {obj.label}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+
+        <TextField
+          key="search"
+          variant="outlined"
+          margin="normal"
+          fullWidth
+          id="search"
+          label="Search"
+          name="search"
+          autoComplete="search"
+          onChange={(event) =>
+            setFilterValue({
+              ...filterValue,
+              search: event.target.value,
+            })
+          }
+          autoFocus
+          value={filterValue.search}
+          style={{ ...FONT_STYLES, marginTop: "0px" }}
+        />
+      </div>
+
       <CustomTable
         ACTION_MENU={TABEL_ACTION}
         onActionClick={onActionClick}

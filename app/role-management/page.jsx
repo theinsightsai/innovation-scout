@@ -43,7 +43,7 @@ const RoleManagement = () => {
 
   const onActionClick = (event, identifier, row) => {
     if (identifier == "EDIT") {
-      alert("Working over this functionality");
+      router.push(`${ROUTE.ROLE_MANAGEMENT}${ROUTE.ADD_EDIT}?id=${row?.id}`);
     } else {
       setOpenConfirmation(true);
       setSelectedData({ ...row });
@@ -105,6 +105,7 @@ const RoleManagement = () => {
 
   const rows = [
     {
+      id: 1,
       roleId: 2,
       created_at: "Tue, 02 February 2025",
       roleStatus: 2,
@@ -112,6 +113,7 @@ const RoleManagement = () => {
         "Update the name and email for client XYZ – Task to modify client XYZ's personal details.",
     },
     {
+      id: 2,
       roleId: 3,
       created_at: "Tue, 03 February 2025",
       roleStatus: 1,
@@ -178,7 +180,7 @@ const RoleManagement = () => {
         text="Role Management"
         buttonText={"Add Role"}
         onButtonClick={() =>
-          router.push(`${ROUTE.ROLE_MANAGEMENT}${ROUTE.ADD}`)
+          router.push(`${ROUTE.ROLE_MANAGEMENT}${ROUTE.ADD_EDIT}`)
         }
         icon={
           <ManageAccountsIcon

@@ -6,13 +6,13 @@ import withLayout from "@/components/hoc/withLayout";
 import { PageHeader } from "@/components";
 import { Paper } from "@mui/material";
 import * as Yup from "yup";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useFormik } from "formik";
 import { ERROR_TEXT, ROUTE } from "@/constants";
 import { API } from "@/app/api/apiConstant";
 import ToastMessage from "@/components/ToastMessage";
 import dynamic from "next/dynamic";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack"; // Import the back icon
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const FormController = dynamic(() => import("@/components/FormController"), {
   ssr: false,
@@ -31,34 +31,60 @@ const StyledForm = styled("form")(({ theme }) => ({
 }));
 
 const validationSchema = Yup.object({
-  name: Yup.string().required("Name is required"),
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Email is required"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Confirm password is required"),
+  operation: Yup.string().required("Operation is required"),
+  log_date: Yup.date().required("Log date is required"),
+  action_performed: Yup.string().required("Action performed is required"),
+  details: Yup.string().required("Details are required"),
 });
 
-const EditLogs = () => {
+const AddEditLogs = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
+  const [apiMethod, setApiMethod] = useState("POST");
   const [postApi, setPostApi] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  console.log("id==>", id);
+
   useEffect(() => {
     const loadApi = async () => {
-      const { postApi } = await import("@/app/api/clientApi");
-      setPostApi(() => postApi);
+      const { postApi, getApi, putApi } = await import("@/app/api/clientApi");
+      setPostApi(() => ({ post: postApi, get: getApi, put: putApi }));
       setLoading(false);
     };
 
     loadApi();
   }, []);
 
-  const onsubmit = async (values, { setSubmitting }) => {
+  useEffect(() => {
+    if (id) {
+      setApiMethod("PUT"); // If editing, switch to PUT method
+      fetchLogData(id);
+    }
+  }, [id]);
+
+  const fetchLogData = async (logId) => {
+    try {
+      if (!postApi?.get) return;
+      const response = await postApi.get(`${API.GET_LOGS}/${logId}`);
+
+      if (!response.error) {
+        formik.setValues({
+          operation: response.data.operation || "",
+          log_date: new Date(response.data.log_date) || new Date(),
+          action_performed: response.data.action_performed || "",
+          details: response.data.details || "",
+        });
+      } else {
+        ToastMessage("error", "Failed to load log details.");
+      }
+    } catch (error) {
+      ToastMessage("error", "Something went wrong while fetching the log.");
+    }
+  };
+
+  const onSubmit = async (values, { setSubmitting }) => {
     try {
       setSubmitting(true);
       if (!postApi) {
@@ -66,18 +92,19 @@ const EditLogs = () => {
         return;
       }
 
-      const response = await postApi(API.REGISTER, {
-        username: values?.name,
-        email: values?.email,
-        password: values?.password,
-        role_id: "2",
-      });
+      const apiEndpoint = id ? `${API.UPDATE_LOG}/${id}` : API.ADD_LOG;
+      const apiCall = id ? postApi.put : postApi.post;
+
+      const response = await apiCall(apiEndpoint, values);
 
       if (response?.error) {
         ToastMessage("error", response?.message);
-      } else if (!response?.error) {
-        router.push(ROUTE.TEAM_MANAGEMENT);
-        ToastMessage("success", ERROR_TEXT.MEMBER_ADDED);
+      } else {
+        router.push(ROUTE.LOGS);
+        ToastMessage(
+          "success",
+          id ? "Log updated successfully!" : "Log added successfully!"
+        );
       }
     } catch (error) {
       ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
@@ -89,14 +116,14 @@ const EditLogs = () => {
   const formik = useFormik({
     initialValues,
     validationSchema,
-    onSubmit: onsubmit,
-    enableReinitialize: true,
+    onSubmit,
+    enableReinitialize: true, // Ensures form updates when data is loaded
   });
 
   const { setFieldValue, values, handleSubmit, touched, errors, isSubmitting } =
     formik;
 
-  const REGISTER_FORM = [
+  const FORM_FIELDS = [
     {
       id: "operation",
       label: "Operation",
@@ -117,7 +144,7 @@ const EditLogs = () => {
     },
     {
       id: "action_performed",
-      label: "Action Perfomed",
+      label: "Action Performed By",
       component: "SELECT",
       options: [
         { label: "Jimmy", value: "jimmy" },
@@ -136,9 +163,9 @@ const EditLogs = () => {
   ];
 
   return (
-    <Fragment>
+    <div className="flex flex-col">
       <PageHeader
-        text="Edit Logs"
+        text={Boolean(id) ? "Edit Log" : "Add Log"}
         buttonText="Back"
         onButtonClick={() => router.back()}
         icon={
@@ -149,13 +176,14 @@ const EditLogs = () => {
           />
         }
       />
-      <Paper className="mt-5 min-h-[60vh] p-12 bg-white shadow-md rounded-lg">
+
+      <Paper className="flex-grow mt-5 min-h-[60vh] p-12 bg-white shadow-md rounded-lg">
         <StyledForm
           noValidate
           onSubmit={handleSubmit}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
         >
-          {REGISTER_FORM.map((fieldObj) => (
+          {FORM_FIELDS.map((fieldObj) => (
             <FormController
               key={fieldObj?.id}
               fieldObj={fieldObj}
@@ -165,17 +193,23 @@ const EditLogs = () => {
               setFieldValue={setFieldValue}
             />
           ))}
-          <div className="flex justify-end col-span-1 sm:col-span-2 lg:col-span-3 text-center mt-4">
-            <button
-              type="submit"
-              className="gap-1 flex justify-center items-center bg-[#005B96] border-2 border-[#005B96] rounded-[5px] text-white  text-lg font-semibold no-underline p-2 px-5 hover:bg-white hover:text-[#005B96] hover:border-[#005B96] transition duration-300 ease-in-out "
-            >
-              {isSubmitting ? "Submitting..." : "Submit"}
-            </button>
-          </div>
         </StyledForm>
       </Paper>
-    </Fragment>
+
+      <div className="mt-auto p-4 bg-white shadow-md w-full flex justify-end">
+        <button
+          type="submit"
+          className="gap-1 flex justify-center items-center bg-[#005B96] border-2 border-[#005B96] rounded-[5px] text-white text-lg font-semibold no-underline p-2 px-5 hover:bg-white hover:text-[#005B96] hover:border-[#005B96] transition duration-300 ease-in-out"
+        >
+          {isSubmitting
+            ? "Submitting..."
+            : Boolean(id)
+            ? "Update Log"
+            : "Add Log"}
+        </button>
+      </div>
+    </div>
   );
 };
-export default withLayout(EditLogs);
+
+export default withLayout(AddEditLogs);
