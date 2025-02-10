@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\LogHelper;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
@@ -17,44 +18,49 @@ class UserController extends Controller
     use CommonUserTrait;
     public function __construct()
     {
-        $this->middleware('PermissionCheck'); // check is admin or have permissions
+        $this->middleware('PermissionCheck')->only('updateProfile'); // check is admin or have permissions
 
     }
 
-    #--- GET USERS LISTS ---#
-    public function getUsersList($type)
+    #---- GET USER DATA ---#
+    public function getUserData($id = null)
     {
-        $users = User::where('role_id', $type)->with(['role'])->paginate(15);
-        return  ResponseHelper::SUCCESS('Users lists', $users);
+        if ($id) {
+            $user_id = $id;
+        } else {
+            $user_id = Auth::id();
+        }
+        $data = User::with(['role'])->find($user_id);
+        LogHelper::logAction(Auth::id(), 'User data fetch');
+        return  ResponseHelper::SUCCESS('User data', $data);
     }
 
-
-    public function createUser(Request $request)
+    #--- UPDATE PROFILE ----#
+    public function updateProfile(Request $request)
     {
+        $userId = $request->user_id ?? Auth::id();
         $valid = Validator::make($request->all(), [
-            'email' => 'required|email|unique:users,email',
-            'name' => ['required', 'string'],
-            'password' => 'required',
-            'role_id' => ['required', 'exists:roles,id']
+            'email' => 'nullable|email|unique:users,email,' . $userId,
+            'name' => ['nullable', 'string'],
+            'role_id' => ['nullable', 'exists:roles,id'],
         ]);
 
         if ($valid->fails()) {
             return ResponseHelper::ERROR($valid->getMessageBag()->first(), [], 400);
         }
-        try {
 
-            $user =  $this->storeUserData($request->input());
-            return ResponseHelper::SUCCESS('User created successfuly', $user, 200);
-            return ResponseHelper::ERROR('Not have access to creat users', [], 400);
+        try {
+            $userId = $request->user_id ?? Auth::id();
+            $data = $request->input();
+            if ($request->hasFile('image')) {
+                $data['image'] = $this->upload($request->image);
+            }
+            $user =  $this->storeUserData($data, $userId);
+            LogHelper::logAction(Auth::id(), 'User data updated');
+            return ResponseHelper::SUCCESS('Data updated successfuly', $user, 200);
         } catch (Exception $e) {
 
             return ResponseHelper::ERROR($this->exceptionMessage, [], 400);
         }
-    }
-
-    public function getRoleList(Request $request)
-    {
-        $data = Role::paginate(10);
-        return  ResponseHelper::SUCCESS('Users lists', $data);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AdminController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
@@ -10,8 +11,17 @@ Route::post('login', [AuthController::class, 'login']);
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('users-list/{type}', [UserController::class, 'getUsersList']);
-    Route::get('role-list', [UserController::class, 'getRoleList']);
-    Route::post('create-user', [UserController::class, 'createUser']);
+
+    Route::get('users-list/{type}', [AdminController::class, 'getUsersList']);
+    Route::get('role-list', [AdminController::class, 'getRoleList']);
+    Route::post('create-user', [AdminController::class, 'createUser']);
+    Route::post('user/delete', [AdminController::class, 'deleteUser']);
+
     Route::post('logout', [AuthController::class, 'logout']);
+    
+    Route::get('logs', [AdminController::class, 'getLogs']);
+    Route::get('logs/{id}', [AdminController::class, 'getLog']);
+
+    Route::post('profile/update', [UserController::class, 'updateProfile']);
+    Route::get('user/{id?}', [UserController::class, 'getUserData']);
 });
