@@ -74,10 +74,10 @@ const RegisterForm = () => {
       }
 
       const response = await postApi(API.REGISTER, {
-        username: values?.name,
+        name: values?.name,
         email: values?.email,
         password: values?.password,
-        role_id: "3 ",
+        role_id: "3",
       });
 
       if (response?.error) {

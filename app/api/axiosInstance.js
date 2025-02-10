@@ -2,7 +2,8 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://103.164.67.19:5000",
+  baseURL: "http://103.164.67.19:8001/api",
+  // baseURL: "https://virtualoplossing.co/samiAi-laravel/public/index.php/api",
   headers: {
     "Content-Type": "application/json",
   },

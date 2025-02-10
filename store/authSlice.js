@@ -6,7 +6,6 @@ const initialState = {
   isAuthenticated: false,
   loading: false,
   error: null,
-  permissions: null,
   role_id: null,
 };
 
@@ -22,7 +21,6 @@ const authSlice = createSlice({
       state.loading = false;
       state.user = action.payload.user;
       state.token = action.payload.token;
-      state.permissions = action.payload.permissions;
       state.role_id = action.payload.role_id;
       state.isAuthenticated = true;
     },

@@ -10,6 +10,7 @@ import { API } from "@/app/api/apiConstant";
 import ToastMessage from "@/components/ToastMessage/";
 import { useDispatch } from "react-redux";
 import { loginStart, loginSuccess, loginFailure } from "@/store/authSlice";
+import { useSelector } from "react-redux";
 
 const FilledButton = dynamic(() => import("@/components/Button/FilledButton"), {
   ssr: false,
@@ -37,6 +38,7 @@ const validationSchema = Yup.object({
 const LoginForm = () => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const state = useSelector((state) => state);
 
   const [postApi, setPostApi] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -72,12 +74,10 @@ const LoginForm = () => {
         dispatch(
           loginSuccess({
             user: {
-              name: response?.data?.username,
-              email: response?.data?.email,
+              ...response?.data?.data,
             },
-            token: response?.data?.token,
-            permissions: response?.data?.permissions,
-            role_id: response?.data?.role_id,
+            token: response?.data?.data?.token,
+            role_id: response?.data?.data?.role?.id,
           })
         );
         ToastMessage("success", response?.data?.message);
