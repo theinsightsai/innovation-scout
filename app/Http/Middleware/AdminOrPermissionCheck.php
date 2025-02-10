@@ -15,7 +15,7 @@ class AdminOrPermissionCheck
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, $permission = null): Response
     {
         if (Auth::check()) {
             if (Auth::user()->isAdmin()) {
@@ -25,9 +25,9 @@ class AdminOrPermissionCheck
                 return $next($request);
             }
 
-            abort(403);
+            return response()->json(['staus' => 400, 'message' => 'unauthorrized'], 400);
         }
-
-        return Redirect::back();
+       
+        return response()->json(['staus' => 400, 'message' => 'unauthorrized'], 400);
     }
 }

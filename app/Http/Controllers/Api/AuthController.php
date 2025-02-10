@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Traits\CommonUserTrait;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,13 +14,13 @@ use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public $exceptionMessage = 'Something went wrong';
+    use CommonUserTrait;
 
     #--- Users Registration ---#
     public function registration(Request $request)
     {
         $valid = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'name' => ['required', 'string'],
             'password' => 'required',
             'role_id' => ['required', 'exists:roles,id']
@@ -30,7 +31,7 @@ class AuthController extends Controller
         }
 
         try {
-            $user =   $this->storeUserData($request);
+            $user =   $this->storeUserData($request->input());
             if ($user) {
                 $user->token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
             }
@@ -40,17 +41,7 @@ class AuthController extends Controller
         }
     }
 
-    #--- Store User Data ---#
-    public function storeUserData(Request $request)
-    {
-        $user = new User();
-        $user->name   = $request->name;
-        $user->email  = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->role_id = $request['role_id'] ?? 3; // external users 
-        $user->save();
-        return $user;
-    }
+
 
     #--- User Login ---#
     public function login(Request $request)
@@ -65,13 +56,22 @@ class AuthController extends Controller
         }
         try {
             if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-                $user = Auth::user();
+                $user = auth()->user()->load('role');
                 $user->token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
                 return ResponseHelper::SUCCESS('User login successfuly', $user, 200);
             }
             return ResponseHelper::ERROR('Email or password not match', [], 400);
         } catch (Exception $e) {
+           
             return ResponseHelper::ERROR($this->exceptionMessage, [], 400);
         }
+    }
+
+
+    #---- LOGOUT ----#
+    public function logout(Request $request)
+    {
+        auth()->user()->tokens()->delete();
+        return ResponseHelper::SUCCESS('User logout successfuly');
     }
 }
