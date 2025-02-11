@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Log;
 use App\Models\Role;
 use App\Models\User;
+use App\Traits\CommonFunctionsTrait;
 use App\Traits\CommonUserTrait;
 use Exception;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
-    use CommonUserTrait;
+    use CommonUserTrait, CommonFunctionsTrait;
     public function __construct()
     {
         $this->middleware('PermissionCheck'); // check is admin or have permissions
@@ -24,12 +25,14 @@ class AdminController extends Controller
     }
 
     #--- GET USERS LISTS ---#
-    public function getUsersList($type)
+    public function getUsersList(Request $request)
     {
-        $users = User::where('role_id', $type)->with(['role'])->paginate(15);
-        LogHelper::logAction(Auth::id(), 'Users List fetch');
+        $type = $request->type;
+        $limit = $request->limit;
+        $users = User::where('role_id', $type)->with(['role'])->paginate($limit);
+        $data  = $this->paginateData($users);
 
-        return  ResponseHelper::SUCCESS('Users lists', $users);
+        return  ResponseHelper::SUCCESS('Users lists', $data);
     }
 
     #---- CREATE USER ----#
@@ -63,7 +66,9 @@ class AdminController extends Controller
     #---- GET ROLES LISTS ---#
     public function getRoleList(Request $request)
     {
-        $data = Role::paginate(10);
+        $limit = $request->limit;
+        $data = Role::paginate($limit);
+        $data  = $this->paginateData($data);
         LogHelper::logAction(Auth::id(), 'Roles List fetch');
         return  ResponseHelper::SUCCESS('Users lists', $data);
     }
@@ -90,7 +95,10 @@ class AdminController extends Controller
     #---- GET LOGS ----#
     public function getLogs(Request $request)
     {
-        $data = Log::paginate(15);
+        $limit = $request->limit;
+        $data = Log::paginate($limit);
+        $data  = $this->paginateData($data);
+
         return ResponseHelper::SUCCESS('logs data', $data);
     }
 
