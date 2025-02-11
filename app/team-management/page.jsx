@@ -119,29 +119,35 @@ const TeamManagement = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const role_id = "2";
-        const response = await getApi(
-          `${API.GET_USERS}?role_id=${role_id}&page=${
-            page + 1
-          }&per_page=${rowsPerPage}`
+        const response = await getApi(`${API.GET_USERS}/2`);
+
+        console.log(
+          "response?.data?.data?.data==>",
+          response?.data?.data?.data
         );
 
-        if (!response.error) {
-          const formattedData = response?.data?.data?.map((user) =>
-            createData(user.id, user.username, user.email, user.created_at)
-          );
-          setTotalCount(response?.data?.pagination?.total_items);
-          setRows(formattedData);
-        } else {
-          console.error(response.message);
-        }
+        // if (!response.error) {
+        //   const formattedData = response?.data?.data?.data?.map((user) =>
+        //     createData(
+        //       user.id,
+        //       user.name,
+        //       user.email,
+        //       user.created_at,
+        //       user.status
+        //     )
+        //   );
+        //   setTotalCount(response?.data?.data?.total);
+        //   setTableData(formattedData);
+        // } else {
+        //   console.error(response.message);
+        // }
       } catch (error) {
         console.error("An unexpected error occurred:", error);
       }
     };
 
     fetchData();
-  }, [page, rowsPerPage, refresh]);
+  }, []);
 
   const COLUMNS = [
     {

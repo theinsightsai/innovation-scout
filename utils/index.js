@@ -15,6 +15,22 @@ export const geTypeByRoleId = (roleId) => {
   }
 };
 
+export const formatDate = (date_data) => {
+  const date = new Date(date_data);
+
+  const isValidDate = !isNaN(date.getTime());
+  if (!(date instanceof Date) || isNaN(date.getTime())) {
+    return "Invalid Date";
+  }
+
+  return `${date.toLocaleString("en-US", { weekday: "short" })}, ${date
+    .getDate()
+    .toString()
+    .padStart(2, "0")} ${date.toLocaleString("en-US", {
+    month: "long",
+  })} ${date.getFullYear()}`;
+};
+
 export const createData = (id, username, email, created_at) => {
   const date = new Date(created_at);
 

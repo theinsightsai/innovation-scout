@@ -173,6 +173,21 @@ export default function CustomTable({
                           );
                           break;
 
+                        case "email_verified":
+                          cellContent = (
+                            <Tooltip
+                              title={row[column.id] ? "Completed" : "Pending"}
+                            >
+                              <Chip
+                                sx={{ cursor: "pointer" }}
+                                label={row[column.id] ? "Completed" : "Pending"}
+                                color={row[column.id] ? "success" : "error"}
+                                variant="outlined"
+                              />
+                            </Tooltip>
+                          );
+                          break;
+
                         case "taskStatus":
                           cellContent = (
                             <Tooltip title={getTaskStatusById(row[column.id])}>

@@ -1,26 +1,34 @@
 "use client";
 import { Fragment, useState, useEffect } from "react";
-import { PageHeader, CustomTable, ConfirmationModal } from "@/components";
-import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
-import withLayout from "@/components/hoc/withLayout";
 import { useRouter } from "next/navigation";
+
+// Project Import
+import withLayout from "@/components/hoc/withLayout";
+import { PageHeader, CustomTable, ConfirmationModal } from "@/components";
 import { ERROR_TEXT, ROUTE, TABEL_ACTION } from "@/constants";
 import { getApi } from "@/app/api/clientApi";
 import { API } from "@/app/api/apiConstant";
-import { createData } from "@/utils";
+import { formatDate } from "@/utils";
 import ToastMessage from "@/components/ToastMessage";
+
+// Material UI import
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 
 const UserManagement = () => {
   const router = useRouter();
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
-  const [rows, setRows] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
   const [deleteApi, setDeleteApi] = useState(null);
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
+
+  console.log("page==>", page);
+  console.log("totalCount==>", totalCount);
+  console.log("rowsPerPage==>", rowsPerPage);
 
   useEffect(() => {
     const loadApi = async () => {
@@ -70,22 +78,38 @@ const UserManagement = () => {
     }
   };
 
+  const createData = (id, username, email, created_at, status) => {
+    return {
+      id,
+      username,
+      email,
+      created_at: formatDate(created_at),
+      email_verified: status === 1 ? "Active" : "In-Active",
+    };
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const role_id = "3";
-        const response = await getApi(
-          `${API.GET_USERS}?role_id=${role_id}&page=${
-            page + 1
-          }&per_page=${rowsPerPage}`
+        const response = await getApi(`${API.GET_USERS}/3`);
+
+        console.log(
+          "response?.data?.data?.data==>",
+          response?.data?.data?.data
         );
 
         if (!response.error) {
-          const formattedData = response?.data?.data?.map((user) =>
-            createData(user.id, user.username, user.email, user.created_at)
+          const formattedData = response?.data?.data?.data?.map((user) =>
+            createData(
+              user.id,
+              user.name,
+              user.email,
+              user.created_at,
+              user.status
+            )
           );
-          setTotalCount(response?.data?.pagination?.total_items);
-          setRows(formattedData);
+          setTotalCount(response?.data?.data?.total);
+          setTableData(formattedData);
         } else {
           console.error(response.message);
         }
@@ -95,7 +119,8 @@ const UserManagement = () => {
     };
 
     fetchData();
-  }, [page, rowsPerPage, refresh]);
+  }, []);
+  // page, rowsPerPage, refresh
 
   const COLUMNS = [
     {
@@ -117,6 +142,14 @@ const UserManagement = () => {
     {
       id: "created_at",
       label: "Registered Date",
+      minWidth: 100,
+      maxWidth: 100,
+      align: "left",
+      isVisible: true,
+    },
+    {
+      id: "email_verified",
+      label: "Email Verification",
       minWidth: 100,
       maxWidth: 100,
       align: "left",
@@ -146,7 +179,7 @@ const UserManagement = () => {
         ACTION_MENU={TABEL_ACTION}
         onActionClick={onActionClick}
         columns={COLUMNS}
-        rows={rows}
+        rows={tableData}
         setPage={setPage}
         page={page}
         setRowsPerPage={setRowsPerPage}
