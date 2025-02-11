@@ -1,7 +1,7 @@
 "use client";
 import PropTypes from "prop-types";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { logout } from "@/store/authSlice";
 
@@ -19,6 +19,7 @@ import WalletOutlined from "@ant-design/icons/WalletOutlined";
 
 import { ROUTE, ERROR_TEXT, FONT_STYLES } from "@/constants";
 import { ToastMessage } from "..";
+import { API } from "@/app/api/apiConstant";
 
 const PROFILE_MENU = [
   {
@@ -42,16 +43,49 @@ const PROFILE_MENU = [
 
 export default function ProfileTab() {
   const [selectedMenu, setSelectedMenu] = useState("");
+  const [postApi, setPostApi] = useState(null);
   const dispatch = useDispatch();
   const router = useRouter();
+  const userData = useSelector((state) => state?.auth);
 
-  const onMenuClick = (event, menuObj) => {
+  const onLogoutClick = async () => {
+    try {
+      if (!postApi) {
+        ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
+        return;
+      }
+      const response = await postApi(API.LOGOUT, {
+        token: userData?.token,
+      });
+
+      if (response?.error) {
+        ToastMessage("error", response?.message);
+      } else if (!response?.error) {
+        dispatch(logout());
+        localStorage.clear();
+        router.push(ROUTE.LOGIN);
+        ToastMessage("success", response?.data?.message);
+      }
+    } catch (error) {
+      console.log("error==>", error);
+      ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    const loadApi = async () => {
+      const { postApi } = await import("@/app/api/clientApi");
+      setPostApi(() => postApi);
+    };
+
+    loadApi();
+  }, []);
+
+  const onMenuClick = async (event, menuObj) => {
     setSelectedMenu(menuObj.indentifier);
     if (menuObj.indentifier === "LOGOUT") {
-      dispatch(logout());
-      localStorage.clear();
-      router.push(ROUTE.LOGIN);
-      ToastMessage("success", ERROR_TEXT.SUCCESSFULLY_LOGOUT);
+      onLogoutClick();
     }
   };
 

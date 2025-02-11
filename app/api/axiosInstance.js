@@ -15,11 +15,10 @@ axiosInstance.interceptors.request.use(
     if (state) {
       const stringState = JSON.parse(state);
       const stringAuth = stringState.auth;
+      const value = JSON.parse(stringAuth);
 
-      const token = stringAuth?.token;
-
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+      if (value?.token) {
+        config.headers.Authorization = `Bearer ${value?.token}`;
       }
     }
     return config;

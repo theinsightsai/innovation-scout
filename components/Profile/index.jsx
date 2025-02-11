@@ -1,6 +1,6 @@
 "use client";
 import PropTypes from "prop-types";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 // material-ui
 import { useTheme } from "@mui/material/styles";
@@ -37,6 +37,7 @@ import { logout } from "@/store/authSlice";
 import ToastMessage from "@/components/ToastMessage";
 import { ERROR_TEXT, FONT_STYLES } from "@/constants";
 import { ROUTE } from "@/constants/index";
+import { API } from "@/app/api/apiConstant";
 
 const TAB = [
   {
@@ -81,6 +82,7 @@ export default function Profile() {
 
   const anchorRef = useRef(null);
   const [open, setOpen] = useState(false);
+  const [postApi, setPostApi] = useState(null);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -98,6 +100,39 @@ export default function Profile() {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const onLogoutClick = async () => {
+    try {
+      if (!postApi) {
+        ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
+        return;
+      }
+
+      const response = await postApi(API.LOGOUT, {
+        token: userData?.token,
+      });
+      if (response?.error) {
+        ToastMessage("error", response?.message);
+      } else if (!response?.error) {
+        dispatch(logout());
+        localStorage.clear();
+        router.push(ROUTE.LOGIN);
+        ToastMessage("success", response?.data?.message);
+      }
+    } catch (error) {
+      ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    const loadApi = async () => {
+      const { postApi } = await import("@/app/api/clientApi");
+      setPostApi(() => postApi);
+    };
+
+    loadApi();
+  }, []);
 
   return (
     <Box sx={{ flexShrink: 0, ml: 0.75 }}>
@@ -197,15 +232,7 @@ export default function Profile() {
                           <IconButton
                             size="large"
                             sx={{ color: "text.primary" }}
-                            onClick={() => {
-                              dispatch(logout());
-                              localStorage.clear();
-                              router.push(ROUTE.LOGIN);
-                              ToastMessage(
-                                "success",
-                                ERROR_TEXT.SUCCESSFULLY_LOGOUT
-                              );
-                            }}
+                            onClick={onLogoutClick}
                           >
                             <LogoutOutlined />
                           </IconButton>
