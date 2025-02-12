@@ -1,9 +1,9 @@
 "use client";
 import axiosInstance from "./axiosInstance";
 
-export const postApi = async (api, data) => {
+export const postApi = async (api, data, header = {}) => {
   try {
-    const response = await axiosInstance.post(api, data);
+    const response = await axiosInstance.post(api, data, { ...header });
     return {
       error: false,
       data: response.data,
@@ -17,6 +17,7 @@ export const postApi = async (api, data) => {
 };
 
 export const getApi = async (api) => {
+  console.log("api==>", api);
   try {
     const response = await axiosInstance.get(api);
     return {

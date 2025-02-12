@@ -21,15 +21,6 @@ const FormController = dynamic(() => import("@/components/FormController"), {
   ssr: false,
 });
 
-const roles = [
-  "Logs",
-  "Task Management",
-  "User Management",
-  "Team Management",
-  "Role Management",
-];
-const permissions = ["View", "Add", "Edit", "Delete"];
-
 const REGISTER_FORM = [
   { id: "name", label: "Name", component: "TEXT" },
   { id: "email", label: "Email Address", component: "TEXT" },
@@ -57,13 +48,6 @@ const initialValues = {
   confirmPassword: "",
   status: "",
   image: "",
-  permissions: {
-    Logs: { View: false, Add: false, Edit: false, Delete: false },
-    "Task Management": { View: false, Add: false, Edit: false, Delete: false },
-    "User Management": { View: false, Add: false, Edit: false, Delete: false },
-    "Team Management": { View: false, Add: false, Edit: false, Delete: false },
-    "Role Management": { View: false, Add: false, Edit: false, Delete: false },
-  },
 };
 
 const StyledForm = styled("form")(({ theme }) => ({
@@ -71,13 +55,11 @@ const StyledForm = styled("form")(({ theme }) => ({
   marginTop: theme.spacing(1),
 }));
 
-const AddEditMember = () => {
+const AddEditUser = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-  const op = searchParams.get("op");
   const isEditMode = Boolean(id);
-  const isOpMode = Boolean(op === "clone");
 
   const [postApi, setPostApi] = useState(null);
   const [getApi, setGetApi] = useState(null);
@@ -115,7 +97,6 @@ const AddEditMember = () => {
             password: data?.password || "",
             confirmPassword: data?.password || "",
             status: data?.status,
-            permissions: data.permissions || initialValues.permissions,
           });
           if (data?.image !== "") {
             setProfileImage(`${ASSEST_BASE_URL}${data?.image}`);
@@ -134,49 +115,33 @@ const AddEditMember = () => {
   const onSubmit = async (values, { setSubmitting }) => {
     try {
       setSubmitting(true);
-
       if (!postApi) {
         ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
         return;
       }
-
-      const apiUrl =
-        isEditMode && !isOpMode ? API.UPDATE_USER : API.CREATE_USER;
-
+      const apiUrl = isEditMode ? API.UPDATE_USER : API.CREATE_USER;
       const formData = new FormData();
       formData.append("name", values?.name);
       formData.append("email", values?.email);
       formData.append("password", values?.password || "");
       formData.append("status", values?.status);
-      formData.append("role_id", 2);
-
+      formData.append("role_id", 3);
       if (values.image instanceof File) {
         formData.append("image", values.image);
       }
-
-      if (isEditMode && !isOpMode) {
+      if (isEditMode) {
         formData.append("user_id", id);
       }
-
       // Define headers only if necessary
       const headers = {
         "Content-Type": "multipart/form-data",
       };
-
       const response = await postApi(apiUrl, formData, { headers });
-
       if (response?.error) {
         ToastMessage("error", response?.message);
       } else {
-        router.push(ROUTE.TEAM_MANAGEMENT);
-        ToastMessage(
-          "success",
-          isEditMode
-            ? "Member Updated"
-            : isOpMode
-            ? "Member Cloned"
-            : "Member Added"
-        );
+        router.push(ROUTE.USER_MANAGEMENT);
+        ToastMessage("success", isEditMode ? "Client Updated" : "Client Added");
       }
     } catch (error) {
       ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
@@ -193,17 +158,13 @@ const AddEditMember = () => {
     password: Yup.string()
       .min(6, "Password must be at least 6 characters")
       .when([], (values, schema) =>
-        isEditMode && !isOpMode
-          ? schema
-          : schema.required("Password is required")
+        isEditMode ? schema : schema.required("Password is required")
       ),
 
     confirmPassword: Yup.string()
       .oneOf([Yup.ref("password"), null], "Passwords must match")
       .when([], (values, schema) =>
-        isEditMode && !isOpMode
-          ? schema
-          : schema.required("Confirm Password is required")
+        isEditMode ? schema : schema.required("Confirm Password is required")
       ),
   });
 
@@ -216,13 +177,6 @@ const AddEditMember = () => {
 
   const { setFieldValue, values, handleSubmit, touched, errors, isSubmitting } =
     formik;
-
-  const handlePermissionChange = (role, permission) => {
-    setFieldValue(
-      `permissions.${role}.${permission}`,
-      !values.permissions[role][permission]
-    );
-  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -243,13 +197,7 @@ const AddEditMember = () => {
   return (
     <Fragment>
       <PageHeader
-        text={
-          isEditMode
-            ? "Edit Team Member"
-            : isOpMode
-            ? "Clone Team Member"
-            : "Add Team Member"
-        }
+        text={isEditMode ? "Edit Client" : "Add Client"}
         buttonText="Back"
         onButtonClick={() => router.back()}
         icon={<ArrowBackIcon height={20} width={20} />}
@@ -273,37 +221,7 @@ const AddEditMember = () => {
               />
             ))}
           </div>
-          <div className="flex flex-col col-span-1 sm:col-span-2 lg:col-span-3 mt-4">
-            <div className="text-4xl">Permissions</div>
-            <table className="mt-7" style={{ width: "40%" }}>
-              <thead>
-                <tr>
-                  <th className="p-3 text-start">Role</th>
-                  {permissions.map((perm) => (
-                    <th key={perm} className="p-3 text-start">
-                      {perm}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {roles.map((role) => (
-                  <tr key={role}>
-                    <td className="p-3 font-medium text-start">{role}</td>
-                    {permissions.map((perm) => (
-                      <td key={perm} className="p-3 text-start">
-                        <Checkbox
-                          color="primary"
-                          checked={values?.permissions[role][perm]}
-                          onChange={() => handlePermissionChange(role, perm)}
-                        />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+
           <div className="flex justify-end col-span-1 sm:col-span-2 lg:col-span-3 text-center mt-4">
             <button
               type="submit"
@@ -316,8 +234,6 @@ const AddEditMember = () => {
                 ? "Processing..."
                 : isEditMode
                 ? "Update"
-                : isOpMode
-                ? "Clone"
                 : "Submit"}
             </button>
           </div>
@@ -327,4 +243,4 @@ const AddEditMember = () => {
   );
 };
 
-export default withLayout(AddEditMember);
+export default withLayout(AddEditUser);

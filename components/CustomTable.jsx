@@ -40,7 +40,7 @@ const NameSection = ({ row }) => {
       <Avatar
         alt={row.name}
         sx={{ marginRight: 2, textTransform: "capitalize" }}
-        src={"https://picsum.photos/200/300"}
+        src={row.image}
       />
       <div>
         <Typography

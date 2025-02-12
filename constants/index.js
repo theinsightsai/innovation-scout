@@ -31,6 +31,7 @@ export const ERROR_TEXT = {
   API_LOAD_ERROR: "API is still loading. Please try again.",
   SOMETHING_WENT_WRONG: "Something went wrong. Please try again.",
   MEMBER_ADDED: "Team Member Added Successfully",
+  IMAGE_VALIDATION: "Only JPG, PNG, and WEBP files are allowed.",
 };
 
 export const TABEL_ACTION = [
@@ -135,3 +136,6 @@ export const ACTION_IDENTIFIER = {
   CLONE: "clone",
   DELETE: "delete",
 };
+
+export const ASSEST_BASE_URL =
+  "https://virtualoplossing.co/samiAi-laravel/storage/app/public/";

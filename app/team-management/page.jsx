@@ -6,7 +6,12 @@ import { useRouter } from "next/navigation";
 // Project import
 import { PageHeader, CustomTable, ConfirmationModal } from "@/components";
 import withLayout from "@/components/hoc/withLayout";
-import { ROUTE, ROLE_ID_BY_NAME, ACTION_IDENTIFIER } from "@/constants";
+import {
+  ROUTE,
+  ROLE_ID_BY_NAME,
+  ACTION_IDENTIFIER,
+  ASSEST_BASE_URL,
+} from "@/constants";
 import { getApi } from "@/app/api/clientApi";
 import { API } from "@/app/api/apiConstant";
 import { formatDate } from "@/utils";
@@ -17,6 +22,57 @@ import FileCopyIcon from "@mui/icons-material/FileCopy";
 import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+
+const COLUMNS = [
+  {
+    id: "sno",
+    label: "S.No",
+    minWidth: 70,
+    maxWidth: 70,
+    align: "left",
+    isVisible: true,
+  },
+  {
+    id: "name",
+    label: "Full Name",
+    minWidth: 120,
+    maxWidth: 120,
+    align: "left",
+    isVisible: true,
+  },
+  {
+    id: "created_at",
+    label: "Registered Date",
+    minWidth: 100,
+    maxWidth: 100,
+    align: "left",
+    isVisible: true,
+  },
+  {
+    id: "email_verified",
+    label: "Email Verification",
+    minWidth: 100,
+    maxWidth: 100,
+    align: "left",
+    isVisible: true,
+  },
+  {
+    id: "active_status",
+    label: "Status",
+    minWidth: 100,
+    maxWidth: 100,
+    align: "left",
+    isVisible: true,
+  },
+  {
+    id: "action",
+    label: "Action",
+    minWidth: 100,
+    maxWidth: 100,
+    align: "left",
+    isVisible: true,
+  },
+];
 
 const TABEL_ACTION = [
   {
@@ -47,13 +103,13 @@ const TeamManagement = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
   const [refresh, setRefresh] = useState(false);
-  const [deleteApi, setDeleteApi] = useState(null);
+  const [postApi, setPostApi] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadApi = async () => {
-      const { deleteApi } = await import("@/app/api/clientApi");
-      setDeleteApi(() => deleteApi);
+      const { postApi } = await import("@/app/api/clientApi");
+      setPostApi(() => postApi);
       setLoading(false);
     };
 
@@ -71,7 +127,8 @@ const TeamManagement = () => {
     email,
     created_at,
     status,
-    email_verified_at
+    email_verified_at,
+    image
   ) => {
     return {
       id,
@@ -80,6 +137,7 @@ const TeamManagement = () => {
       created_at: formatDate(created_at),
       email_verified: email_verified_at === null ? "Pending" : "Completed",
       active_status: status === 1 ? "Active" : "In-Active",
+      image: image ? `${ASSEST_BASE_URL}${image}` : null,
     };
   };
 
@@ -87,7 +145,6 @@ const TeamManagement = () => {
     switch (identifier) {
       case ACTION_IDENTIFIER.EDIT:
         router.push(`${ROUTE.TEAM_MANAGEMENT}${ROUTE.ADD_EDIT}?id=${row?.id}`);
-
         break;
 
       case ACTION_IDENTIFIER.CLONE:
@@ -107,13 +164,14 @@ const TeamManagement = () => {
       case ACTION_IDENTIFIER.DELETE:
         try {
           setLoading(true);
-          if (!deleteApi) {
+          if (!postApi) {
             ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
             return;
           }
-          const response = await deleteApi(
-            `${API.DELETE_USER}/${selectedData?.id}`
-          );
+          const response = await postApi(`${API.DELETE_USER}`, {
+            id: selectedData?.id,
+          });
+
           if (response?.error) {
             ToastMessage("error", response?.message);
           } else {
@@ -129,7 +187,10 @@ const TeamManagement = () => {
         break;
 
       case ACTION_IDENTIFIER.CLONE:
-        ToastMessage("error", "Functionality Pending");
+        router.push(
+          `${ROUTE.TEAM_MANAGEMENT}${ROUTE.ADD_EDIT}?id=${selectedData?.id}&op=clone`
+        );
+
         break;
 
       default:
@@ -141,7 +202,9 @@ const TeamManagement = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getApi(`${API.GET_USERS}/2`);
+        const response = await getApi(
+          `${API.GET_USERS}?type=2&page=${page + 1}&limit=${rowsPerPage}`
+        );
 
         if (!response.error) {
           const formattedData = response?.data?.data?.data?.map((user) =>
@@ -151,7 +214,8 @@ const TeamManagement = () => {
               user.email,
               user.created_at,
               user.status,
-              user.email_verified_at
+              user.email_verified_at,
+              user.image
             )
           );
           setTotalCount(response?.data?.data?.total);
@@ -165,58 +229,7 @@ const TeamManagement = () => {
     };
 
     fetchData();
-  }, []);
-
-  const COLUMNS = [
-    {
-      id: "sno",
-      label: "S.No",
-      minWidth: 70,
-      maxWidth: 70,
-      align: "left",
-      isVisible: true,
-    },
-    {
-      id: "name",
-      label: "Full Name",
-      minWidth: 120,
-      maxWidth: 120,
-      align: "left",
-      isVisible: true,
-    },
-    {
-      id: "created_at",
-      label: "Registered Date",
-      minWidth: 100,
-      maxWidth: 100,
-      align: "left",
-      isVisible: true,
-    },
-    {
-      id: "email_verified",
-      label: "Email Verification",
-      minWidth: 100,
-      maxWidth: 100,
-      align: "left",
-      isVisible: true,
-    },
-    {
-      id: "active_status",
-      label: "Status",
-      minWidth: 100,
-      maxWidth: 100,
-      align: "left",
-      isVisible: true,
-    },
-    {
-      id: "action",
-      label: "Action",
-      minWidth: 100,
-      maxWidth: 100,
-      align: "left",
-      isVisible: true,
-    },
-  ];
+  }, [refresh, page, rowsPerPage]);
 
   return (
     <Fragment>

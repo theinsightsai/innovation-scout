@@ -24,3 +24,4 @@ export { default as Profile } from "./Profile";
 export { default as Transitions } from "./Transitions";
 export { default as CustomTable } from "./CustomTable";
 export { default as ConfirmationModal } from "./modal/ConfirmationModal";
+export { default as ProfileUpload } from "./ProfileUpload";

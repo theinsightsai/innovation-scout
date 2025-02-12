@@ -3,22 +3,52 @@ import { Fragment, useState, useEffect } from "react";
 import { PageHeader, CustomTable, ConfirmationModal } from "@/components";
 import withLayout from "@/components/hoc/withLayout";
 import { useRouter } from "next/navigation";
-import { ROUTE, TABEL_ACTION, ROLE_ID_BY_NAME, FONT_STYLES } from "@/constants";
+import {
+  ROUTE,
+  ROLE_ID_BY_NAME,
+  FONT_STYLES,
+  ASSEST_BASE_URL,
+  ACTION_IDENTIFIER,
+} from "@/constants";
 import { getApi } from "@/app/api/clientApi";
 import { API } from "@/app/api/apiConstant";
-import { createData } from "@/utils";
+import { formatDate } from "@/utils";
 import { useSelector } from "react-redux";
 import ToastMessage from "@/components/ToastMessage";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import DeleteIcon from "@mui/icons-material/Delete";
 import FeedIcon from "@mui/icons-material/Feed";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-} from "@mui/material";
+import { TextField } from "@mui/material";
+
+export const TABEL_ACTION = [
+  {
+    toolTipLabel: "Delete",
+    icon: <DeleteIcon className="cursor-pointer hover:text-[#005B96]" />,
+    identifier: ACTION_IDENTIFIER.DELETE,
+  },
+];
+
+const createData = (
+  id,
+  action,
+  created_at,
+  updated_at,
+  ip_address,
+  name,
+  email,
+  image
+) => {
+  return {
+    id,
+    action_performed: action,
+    created_at: formatDate(created_at),
+    ip_address,
+    username: name,
+    email,
+    image: image ? `${ASSEST_BASE_URL}${image}` : null,
+  };
+};
 
 const Logs = () => {
   const router = useRouter();
@@ -26,27 +56,28 @@ const Logs = () => {
 
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
-  // const [rows, setRows] = useState([]);
   const [page, setPage] = useState(0);
+  const [tableData, setTableData] = useState([]);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
   const [refresh, setRefresh] = useState(false);
-  const [deleteApi, setDeleteApi] = useState(null);
+  const [postApi, setPostApi] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const [filterValue, setFilterValue] = useState({
     search: "",
     action: "",
   });
-  // useEffect(() => {
-  //   const loadApi = async () => {
-  //     const { deleteApi } = await import("@/app/api/clientApi");
-  //     setDeleteApi(() => deleteApi);
-  //     setLoading(false);
-  //   };
 
-  //   loadApi();
-  // }, []);
+  useEffect(() => {
+    const loadApi = async () => {
+      const { postApi } = await import("@/app/api/clientApi");
+      setPostApi(() => postApi);
+      setLoading(false);
+    };
+
+    loadApi();
+  }, []);
 
   const handleCloseModal = () => {
     setOpenConfirmation(false);
@@ -62,103 +93,70 @@ const Logs = () => {
     }
   };
 
-  const handleConfirmClick = () => {
-    alert("Working over this functionality");
-    // async
-    // try {
-    //   setLoading(true);
-    //   if (!deleteApi) {
-    //     ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
-    //     return;
-    //   }
-    //   const response = await deleteApi(
-    //     `${API.DELETE_USER}/${selectedData?.id}`
-    //   );
-    //   if (response?.error) {
-    //     ToastMessage("error", response?.message);
-    //   } else if (!response?.error) {
-    //     setRefresh(!refresh);
-    //     ToastMessage("success", response?.data?.message);
-    //   }
-    // } catch (error) {
-    //   ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
-    // } finally {
-    //   handleCloseModal();
-    //   setLoading(false);
-    // }
+  const handleConfirmClick = async () => {
+    try {
+      setLoading(true);
+      if (!postApi) {
+        ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
+        return;
+      }
+      const response = await postApi(`${API.DELETE_LOG}`, {
+        id: selectedData?.id,
+      });
+      if (response?.error) {
+        ToastMessage("error", response?.message);
+      } else if (!response?.error) {
+        setRefresh(!refresh);
+        ToastMessage("success", response?.data?.message);
+      }
+    } catch (error) {
+      ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
+    } finally {
+      handleCloseModal();
+      setLoading(false);
+    }
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const role_id = "2";
-  //       const response = await getApi(
-  //         `${API.GET_USERS}?role_id=${role_id}&page=${
-  //           page + 1
-  //         }&per_page=${rowsPerPage}`
-  //       );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getApi(
+          `${API.GET_LOGS_LIST}?limit=${rowsPerPage}&page=${page + 1}`
+        );
 
-  //       if (!response.error) {
-  //         const formattedData = response?.data?.data?.map((user) =>
-  //           createData(user.id, user.username, user.email, user.created_at)
-  //         );
-  //         setTotalCount(response?.data?.pagination?.total_items);
-  //         setRows(formattedData);
-  //       } else {
-  //         console.error(response.message);
-  //       }
-  //     } catch (error) {
-  //       console.error("An unexpected error occurred:", error);
-  //     }
-  //   };
+        if (!response.error) {
+          const {
+            data: {
+              data: { data },
+            },
+          } = response;
+          // console.log("data==>", data);
+          const formattedData = data?.map((user) =>
+            createData(
+              user.id,
+              user.action,
+              user.created_at,
+              user.updated_at,
+              user.ip_address,
+              user.user.name,
+              user.user.email,
+              user.user.image
+            )
+          );
+          setTotalCount(response?.data?.data?.total);
+          setTableData(formattedData);
+        } else {
+          ToastMessage("error", response.message);
+        }
+      } catch (error) {
+        console.error("An unexpected error occurred:", error);
+      }
+    };
 
-  //   fetchData();
-  // }, [page, rowsPerPage, refresh]);
+    fetchData();
+  }, [refresh, page, rowsPerPage]);
 
-  const rows = [
-    {
-      id: "123",
-      logAction: "User Deleted",
-      created_at: "Tue, 02 February 2025",
-      actionPerfomedBy: "Jimmy",
-      actionDesc: "User XYZ deleted",
-    },
-    {
-      id: "456",
-      logAction: "Password Updated",
-      created_at: "Tue, 03 February 2025",
-      actionPerfomedBy: "Sophia",
-      actionDesc: "Password updated for User ABC",
-    },
-    {
-      id: "789",
-      logAction: "Role Assigned",
-      created_at: "Wed, 04 February 2025",
-      actionPerfomedBy: "Michael",
-      actionDesc: "Assigned 'Admin' role to User DEF",
-    },
-    {
-      id: "1011",
-      logAction: "User Created",
-      created_at: "Thu, 05 February 2025",
-      actionPerfomedBy: "Rachel",
-      actionDesc: "New User GHI created with 'Client' role",
-    },
-    {
-      id: "1213",
-      logAction: "Email Updated",
-      created_at: "Fri, 06 February 2025",
-      actionPerfomedBy: "David",
-      actionDesc: "Updated email for User XYZ to newemail@example.com",
-    },
-    {
-      id: "1314",
-      logAction: "User Suspended",
-      created_at: "Sat, 07 February 2025",
-      actionPerfomedBy: "Olivia",
-      actionDesc: "Suspended User JKL for policy violation",
-    },
-  ];
+  console.log("tableData==>", tableData);
 
   const COLUMNS = [
     {
@@ -170,8 +168,24 @@ const Logs = () => {
       isVisible: true,
     },
     {
-      id: "logAction",
+      id: "name",
+      label: "Perfomed By",
+      minWidth: 100,
+      maxWidth: 100,
+      align: "left",
+      isVisible: true,
+    },
+    {
+      id: "action_performed",
       label: "Action",
+      minWidth: 120,
+      maxWidth: 120,
+      align: "left",
+      isVisible: true,
+    },
+    {
+      id: "ip_address",
+      label: "ip address",
       minWidth: 120,
       maxWidth: 120,
       align: "left",
@@ -186,22 +200,7 @@ const Logs = () => {
       align: "left",
       isVisible: true,
     },
-    {
-      id: "actionPerfomedBy",
-      label: "Perfomed By",
-      minWidth: 100,
-      maxWidth: 100,
-      align: "left",
-      isVisible: true,
-    },
-    {
-      id: "actionDesc",
-      label: "Details",
-      minWidth: 100,
-      maxWidth: 100,
-      align: "left",
-      isVisible: true,
-    },
+
     {
       id: "action",
       label: "Action",
@@ -212,54 +211,17 @@ const Logs = () => {
     },
   ];
 
-  const OPTIONS = [
-    { label: "User Deleted", value: "user_deleted" },
-    { label: "Password Updated", value: "password_updated" },
-    { label: "Role Assigned", value: "role_assigned" },
-    { label: "User Created", value: "user_created" },
-    { label: "Email Updated", value: "email_updated" },
-    { label: "User Suspended", value: "user_suspended" },
-  ];
-
   return (
     <Fragment>
       <PageHeader
         text="Logs"
-        buttonText={"Add Logs"}
-        onButtonClick={() => router.push(`${ROUTE.LOGS}${ROUTE.ADD_EDIT}`)}
+        buttonText={""}
+        onButtonClick={() => alert("dummy")}
         icon={
           <FeedIcon height={20} width={20} style={{ marginBottom: "4px" }} />
         }
       />
       <div className="grid grid-cols-1 mt-7 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-        <FormControl fullWidth>
-          <InputLabel id={"filter-by-action"}>Filter By Action</InputLabel>
-          <Select
-            labelId={"filter-by-action"}
-            id={"filter-by-action"}
-            value={filterValue.action}
-            label="Filter By Action"
-            onChange={(event) =>
-              setFilterValue({
-                ...filterValue,
-                action: event.target.value,
-              })
-            }
-          >
-            {OPTIONS.map((obj, i, arr) => {
-              return (
-                <MenuItem
-                  key={`${obj.value}-${i}`}
-                  value={obj.value}
-                  style={{ ...FONT_STYLES }}
-                >
-                  {obj.label}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
-
         <TextField
           key="search"
           variant="outlined"
@@ -285,7 +247,7 @@ const Logs = () => {
         ACTION_MENU={TABEL_ACTION}
         onActionClick={onActionClick}
         columns={COLUMNS}
-        rows={rows}
+        rows={tableData}
         setPage={setPage}
         page={page}
         setRowsPerPage={setRowsPerPage}
