@@ -96,7 +96,7 @@ class AdminController extends Controller
     public function getLogs(Request $request)
     {
         $limit = $request->limit;
-        $data = Log::paginate($limit);
+        $data = Log::with('user.role')->paginate($limit);
         $data  = $this->paginateData($data);
 
         return ResponseHelper::SUCCESS('logs data', $data);
@@ -106,8 +106,27 @@ class AdminController extends Controller
     public function getLog($id)
     {
         if ($id) {
-            $data = Log::find($id);
+            $data = Log::with('user.role')->find($id);
         }
         return ResponseHelper::SUCCESS('log data', $data ?? null);
+    }
+
+    #------ DELETE LOGS -----#
+    public function deleteLogs(Request $request)
+    {
+        $valid = Validator::make($request->all(), [
+            'id' => ['required', 'exists:logs,id']
+        ]);
+        if ($valid->fails()) {
+            return ResponseHelper::ERROR($valid->getMessageBag()->first(), [], 400);
+        }
+        try {
+            Log::find($request->id)->delete();
+            LogHelper::logAction(Auth::id(), 'Logs deleted');
+            return ResponseHelper::SUCCESS('Logs deleted successfuly');
+        } catch (Exception $e) {
+
+            return ResponseHelper::ERROR($this->exceptionMessage, [], 400);
+        }
     }
 }
