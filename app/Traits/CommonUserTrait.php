@@ -18,8 +18,13 @@ trait CommonUserTrait
         }
         $user->name   = $request['name'];
         $user->email  = $request['email'];
-        $user->image  = $request['image'] ?? null;
-        $user->password = Hash::make($request['password']);
+        $user->status  = $request['status'] ?? 1;
+        if(isset($request['image']) && !empty($request['image'])){
+            $user->image  = $request['image'];
+        }
+        if (isset($request['password']) && !empty($request['password'])) {
+            $user->password = Hash::make($request['password']);
+        }
         $user->role_id = $request['role_id'] ?? 3; // external users 
         $user->save();
         return $user;

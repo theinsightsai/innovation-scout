@@ -18,4 +18,12 @@ trait CommonFunctionsTrait
             'total_pages' =>  $data->total() > 0 ? ceil($data->total() / $data->perPage()) : 0
         ];
     }
+
+
+    #--- UPLOAD FILE ----#
+    public function uploadFile($file)
+    {
+        $fileName = time() . '.' . $file->getClientOriginalExtension();
+        return $file->storeAs('uploads/files', $fileName, 'public');
+    }
 }
