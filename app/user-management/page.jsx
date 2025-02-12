@@ -26,10 +26,6 @@ const UserManagement = () => {
   const [loading, setLoading] = useState(true);
   const [refresh, setRefresh] = useState(false);
 
-  console.log("page==>", page);
-  console.log("totalCount==>", totalCount);
-  console.log("rowsPerPage==>", rowsPerPage);
-
   useEffect(() => {
     const loadApi = async () => {
       const { deleteApi } = await import("@/app/api/clientApi");
@@ -92,11 +88,6 @@ const UserManagement = () => {
     const fetchData = async () => {
       try {
         const response = await getApi(`${API.GET_USERS}/3`);
-
-        console.log(
-          "response?.data?.data?.data==>",
-          response?.data?.data?.data
-        );
 
         if (!response.error) {
           const formattedData = response?.data?.data?.data?.map((user) =>

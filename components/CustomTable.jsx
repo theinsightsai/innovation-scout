@@ -19,6 +19,21 @@ import {
 } from "@/utils";
 import { FONT_STYLES } from "@/constants";
 
+const getColorByStatus = (value) => {
+  switch (value) {
+    case "Completed":
+    case "Active":
+      return "success";
+
+    case "Pending":
+    case "In-Active":
+      return "error";
+
+    default:
+      return "default"; // Handle unexpected values
+  }
+};
+
 const NameSection = ({ row }) => {
   return (
     <div className="flex items-center" style={FONT_STYLES}>
@@ -174,14 +189,13 @@ export default function CustomTable({
                           break;
 
                         case "email_verified":
+                        case "active_status":
                           cellContent = (
-                            <Tooltip
-                              title={row[column.id] ? "Completed" : "Pending"}
-                            >
+                            <Tooltip title={row[column.id]}>
                               <Chip
                                 sx={{ cursor: "pointer" }}
-                                label={row[column.id] ? "Completed" : "Pending"}
-                                color={row[column.id] ? "success" : "error"}
+                                label={row[column.id]}
+                                color={getColorByStatus(row[column.id])}
                                 variant="outlined"
                               />
                             </Tooltip>

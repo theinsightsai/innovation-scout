@@ -32,6 +32,7 @@ const initialValues = {
   email: "",
   password: "",
   confirmPassword: "",
+  status: "",
   permissions: {
     Logs: { View: false, Add: false, Edit: false, Delete: false },
     "Task Management": { View: false, Add: false, Edit: false, Delete: false },
@@ -65,38 +66,50 @@ const AddEditMember = () => {
   const isEditMode = Boolean(id); // Determine if we are in edit mode
 
   const [postApi, setPostApi] = useState(null);
+  const [getApi, setGetApi] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadApi = async () => {
       const { postApi, putApi, getApi } = await import("@/app/api/clientApi");
-      setPostApi(() => (isEditMode ? putApi : postApi)); // Use PUT for edit, POST for add
+      setPostApi(() => postApi);
+      setGetApi(() => getApi);
       setLoading(false);
     };
     loadApi();
-  }, [isEditMode]);
+  }, []);
 
   useEffect(() => {
-    if (isEditMode) {
+    if (isEditMode && getApi) {
       fetchUserData();
     }
-  }, [isEditMode]);
+  }, [isEditMode, getApi]);
 
   const fetchUserData = async () => {
+    console.log(`${API.GET_USER_BY_ID}/${id}`);
+
     try {
       setLoading(true);
-      const response = await fetch(`${API.GET_USER}/${id}`);
-      const data = await response.json();
-      if (data) {
-        formik.setValues({
-          name: data.name || "",
-          email: data.email || "",
-          password: "", // Keep empty for security
-          confirmPassword: "",
-          permissions: data.permissions || initialValues.permissions,
-        });
+      const response = await getApi(`${API.GET_USER_BY_ID}/${id}`);
+      if (!response.error) {
+        const {
+          data: { data },
+        } = response;
+        if (data) {
+          formik.setValues({
+            name: data?.name || "",
+            email: data?.email || "",
+            password: data?.password || "",
+            confirmPassword: data?.password || "",
+            status: data?.status || "",
+            permissions: data.permissions || initialValues.permissions,
+          });
+        }
+      } else {
+        ToastMessage("error", response.message);
       }
     } catch (error) {
+      console.log("error==>", error);
       ToastMessage("error", "Error fetching user data");
     } finally {
       setLoading(false);
@@ -110,16 +123,27 @@ const AddEditMember = () => {
         ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
         return;
       }
+      const apiUrl = isEditMode ? `${API.UPDATE_USER}` : API.CREATE_USER;
 
-      const apiUrl = isEditMode ? `${API.EDIT_USER}/${id}` : API.REGISTER;
-      const response = await postApi(apiUrl, {
-        username: values?.name,
+      let payload = {
+        name: values?.name,
         email: values?.email,
-        password: values?.password || undefined,
-        role_id: "2",
-        permissions: values.permissions,
-      });
+        password: values?.password || "",
+        status: values?.status,
+        role_id: 2,
+        image: "",
+      };
 
+      if (isEditMode) {
+        payload = {
+          user_id: id,
+          ...payload,
+        };
+      }
+
+      const response = await postApi(apiUrl, {
+        ...payload,
+      });
       if (response?.error) {
         ToastMessage("error", response?.message);
       } else {
@@ -143,16 +167,27 @@ const AddEditMember = () => {
   const { setFieldValue, values, handleSubmit, touched, errors, isSubmitting } =
     formik;
 
+  console.log("outer values==>", values);
+
   const REGISTER_FORM = [
     { id: "name", label: "Name", component: "TEXT" },
     { id: "email", label: "Email Address", component: "TEXT" },
-    !isEditMode && { id: "password", label: "Password", component: "PASSWORD" },
-    !isEditMode && {
+    {
+      id: "status",
+      label: "Status",
+      component: "SELECT",
+      options: [
+        { label: "Active", value: 1 },
+        { label: "In-Active", value: 0 },
+      ],
+    },
+    { id: "password", label: "Password", component: "PASSWORD" },
+    {
       id: "confirmPassword",
       label: "Confirm Password",
       component: "PASSWORD",
     },
-  ].filter(Boolean); // Remove null values
+  ];
 
   const handlePermissionChange = (role, permission) => {
     setFieldValue(
@@ -173,7 +208,7 @@ const AddEditMember = () => {
         <StyledForm
           noValidate
           onSubmit={handleSubmit}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
         >
           {REGISTER_FORM.map((fieldObj) => (
             <FormController

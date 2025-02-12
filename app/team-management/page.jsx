@@ -1,18 +1,22 @@
 "use client";
 import { Fragment, useState, useEffect } from "react";
-import { PageHeader, CustomTable, ConfirmationModal } from "@/components";
-import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
-import withLayout from "@/components/hoc/withLayout";
+import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+
+// Project import
+import { PageHeader, CustomTable, ConfirmationModal } from "@/components";
+import withLayout from "@/components/hoc/withLayout";
 import { ROUTE, ROLE_ID_BY_NAME, ACTION_IDENTIFIER } from "@/constants";
 import { getApi } from "@/app/api/clientApi";
 import { API } from "@/app/api/apiConstant";
-import { createData } from "@/utils";
-import { useSelector } from "react-redux";
+import { formatDate } from "@/utils";
 import ToastMessage from "@/components/ToastMessage";
+
+// Material UI Import
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 
 const TABEL_ACTION = [
   {
@@ -38,7 +42,7 @@ const TeamManagement = () => {
 
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
-  const [rows, setRows] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
@@ -59,6 +63,24 @@ const TeamManagement = () => {
   const handleCloseModal = () => {
     setOpenConfirmation(false);
     setSelectedData(null);
+  };
+
+  const createData = (
+    id,
+    username,
+    email,
+    created_at,
+    status,
+    email_verified_at
+  ) => {
+    return {
+      id,
+      username,
+      email,
+      created_at: formatDate(created_at),
+      email_verified: email_verified_at === null ? "Pending" : "Completed",
+      active_status: status === 1 ? "Active" : "In-Active",
+    };
   };
 
   const onActionClick = (event, identifier, row) => {
@@ -121,26 +143,22 @@ const TeamManagement = () => {
       try {
         const response = await getApi(`${API.GET_USERS}/2`);
 
-        console.log(
-          "response?.data?.data?.data==>",
-          response?.data?.data?.data
-        );
-
-        // if (!response.error) {
-        //   const formattedData = response?.data?.data?.data?.map((user) =>
-        //     createData(
-        //       user.id,
-        //       user.name,
-        //       user.email,
-        //       user.created_at,
-        //       user.status
-        //     )
-        //   );
-        //   setTotalCount(response?.data?.data?.total);
-        //   setTableData(formattedData);
-        // } else {
-        //   console.error(response.message);
-        // }
+        if (!response.error) {
+          const formattedData = response?.data?.data?.data?.map((user) =>
+            createData(
+              user.id,
+              user.name,
+              user.email,
+              user.created_at,
+              user.status,
+              user.email_verified_at
+            )
+          );
+          setTotalCount(response?.data?.data?.total);
+          setTableData(formattedData);
+        } else {
+          ToastMessage("error", response.message);
+        }
       } catch (error) {
         console.error("An unexpected error occurred:", error);
       }
@@ -175,12 +193,28 @@ const TeamManagement = () => {
       isVisible: true,
     },
     {
+      id: "email_verified",
+      label: "Email Verification",
+      minWidth: 100,
+      maxWidth: 100,
+      align: "left",
+      isVisible: true,
+    },
+    {
+      id: "active_status",
+      label: "Status",
+      minWidth: 100,
+      maxWidth: 100,
+      align: "left",
+      isVisible: true,
+    },
+    {
       id: "action",
       label: "Action",
       minWidth: 100,
       maxWidth: 100,
       align: "left",
-      isVisible: role_id === ROLE_ID_BY_NAME.ADMIN,
+      isVisible: true,
     },
   ];
 
@@ -204,7 +238,7 @@ const TeamManagement = () => {
         ACTION_MENU={TABEL_ACTION}
         onActionClick={onActionClick}
         columns={COLUMNS}
-        rows={rows}
+        rows={tableData}
         setPage={setPage}
         page={page}
         setRowsPerPage={setRowsPerPage}
