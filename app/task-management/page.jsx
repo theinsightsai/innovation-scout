@@ -3,13 +3,42 @@ import { Fragment, useState, useEffect } from "react";
 import { PageHeader, CustomTable, ConfirmationModal } from "@/components";
 import withLayout from "@/components/hoc/withLayout";
 import { useRouter } from "next/navigation";
-import { ROUTE, TABEL_ACTION, ROLE_ID_BY_NAME } from "@/constants";
+import {
+  ROUTE,
+  TABEL_ACTION,
+  ROLE_ID_BY_NAME,
+  ASSEST_BASE_URL,
+} from "@/constants";
 import { getApi } from "@/app/api/clientApi";
 import { API } from "@/app/api/apiConstant";
-import { createData } from "@/utils";
 import { useSelector } from "react-redux";
 import ToastMessage from "@/components/ToastMessage";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import { formatDate } from "@/utils";
+
+const createData = (
+  id,
+  username,
+  email,
+  created_at,
+  status,
+  title,
+  image,
+  priority,
+  description
+) => {
+  return {
+    id,
+    username,
+    email,
+    created_at: formatDate(created_at),
+    task_status: status,
+    image: image ? `${ASSEST_BASE_URL}${image}` : null,
+    title,
+    taskPriority: priority,
+    description,
+  };
+};
 
 const TaskManagement = () => {
   const router = useRouter();
@@ -17,23 +46,23 @@ const TaskManagement = () => {
 
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
-  // const [rows, setRows] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
   const [refresh, setRefresh] = useState(false);
-  const [deleteApi, setDeleteApi] = useState(null);
+  const [postApi, setPostApi] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   const loadApi = async () => {
-  //     const { deleteApi } = await import("@/app/api/clientApi");
-  //     setDeleteApi(() => deleteApi);
-  //     setLoading(false);
-  //   };
+  useEffect(() => {
+    const loadApi = async () => {
+      const { postApi } = await import("@/app/api/clientApi");
+      setPostApi(() => postApi);
+      setLoading(false);
+    };
 
-  //   loadApi();
-  // }, []);
+    loadApi();
+  }, []);
 
   const handleCloseModal = () => {
     setOpenConfirmation(false);
@@ -49,101 +78,64 @@ const TaskManagement = () => {
     }
   };
 
-  const handleConfirmClick = () => {
-    alert("Working over this functionality");
-    // async
-    // try {
-    //   setLoading(true);
-    //   if (!deleteApi) {
-    //     ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
-    //     return;
-    //   }
-    //   const response = await deleteApi(
-    //     `${API.DELETE_USER}/${selectedData?.id}`
-    //   );
-    //   if (response?.error) {
-    //     ToastMessage("error", response?.message);
-    //   } else if (!response?.error) {
-    //     setRefresh(!refresh);
-    //     ToastMessage("success", response?.data?.message);
-    //   }
-    // } catch (error) {
-    //   ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
-    // } finally {
-    //   handleCloseModal();
-    //   setLoading(false);
-    // }
+  const handleConfirmClick = async () => {
+    try {
+      setLoading(true);
+      if (!postApi) {
+        ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
+        return;
+      }
+      const response = await postApi(`${API.DELETE_TASK}`, {
+        id: selectedData?.id,
+      });
+      if (response?.error) {
+        ToastMessage("error", response?.message);
+      } else if (!response?.error) {
+        setRefresh(!refresh);
+        ToastMessage("success", response?.data?.message);
+      }
+    } catch (error) {
+      ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
+    } finally {
+      handleCloseModal();
+      setLoading(false);
+    }
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const role_id = "2";
-  //       const response = await getApi(
-  //         `${API.GET_USERS}?role_id=${role_id}&page=${
-  //           page + 1
-  //         }&per_page=${rowsPerPage}`
-  //       );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getApi(
+          `${API.GET_TASK_LIST}?limit=${rowsPerPage}&page=${page + 1}`
+        );
+        const taskList = response?.data?.data?.data;
 
-  //       if (!response.error) {
-  //         const formattedData = response?.data?.data?.map((user) =>
-  //           createData(user.id, user.username, user.email, user.created_at)
-  //         );
-  //         setTotalCount(response?.data?.pagination?.total_items);
-  //         setRows(formattedData);
-  //       } else {
-  //         console.error(response.message);
-  //       }
-  //     } catch (error) {
-  //       console.error("An unexpected error occurred:", error);
-  //     }
-  //   };
+        if (!response.error) {
+          const formattedData = taskList?.map((user) =>
+            createData(
+              user.id,
+              user.assign_to?.name,
+              user.assign_to?.email,
+              user.created_at,
+              user.status,
+              user.title,
+              user.assign_to?.image,
+              user.priority,
+              user.description
+            )
+          );
+          setTotalCount(response?.data?.data?.total);
+          setTableData(formattedData);
+        } else {
+          ToastMessage("error", response.message);
+        }
+      } catch (error) {
+        console.error("An unexpected error occurred:", error);
+      }
+    };
 
-  //   fetchData();
-  // }, [page, rowsPerPage, refresh]);
-
-  const rows = [
-    {
-      id: "123",
-      taskId: "Task3457",
-      created_at: "Tue, 01 February 2025",
-      taskStatus: 1,
-      taskDesc: "Delete Client XYZ",
-      taskPriority: 1, // Highest priority
-    },
-    {
-      id: "456",
-      taskId: "Task1003",
-      created_at: "Tue, 02 February 2025",
-      taskStatus: 2,
-      taskDesc: "Update the name and email for client XYZ",
-      taskPriority: 2, // High
-    },
-    {
-      id: "789",
-      taskId: "Task1520",
-      created_at: "Tue, 03 February 2025",
-      taskStatus: 2,
-      taskDesc: "Update the password for client XYZ",
-      taskPriority: 3, // Medium
-    },
-    {
-      id: "999",
-      taskId: "Task9999",
-      created_at: "Tue, 04 February 2025",
-      taskStatus: 1,
-      taskDesc: "Urgently reset security settings for client XYZ",
-      taskPriority: 4, // Low
-    },
-    {
-      id: "555",
-      taskId: "Task5555",
-      created_at: "Tue, 05 February 2025",
-      taskStatus: 1,
-      taskDesc: "Send a courtesy email to client XYZ",
-      taskPriority: 5, // Lowest priority
-    },
-  ];
+    fetchData();
+  }, [refresh, page, rowsPerPage]);
 
   const COLUMNS = [
     {
@@ -155,13 +147,30 @@ const TaskManagement = () => {
       isVisible: true,
     },
     {
-      id: "taskId",
-      label: "Task Id",
-      minWidth: 120,
-      maxWidth: 120,
+      id: "title",
+      label: "Title",
+      minWidth: 100,
+      maxWidth: 100,
       align: "left",
       isVisible: true,
     },
+    {
+      id: "name",
+      label: "Assigned to ",
+      minWidth: 100,
+      maxWidth: 100,
+      align: "left",
+      isVisible: true,
+    },
+    {
+      id: "taskPriority",
+      label: "Task Priority",
+      minWidth: 70,
+      maxWidth: 70,
+      align: "left",
+      isVisible: true,
+    },
+
     {
       id: "created_at",
       label: "Assigned Date",
@@ -171,24 +180,16 @@ const TaskManagement = () => {
       isVisible: true,
     },
     {
-      id: "taskStatus",
+      id: "task_status",
       label: "Task Status",
-      minWidth: 100,
-      maxWidth: 100,
-      align: "left",
-      isVisible: true,
-    },
-    {
-      id: "taskPriority",
-      label: "Task Priority",
-      minWidth: 100,
-      maxWidth: 100,
+      minWidth: 70,
+      maxWidth: 70,
       align: "left",
       isVisible: true,
     },
 
     {
-      id: "taskDesc",
+      id: "description",
       label: "Details",
       minWidth: 100,
       maxWidth: 100,
@@ -221,7 +222,7 @@ const TaskManagement = () => {
         ACTION_MENU={TABEL_ACTION}
         onActionClick={onActionClick}
         columns={COLUMNS}
-        rows={rows}
+        rows={tableData}
         setPage={setPage}
         page={page}
         setRowsPerPage={setRowsPerPage}

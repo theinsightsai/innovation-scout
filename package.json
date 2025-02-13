@@ -23,6 +23,7 @@
     "formik": "^2.4.6",
     "framer-motion": "^12.1.0",
     "iron-session": "^8.0.4",
+    "lodash": "^4.17.21",
     "next": "15.1.6",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",

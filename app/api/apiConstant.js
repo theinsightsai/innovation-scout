@@ -9,4 +9,9 @@ export const API = {
   UPDATE_USER: "/profile/update",
   GET_LOGS_LIST: "/logs",
   DELETE_LOG: "/logs/delete",
+  GET_TASK_LIST: "/tasks",
+  CREATE_TASK: "/task/create",
+  UPDATE_TASK: "/task/update",
+  DELETE_TASK: "/task/delete",
+  GET_TASK_BY_ID: "/task",
 };

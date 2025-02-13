@@ -9,6 +9,7 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
+  FormHelperText,
 } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -124,34 +125,30 @@ const FormController = ({
         />
       )}
       {fieldObj?.component === "SELECT" && (
-        <>
-          <>{console.log("values==>", values)}</>
-          <FormControl fullWidth key={fieldObj?.id}>
-            <InputLabel id={fieldObj?.id}>{fieldObj.label}</InputLabel>
-            <Select
-              labelId={fieldObj?.id}
-              id={fieldObj?.id}
-              value={values?.[fieldObj.id]}
-              defaultValue={values?.[fieldObj.id]}
-              label={fieldObj.label}
-              onChange={(event) =>
-                setFieldValue(fieldObj.id, event.target.value)
-              }
-            >
-              {fieldObj?.options.map((opt, i, arr) => {
-                return (
-                  <MenuItem
-                    key={i}
-                    value={opt.value}
-                    style={{ ...FONT_STYLES }}
-                  >
-                    {opt.label}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-        </>
+        <FormControl
+          fullWidth
+          key={fieldObj?.id}
+          error={!!errors?.[fieldObj.id]}
+        >
+          <InputLabel id={fieldObj?.id}>{fieldObj.label}</InputLabel>
+          <Select
+            labelId={fieldObj?.id}
+            id={fieldObj?.id}
+            value={values?.[fieldObj.id]}
+            defaultValue={values?.[fieldObj.id]}
+            label={fieldObj.label}
+            onChange={(event) => setFieldValue(fieldObj.id, event.target.value)}
+          >
+            {fieldObj?.options.map((opt, i) => (
+              <MenuItem key={i} value={opt.value} style={{ ...FONT_STYLES }}>
+                {opt.label}
+              </MenuItem>
+            ))}
+          </Select>
+          {errors?.[fieldObj.id] && (
+            <FormHelperText>{errors[fieldObj.id]}</FormHelperText>
+          )}
+        </FormControl>
       )}
       {fieldObj?.component === "DATE_PICKER" && (
         <LocalizationProvider dateAdapter={AdapterDayjs} key={fieldObj?.id}>
@@ -174,6 +171,8 @@ const FormController = ({
           value={values?.[fieldObj.id]}
           onChange={(event) => setFieldValue(fieldObj.id, event.target.value)}
           variant="outlined"
+          error={!!errors?.[fieldObj.id]}
+          helperText={errors?.[fieldObj.id] || ""}
         />
       )}
     </>

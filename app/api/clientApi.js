@@ -17,7 +17,6 @@ export const postApi = async (api, data, header = {}) => {
 };
 
 export const getApi = async (api) => {
-  console.log("api==>", api);
   try {
     const response = await axiosInstance.get(api);
     return {

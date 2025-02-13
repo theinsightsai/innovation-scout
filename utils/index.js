@@ -64,6 +64,17 @@ export const getTaskStatusById = (statusId) => {
   }
 };
 
+export const getTaskColorById = (taskId) => {
+  switch (taskId) {
+    case "pending":
+      return "error";
+    case "completed":
+      return "success";
+    default:
+      return "N/A";
+  }
+};
+
 export const getRoleStatusById = (roleId) => {
   switch (roleId) {
     case 1:
@@ -110,15 +121,15 @@ export const getRoleNameById = (roleId) => {
 
 export const getPriorityById = (priorityId) => {
   switch (priorityId) {
-    case 1:
+    case "highest":
       return "Highest";
-    case 2:
+    case "high":
       return "High";
-    case 3:
+    case "medium":
       return "Medium";
-    case 4:
+    case "low":
       return "Low";
-    case 5:
+    case "lowest":
       return "Lowest";
     default:
       return "Unknown Priority";
@@ -127,15 +138,15 @@ export const getPriorityById = (priorityId) => {
 
 export const getPriorityIconById = (priorityId) => {
   switch (priorityId) {
-    case 1:
+    case "highest":
       return <KeyboardDoubleArrowUpIcon sx={{ color: "#D04437" }} />; // Highest
-    case 2:
+    case "high":
       return <KeyboardArrowUpIcon sx={{ color: "#F79232" }} />; // High
-    case 3:
+    case "medium":
       return <MenuIcon sx={{ color: "#4A6785" }} />; // Medium
-    case 4:
+    case "low":
       return <KeyboardArrowDownIcon sx={{ color: "#65A637" }} />; // Low
-    case 5:
+    case "lowest":
       return <KeyboardDoubleArrowDownIcon sx={{ color: "#999999" }} />; // Lowest
     default:
       return "Unknown Priority";

@@ -16,6 +16,7 @@ import {
   getRoleNameById,
   getPriorityIconById,
   getPriorityById,
+  getTaskColorById,
 } from "@/utils";
 import { FONT_STYLES } from "@/constants";
 
@@ -164,6 +165,21 @@ export default function CustomTable({
                           );
 
                           break;
+                        case "task_status":
+                          cellContent = (
+                            <Tooltip title={row[column.id]}>
+                              <Chip
+                                sx={{
+                                  cursor: "pointer",
+                                  textTransform: "capitalize",
+                                }}
+                                label={row[column.id]}
+                                color={getTaskColorById(row[column.id])}
+                                variant="outlined"
+                              />
+                            </Tooltip>
+                          );
+                          break;
                         case "roleStatus":
                           cellContent = (
                             <Tooltip title={getRoleStatusById(row[column.id])}>
@@ -191,7 +207,10 @@ export default function CustomTable({
                         case "email_verified":
                         case "active_status":
                           cellContent = (
-                            <Tooltip title={row[column.id]}>
+                            <Tooltip
+                              title={row[column.id]}
+                              sx={{ textTransform: "capitalize" }}
+                            >
                               <Chip
                                 sx={{ cursor: "pointer" }}
                                 label={row[column.id]}
@@ -202,18 +221,6 @@ export default function CustomTable({
                           );
                           break;
 
-                        case "taskStatus":
-                          cellContent = (
-                            <Tooltip title={getTaskStatusById(row[column.id])}>
-                              <Chip
-                                sx={{ cursor: "pointer" }}
-                                label={getTaskStatusById(row[column.id])}
-                                color={getColorByTaskId(row[column.id])}
-                                variant="outlined"
-                              />
-                            </Tooltip>
-                          );
-                          break;
                         case "taskDesc":
                         case "roleDesc":
                           cellContent = (
