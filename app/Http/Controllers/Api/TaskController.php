@@ -30,7 +30,7 @@ class TaskController extends Controller
         $limit = $request->limit;
         $search = $request->search ?? '';
 
-        $tasks = Task::search($search)->with(['user', 'assignTo'])->paginate($limit);
+        $tasks = Task::search($search)->with(['user', 'assignTo'])->orderBy('created_at','desc')->paginate($limit);
         $data  = $this->paginateData($tasks);
         // LogHelper::logAction(Auth::id(), 'Task fetched');
 

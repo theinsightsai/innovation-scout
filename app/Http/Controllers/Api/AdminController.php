@@ -31,7 +31,7 @@ class AdminController extends Controller
         $limit = $request->limit;
         $search = $request->search ?? '';
 
-        $users = User::search($search)->where('role_id', $type)->with(['role'])->paginate($limit);
+        $users = User::search($search)->where('role_id', $type)->with(['role'])->orderBy('created_at','desc')->paginate($limit);
         $data  = $this->paginateData($users);
 
         return  ResponseHelper::SUCCESS('Users lists', $data);
@@ -69,7 +69,7 @@ class AdminController extends Controller
     public function getRoleList(Request $request)
     {
         $limit = $request->limit;
-        $data = Role::paginate($limit);
+        $data = Role::orderBy('created_at','desc')->paginate($limit);
         $data  = $this->paginateData($data);
         // LogHelper::logAction(Auth::id(), 'Roles List fetch');
         return  ResponseHelper::SUCCESS('Users lists', $data);
@@ -99,7 +99,7 @@ class AdminController extends Controller
     {
         $limit = $request->limit;
         $search = $request->search ?? '';
-        $data = Log::search($search)->with('user.role')->paginate($limit);
+        $data = Log::search($search)->with('user.role')->orderBy('created_at','desc')->paginate($limit);
         $data  = $this->paginateData($data);
 
         return ResponseHelper::SUCCESS('logs data', $data);
