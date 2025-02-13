@@ -29,9 +29,9 @@ class AdminController extends Controller
     {
         $type = $request->type;
         $limit = $request->limit;
-        $term = $request->search ?? '';
+        $search = $request->search ?? '';
 
-        $users = User::search($term)->where('role_id', $type)->with(['role'])->paginate($limit);
+        $users = User::search($search)->where('role_id', $type)->with(['role'])->paginate($limit);
         $data  = $this->paginateData($users);
 
         return  ResponseHelper::SUCCESS('Users lists', $data);
@@ -98,7 +98,8 @@ class AdminController extends Controller
     public function getLogs(Request $request)
     {
         $limit = $request->limit;
-        $data = Log::with('user.role')->paginate($limit);
+        $search = $request->search ?? '';
+        $data = Log::search($search)->with('user.role')->paginate($limit);
         $data  = $this->paginateData($data);
 
         return ResponseHelper::SUCCESS('logs data', $data);
