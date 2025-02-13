@@ -30,10 +30,15 @@ class TaskController extends Controller
         $limit = $request->limit;
         $search = $request->search ?? '';
 
-        $tasks = Task::search($search)->with(['user', 'assignTo'])->orderBy('created_at','desc')->paginate($limit);
+        $tasks = Task::search($search)
+            ->when($request->has('status'), function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->when($request->has('priority'), function ($query) use ($request) {
+                $query->where('priority', $request->priority);
+            })
+            ->with(['user', 'assignTo'])->orderBy('created_at', 'desc')->paginate($limit);
         $data  = $this->paginateData($tasks);
-        // LogHelper::logAction(Auth::id(), 'Task fetched');
-
         return  ResponseHelper::SUCCESS('Tasks lists', $data);
     }
 
@@ -179,6 +184,9 @@ class TaskController extends Controller
         try {
             $task = Task::find($request->id);
             $task->status = $request->status;
+            if($request->status === 'completed'){
+                $task->completed_at = now();
+            }
             $task->save();
 
             LogHelper::logAction(Auth::id(), 'Task status updated');
