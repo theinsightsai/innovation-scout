@@ -126,7 +126,7 @@ class AdminController extends Controller
         }
         try {
             Log::find($request->id)->delete();
-            LogHelper::logAction(Auth::id(), 'Logs deleted');
+            // LogHelper::logAction(Auth::id(), 'Logs deleted');
             return ResponseHelper::SUCCESS('Logs deleted successfuly');
         } catch (Exception $e) {
 

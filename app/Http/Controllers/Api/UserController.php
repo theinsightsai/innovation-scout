@@ -44,7 +44,7 @@ class UserController extends Controller
             'email' => 'nullable|email|unique:users,email,' . $userId,
             'name' => ['nullable', 'string'],
             'role_id' => ['nullable', 'exists:roles,id'],
-            'status' => ['required', Rule::in(0,1)]
+            'status' => ['required', Rule::in(0, 1)]
         ]);
 
         if ($valid->fails()) {
