@@ -69,7 +69,7 @@ class AdminController extends Controller
     public function getRoleList(Request $request)
     {
         $limit = $request->limit;
-        $data = Role::orderBy('created_at','desc')->paginate($limit);
+        $data = Role::orderBy('created_at', 'desc')->paginate($limit);
         $data  = $this->paginateData($data);
         // LogHelper::logAction(Auth::id(), 'Roles List fetch');
         return  ResponseHelper::SUCCESS('Users lists', $data);
@@ -99,7 +99,7 @@ class AdminController extends Controller
     {
         $limit = $request->limit;
         $search = $request->search ?? '';
-        $data = Log::search($search)->with('user.role')->orderBy('created_at','desc')->paginate($limit);
+        $data = Log::search($search)->with('user.role')->orderBy('created_at', 'desc')->paginate($limit);
         $data  = $this->paginateData($data);
 
         return ResponseHelper::SUCCESS('logs data', $data);
@@ -130,6 +130,29 @@ class AdminController extends Controller
             return ResponseHelper::SUCCESS('Logs deleted successfuly');
         } catch (Exception $e) {
 
+            return ResponseHelper::ERROR($this->exceptionMessage);
+        }
+    }
+
+
+    #----- CREATE ROLES -----#
+    public function createRole(Request $request)
+    {
+        $valid = Validator::make($request->all(), [
+            'name' => ['required', 'string', 'unique:roles,name']
+        ]);
+        if ($valid->fails()) {
+            return ResponseHelper::ERROR($valid->getMessageBag()->first());
+        }
+        try {
+            $role =  new Role();
+            $role->name = $request->name;
+            $role->slug = $request->name;
+            $role->save();
+            
+            LogHelper::logAction(Auth::id(), 'Role created');
+            return ResponseHelper::SUCCESS('Role Created successfuly');
+        } catch (Exception $e) {
             return ResponseHelper::ERROR($this->exceptionMessage);
         }
     }

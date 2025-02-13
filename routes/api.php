@@ -18,6 +18,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('role-list', [AdminController::class, 'getRoleList']);
     Route::post('create-user', [AdminController::class, 'createUser']);
     Route::post('user/delete', [AdminController::class, 'deleteUser']);
+    Route::post('role/create', [AdminController::class, 'createRole']);
 
     Route::post('logout', [AuthController::class, 'logout']);
 
@@ -32,7 +33,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('task/create', [TaskController::class, 'store']);
     Route::post('task/update', [TaskController::class, 'update']);                                                                              
     Route::get('task/{id}', [TaskController::class, 'show']);
-    Route::post('task/delete/{id}', [TaskController::class, 'delete']);
+    Route::post('task/delete', [TaskController::class, 'delete']);
     Route::post('task/update/priority', [TaskController::class, 'updatePriority']);
     Route::post('task/update/status', [TaskController::class, 'updateStatus']);
 });
