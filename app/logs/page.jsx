@@ -1,8 +1,12 @@
 "use client";
 import { Fragment, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { debounce } from "lodash";
+
+// Project import
 import { PageHeader, CustomTable, ConfirmationModal } from "@/components";
 import withLayout from "@/components/hoc/withLayout";
-import { useRouter } from "next/navigation";
 import {
   ROUTE,
   ROLE_ID_BY_NAME,
@@ -13,10 +17,9 @@ import {
 import { getApi } from "@/app/api/clientApi";
 import { API } from "@/app/api/apiConstant";
 import { formatDate } from "@/utils";
-import { useSelector } from "react-redux";
 import ToastMessage from "@/components/ToastMessage";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+
+// Material UI import
 import DeleteIcon from "@mui/icons-material/Delete";
 import FeedIcon from "@mui/icons-material/Feed";
 import { TextField } from "@mui/material";
@@ -63,11 +66,7 @@ const Logs = () => {
   const [refresh, setRefresh] = useState(false);
   const [postApi, setPostApi] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  const [filterValue, setFilterValue] = useState({
-    search: "",
-    action: "",
-  });
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const loadApi = async () => {
@@ -121,7 +120,9 @@ const Logs = () => {
     const fetchData = async () => {
       try {
         const response = await getApi(
-          `${API.GET_LOGS_LIST}?limit=${rowsPerPage}&page=${page + 1}`
+          `${API.GET_LOGS_LIST}?limit=${rowsPerPage}&page=${
+            page + 1
+          }&search=${search}`
         );
 
         if (!response.error) {
@@ -130,7 +131,6 @@ const Logs = () => {
               data: { data },
             },
           } = response;
-          // console.log("data==>", data);
           const formattedData = data?.map((user) =>
             createData(
               user.id,
@@ -154,9 +154,11 @@ const Logs = () => {
     };
 
     fetchData();
-  }, [refresh, page, rowsPerPage]);
+  }, [refresh, page, rowsPerPage, search]);
 
-  console.log("tableData==>", tableData);
+  const handleSearch = (event) => {
+    setSearch(event.target.value);
+  };
 
   const COLUMNS = [
     {
@@ -228,17 +230,12 @@ const Logs = () => {
           margin="normal"
           fullWidth
           id="search"
-          label="Search"
+          label="Search (By Action & IP Address)"
           name="search"
           autoComplete="search"
-          onChange={(event) =>
-            setFilterValue({
-              ...filterValue,
-              search: event.target.value,
-            })
-          }
+          onChange={handleSearch}
           autoFocus
-          value={filterValue.search}
+          value={search}
           style={{ ...FONT_STYLES, marginTop: "0px" }}
         />
       </div>
