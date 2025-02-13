@@ -8,6 +8,7 @@ class ResponseHelper
     {
         $response['status'] = $status;
         $response['message'] = $message;
+        $response['data'] = $data;
 
         if (!is_null($data)) {
             $response['data'] = $data;
@@ -20,6 +21,7 @@ class ResponseHelper
     {
         $response['status'] = $status;
         $response['message'] = $message;
+        $response['data'] = $data;
 
         if (!empty($data)) {
             $response['data'] = $data;

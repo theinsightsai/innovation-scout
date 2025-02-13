@@ -29,7 +29,9 @@ class AdminController extends Controller
     {
         $type = $request->type;
         $limit = $request->limit;
-        $users = User::where('role_id', $type)->with(['role'])->paginate($limit);
+        $term = $request->search ?? '';
+
+        $users = User::search($term)->where('role_id', $type)->with(['role'])->paginate($limit);
         $data  = $this->paginateData($users);
 
         return  ResponseHelper::SUCCESS('Users lists', $data);
@@ -46,7 +48,7 @@ class AdminController extends Controller
         ]);
 
         if ($valid->fails()) {
-            return ResponseHelper::ERROR($valid->getMessageBag()->first(), [], 400);
+            return ResponseHelper::ERROR($valid->getMessageBag()->first());
         }
         try {
             $data = $request->input();
@@ -56,10 +58,10 @@ class AdminController extends Controller
             $user =  $this->storeUserData($data);
             LogHelper::logAction(Auth::id(), 'Users created');
 
-            return ResponseHelper::SUCCESS('User created successfuly', $user, 200);
+            return ResponseHelper::SUCCESS('User created successfuly', $user);
         } catch (Exception $e) {
 
-            return ResponseHelper::ERROR($this->exceptionMessage, [], 400);
+            return ResponseHelper::ERROR($this->exceptionMessage);
         }
     }
 
@@ -69,7 +71,7 @@ class AdminController extends Controller
         $limit = $request->limit;
         $data = Role::paginate($limit);
         $data  = $this->paginateData($data);
-        LogHelper::logAction(Auth::id(), 'Roles List fetch');
+        // LogHelper::logAction(Auth::id(), 'Roles List fetch');
         return  ResponseHelper::SUCCESS('Users lists', $data);
     }
 
@@ -80,7 +82,7 @@ class AdminController extends Controller
             'id' => ['required', 'exists:users,id']
         ]);
         if ($valid->fails()) {
-            return ResponseHelper::ERROR($valid->getMessageBag()->first(), [], 400);
+            return ResponseHelper::ERROR($valid->getMessageBag()->first());
         }
         try {
             User::find($request->id)->delete();
@@ -88,7 +90,7 @@ class AdminController extends Controller
             return ResponseHelper::SUCCESS('User deleted successfuly');
         } catch (Exception $e) {
 
-            return ResponseHelper::ERROR($this->exceptionMessage, [], 400);
+            return ResponseHelper::ERROR($this->exceptionMessage);
         }
     }
 
@@ -105,10 +107,11 @@ class AdminController extends Controller
     #---- GET LOG ----#
     public function getLog($id)
     {
-        if ($id) {
-            $data = Log::with('user.role')->find($id);
+        $data = Log::with('user.role')->find($id);
+        if ($data) {
+            return ResponseHelper::SUCCESS('log data', $data ?? null);
         }
-        return ResponseHelper::SUCCESS('log data', $data ?? null);
+        return ResponseHelper::ERROR('Log data not found');
     }
 
     #------ DELETE LOGS -----#
@@ -118,7 +121,7 @@ class AdminController extends Controller
             'id' => ['required', 'exists:logs,id']
         ]);
         if ($valid->fails()) {
-            return ResponseHelper::ERROR($valid->getMessageBag()->first(), [], 400);
+            return ResponseHelper::ERROR($valid->getMessageBag()->first());
         }
         try {
             Log::find($request->id)->delete();
@@ -126,7 +129,7 @@ class AdminController extends Controller
             return ResponseHelper::SUCCESS('Logs deleted successfuly');
         } catch (Exception $e) {
 
-            return ResponseHelper::ERROR($this->exceptionMessage, [], 400);
+            return ResponseHelper::ERROR($this->exceptionMessage);
         }
     }
 }

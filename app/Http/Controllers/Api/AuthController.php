@@ -28,7 +28,7 @@ class AuthController extends Controller
         ]);
 
         if ($valid->fails()) {
-            return ResponseHelper::ERROR($valid->getMessageBag()->first(), [], 400);
+            return ResponseHelper::ERROR($valid->getMessageBag()->first());
         }
 
         try {
@@ -37,9 +37,9 @@ class AuthController extends Controller
                 $user->token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
             }
             LogHelper::logAction($user->id, 'User Registration');
-            return ResponseHelper::SUCCESS('User register successfuly', $user, 200);
+            return ResponseHelper::SUCCESS('User register successfuly', $user);
         } catch (Exception $e) {
-            return ResponseHelper::ERROR($this->exceptionMessage, [], 400);
+            return ResponseHelper::ERROR($this->exceptionMessage);
         }
     }
 
@@ -54,19 +54,19 @@ class AuthController extends Controller
         ]);
 
         if ($valid->fails()) {
-            return ResponseHelper::ERROR($valid->getMessageBag()->first(), [], 400);
+            return ResponseHelper::ERROR($valid->getMessageBag()->first());
         }
         try {
             if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-                $user = auth()->user()->load('role');
+                $user = Auth::user()->load('role');
                 $user->token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
                 LogHelper::logAction($user->id, 'User Login');
-                return ResponseHelper::SUCCESS('User login successfuly', $user, 200);
+                return ResponseHelper::SUCCESS('User login successfuly', $user);
             }
-            return ResponseHelper::ERROR('Email or password not match', [], 400);
+            return ResponseHelper::ERROR('Email or password not match');
         } catch (Exception $e) {
 
-            return ResponseHelper::ERROR($this->exceptionMessage, [], 400);
+            return ResponseHelper::ERROR($this->exceptionMessage);
         }
     }
 
@@ -75,7 +75,7 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         LogHelper::logAction(Auth::id(), 'User Logout');
-        auth()->user()->tokens()->delete();
+        Auth::user()->tokens()->delete();
         return ResponseHelper::SUCCESS('User logout successfuly');
     }
 }

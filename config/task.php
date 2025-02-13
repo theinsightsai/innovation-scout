@@ -8,5 +8,9 @@ return [
         'low',
         'lowest'
     ],
+    'status' => [
+        'pending',
+        'completed'
+    ]
 
 ];

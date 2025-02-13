@@ -32,7 +32,7 @@ class UserController extends Controller
             $user_id = Auth::id();
         }
         $data = User::with(['role'])->find($user_id);
-        LogHelper::logAction(Auth::id(), 'User data fetch');
+        // LogHelper::logAction(Auth::id(), 'User data fetch');
         return  ResponseHelper::SUCCESS('User data', $data);
     }
 
@@ -48,7 +48,7 @@ class UserController extends Controller
         ]);
 
         if ($valid->fails()) {
-            return ResponseHelper::ERROR($valid->getMessageBag()->first(), [], 400);
+            return ResponseHelper::ERROR($valid->getMessageBag()->first());
         }
 
         try {
@@ -59,10 +59,10 @@ class UserController extends Controller
             }
             $user =  $this->storeUserData($data, $userId);
             LogHelper::logAction(Auth::id(), 'User data updated');
-            return ResponseHelper::SUCCESS('Data updated successfuly', $user, 200);
+            return ResponseHelper::SUCCESS('Data updated successfuly', $user);
         } catch (Exception $e) {
 
-            return ResponseHelper::ERROR($this->exceptionMessage, [], 400);
+            return ResponseHelper::ERROR($this->exceptionMessage);
         }
     }
 }

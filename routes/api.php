@@ -19,7 +19,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('create-user', [AdminController::class, 'createUser']);
     Route::post('user/delete', [AdminController::class, 'deleteUser']);
 
-
     Route::post('logout', [AuthController::class, 'logout']);
 
     Route::get('logs', [AdminController::class, 'getLogs']);
@@ -29,14 +28,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('profile/update', [UserController::class, 'updateProfile']);
     Route::get('user/{id?}', [UserController::class, 'getUserData']);
 
-    
     Route::get('tasks', [TaskController::class, 'index']);
     Route::post('task/create', [TaskController::class, 'store']);
-    Route::post('task/update', [TaskController::class, 'update']);
-    Route::post('task/{id}', [TaskController::class, 'show']);
+    Route::post('task/update', [TaskController::class, 'update']);                                                                              
+    Route::get('task/{id}', [TaskController::class, 'show']);
     Route::post('task/delete/{id}', [TaskController::class, 'delete']);
     Route::post('task/update/priority', [TaskController::class, 'updatePriority']);
+    Route::post('task/update/status', [TaskController::class, 'updateStatus']);
 });
 
-
 Route::post('upload/csv', [AnalysisController::class, 'index']);
+Route::get('data', [AnalysisController::class, 'analysis']);

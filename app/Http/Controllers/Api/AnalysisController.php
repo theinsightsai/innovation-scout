@@ -41,7 +41,7 @@ class AnalysisController extends Controller
 
                 // Send data to Flask API
                 $response = Http::withHeaders([
-                    'Accept' => 'application/json',  
+                    'Accept' => 'application/json',
                 ])->post('http://127.0.0.1:5000/forecast', [
                     'data' => $data
                 ]);
@@ -50,5 +50,25 @@ class AnalysisController extends Controller
         } catch (Exception $e) {
             return response()->json(['status' => 400, 'message' => $e->getMessage()], 400);
         }
+    }
+
+
+    #---- ANALYSIS DATA USING AI AND PYTHON -----#
+    public function analysis(Request $request)
+    {
+
+        $data = [
+            "January" => [["Revenue" => 1000, "Expenses" => 800]],
+            "February" => ["Revenue" => 1200, "Expenses" => 900],
+            "March" => ["Revenue" => 1500, "Expenses" => 1000]
+        ];
+
+        $response = Http::withHeaders([
+            'Accept' => 'application/json',
+        ])->post('http://127.0.0.1:5000/data', [
+            'data' => $data,
+            'prompt' => 'profit and loss'
+        ]);
+        return $response;
     }
 }
