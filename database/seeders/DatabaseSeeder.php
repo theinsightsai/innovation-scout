@@ -14,9 +14,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+
             RoleSeeder::class,
             // PermissionSeeder::class,
             AdminUserSeeder::class,
+            // User::factory()->count(50)->create(),
+            // TaskSeeder::class
 
         ]);
     }

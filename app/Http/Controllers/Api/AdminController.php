@@ -14,7 +14,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
+
 
 class AdminController extends Controller
 {
@@ -66,15 +66,6 @@ class AdminController extends Controller
         }
     }
 
-    #---- GET ROLES LISTS ---#
-    public function getRoleList(Request $request)
-    {
-        $limit = $request->limit;
-        $data = Role::orderBy('created_at', 'desc')->paginate($limit);
-        $data  = $this->paginateData($data);
-        // LogHelper::logAction(Auth::id(), 'Roles List fetch');
-        return  ResponseHelper::SUCCESS('Users lists', $data);
-    }
 
     #---- DELTE USER ---#
     public function deleteUser(Request $request)
@@ -136,25 +127,5 @@ class AdminController extends Controller
     }
 
 
-    #----- CREATE ROLES -----#
-    public function createRole(Request $request)
-    {
-        $valid = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'unique:roles,name']
-        ]);
-        if ($valid->fails()) {
-            return ResponseHelper::ERROR($valid->getMessageBag()->first());
-        }
-        try {
-            $role =  new Role();
-            $role->name = $request->name;
-            $role->slug = Str::slug($request->name);
-            $role->save();
-
-            LogHelper::logAction(Auth::id(), 'Role created');
-            return ResponseHelper::SUCCESS('Role Created successfuly', $role);
-        } catch (Exception $e) {
-            return ResponseHelper::ERROR($this->exceptionMessage);
-        }
-    }
+    
 }

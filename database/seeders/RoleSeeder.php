@@ -13,17 +13,23 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+       
         Role::create([
             'name' => 'admin',
-            'slug' => 'admin'
+            'slug' => 'admin',
+
         ]);
         Role::create([
-            'name' => 'internal',
-            'slug' => 'internal'
+            'name' => 'team',
+            'slug' => 'team',
         ]);
         Role::create([
-            'name' => 'external',
-            'slug' => 'external'
+            'name' => 'client',
+            'slug' => 'client',
+        ]);
+        Role::create([
+            'name' => 'restrict',
+            'slug' => 'restrict'
         ]);
     }
 }
