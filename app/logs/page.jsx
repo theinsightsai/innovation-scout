@@ -2,7 +2,6 @@
 import { Fragment, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
-import { debounce } from "lodash";
 
 // Project import
 import { PageHeader, CustomTable, ConfirmationModal } from "@/components";

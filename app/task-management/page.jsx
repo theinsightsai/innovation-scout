@@ -1,20 +1,31 @@
 "use client";
 import { Fragment, useState, useEffect } from "react";
-import { PageHeader, CustomTable, ConfirmationModal } from "@/components";
-import withLayout from "@/components/hoc/withLayout";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+
+// Material UI icon
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+
+// Project import
+import {
+  PageHeader,
+  CustomTable,
+  ConfirmationModal,
+  CustomFilter,
+} from "@/components";
+import { formatDate } from "@/utils";
+import ToastMessage from "@/components/ToastMessage";
+import { API } from "@/app/api/apiConstant";
+import { getApi } from "@/app/api/clientApi";
 import {
   ROUTE,
   TABEL_ACTION,
   ROLE_ID_BY_NAME,
   ASSEST_BASE_URL,
+  TASK_STATUS_MENU_OPTIONS,
+  TASK_PRIORITY_MENU_OPTIONS,
 } from "@/constants";
-import { getApi } from "@/app/api/clientApi";
-import { API } from "@/app/api/apiConstant";
-import { useSelector } from "react-redux";
-import ToastMessage from "@/components/ToastMessage";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
-import { formatDate } from "@/utils";
+import withLayout from "@/components/hoc/withLayout";
 
 const createData = (
   id,
@@ -53,6 +64,11 @@ const TaskManagement = () => {
   const [refresh, setRefresh] = useState(false);
   const [postApi, setPostApi] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [filterValue, setFilterValue] = useState({
+    search: "",
+    status: "",
+    priority: "",
+  });
 
   useEffect(() => {
     const loadApi = async () => {
@@ -106,8 +122,11 @@ const TaskManagement = () => {
     const fetchData = async () => {
       try {
         const response = await getApi(
-          `${API.GET_TASK_LIST}?limit=${rowsPerPage}&page=${page + 1}`
+          `${API.GET_TASK_LIST}?limit=${rowsPerPage}&page=${page + 1}&status=${
+            filterValue.status
+          }&priority=${filterValue.priority}&search=${filterValue.search}`
         );
+
         const taskList = response?.data?.data?.data;
 
         if (!response.error) {
@@ -135,7 +154,7 @@ const TaskManagement = () => {
     };
 
     fetchData();
-  }, [refresh, page, rowsPerPage]);
+  }, [refresh, page, rowsPerPage, filterValue]);
 
   const COLUMNS = [
     {
@@ -206,6 +225,36 @@ const TaskManagement = () => {
     },
   ];
 
+  const FILTER_ARRAY = [
+    {
+      label: "Search By Priority",
+      id: "priority",
+      options: TASK_PRIORITY_MENU_OPTIONS,
+      component: "SELECT",
+      identifier: "PRIORITY",
+    },
+    {
+      label: "Search By Status",
+      id: "status",
+      options: TASK_STATUS_MENU_OPTIONS,
+      component: "SELECT",
+      identifier: "STATUS",
+    },
+    {
+      label: "Search By Status",
+      id: "search",
+      component: "INPUT",
+      identifier: "SEARCH",
+    },
+  ];
+
+  const handleCrossIcon = (event, fieldObjId) => {
+    setFilterValue((prev) => ({
+      ...prev,
+      [fieldObjId]: "",
+    }));
+  };
+
   return (
     <Fragment>
       <PageHeader
@@ -217,6 +266,13 @@ const TaskManagement = () => {
         icon={
           <TaskAltIcon height={20} width={20} style={{ marginBottom: "4px" }} />
         }
+      />
+
+      <CustomFilter
+        FILTER_ARRAY={FILTER_ARRAY}
+        handleCrossIcon={handleCrossIcon}
+        filterValue={filterValue}
+        setFilterValue={setFilterValue}
       />
       <CustomTable
         ACTION_MENU={TABEL_ACTION}

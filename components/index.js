@@ -25,3 +25,5 @@ export { default as Transitions } from "./Transitions";
 export { default as CustomTable } from "./CustomTable";
 export { default as ConfirmationModal } from "./modal/ConfirmationModal";
 export { default as ProfileUpload } from "./ProfileUpload";
+export { default as CustomOptions } from "./CustomOptions";
+export { default as CustomFilter } from "./CustomFilter";

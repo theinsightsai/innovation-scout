@@ -8,25 +8,21 @@ import { debounce } from "lodash";
 
 // Project Import
 import withLayout from "@/components/hoc/withLayout";
-import { PageHeader, ProfileUpload } from "@/components";
-import { ASSEST_BASE_URL, ERROR_TEXT, ROUTE } from "@/constants";
+import { PageHeader, CustomOptions } from "@/components";
+import {
+  ASSEST_BASE_URL,
+  ERROR_TEXT,
+  ROUTE,
+  TASK_PRIORITY_MENU_OPTIONS,
+} from "@/constants";
 import { API } from "@/app/api/apiConstant";
 import ToastMessage from "@/components/ToastMessage";
 import { getApi } from "@/app/api/clientApi";
-import { getPriorityIconById } from "@/utils";
 
 //Material UI import
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { styled } from "@mui/system";
-import {
-  Paper,
-  Checkbox,
-  Autocomplete,
-  TextField,
-  CircularProgress,
-  Avatar,
-} from "@mui/material";
-import { CatchingPokemonSharp } from "@mui/icons-material";
+import { Paper, Autocomplete, TextField } from "@mui/material";
 
 const FormController = dynamic(() => import("@/components/FormController"), {
   ssr: false,
@@ -56,16 +52,6 @@ const AddEditTask = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [postApi, setPostApi] = useState(null);
 
-  const CustomOptions = ({ img, label, isAvatar = false, isIcon = false }) => {
-    return (
-      <div className="flex items-center space-x-2">
-        {isAvatar && <Avatar src={img} sx={{ width: 24, height: 24 }} />}
-        {isIcon && img}
-        <span className="text-sm font-medium font-[Outfit]">{label}</span>
-      </div>
-    );
-  };
-
   const validationSchema = Yup.object({
     title: Yup.string().required("Title is required"),
     priority: Yup.string().required("Priority is required"),
@@ -82,72 +68,13 @@ const AddEditTask = () => {
       id: "priority",
       label: "Priority",
       component: "SELECT",
-      options: [
-        {
-          label: (
-            <CustomOptions
-              img={getPriorityIconById("highest")}
-              label={"Highest"}
-              isAvatar={false}
-              isIcon={true}
-            />
-          ),
-          value: "highest",
-        },
-        {
-          label: (
-            <CustomOptions
-              img={getPriorityIconById("high")}
-              label={"High"}
-              isAvatar={false}
-              isIcon={true}
-            />
-          ),
-          value: "high",
-        },
-        {
-          label: (
-            <CustomOptions
-              img={getPriorityIconById("medium")}
-              label={"medium"}
-              isAvatar={false}
-              isIcon={true}
-            />
-          ),
-          value: "medium",
-        },
-        {
-          label: (
-            <CustomOptions
-              img={getPriorityIconById("low")}
-              label={"Low"}
-              isAvatar={false}
-              isIcon={true}
-            />
-          ),
-          value: "low",
-        },
-        {
-          label: (
-            <CustomOptions
-              img={getPriorityIconById("lowest")}
-              label={"Lowest"}
-              isAvatar={false}
-              isIcon={true}
-            />
-          ),
-          value: "lowest",
-        },
-      ],
+      options: TASK_PRIORITY_MENU_OPTIONS,
     },
     isEditMode && {
       id: "status",
       label: "Status",
       component: "SELECT",
-      options: [
-        { label: "Pending", value: "pending" },
-        { label: "Completed", value: "completed" },
-      ],
+      options: TASK_STATUS_MENU_OPTIONS,
     },
     {
       id: "description",

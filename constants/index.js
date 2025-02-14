@@ -1,7 +1,11 @@
+// Material UI imports
 import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
-
 import StateChip from "@/components/cards/StateChip";
+
+// Project imports
+import { CustomOptions } from "@/components";
+import { getPriorityIconById } from "@/utils";
 
 export const IMAGES = {
   LOGO: "/assets/logo.webp",
@@ -139,3 +143,66 @@ export const ACTION_IDENTIFIER = {
 
 export const ASSEST_BASE_URL =
   "https://virtualoplossing.co/samiAi-laravel/storage/app/public/";
+
+export const TASK_STATUS_MENU_OPTIONS = [
+  { label: "Pending", value: "pending" },
+  { label: "Completed", value: "completed" },
+];
+
+export const TASK_PRIORITY_MENU_OPTIONS = [
+  {
+    label: (
+      <CustomOptions
+        img={getPriorityIconById("highest")}
+        label={"Highest"}
+        isAvatar={false}
+        isIcon={true}
+      />
+    ),
+    value: "highest",
+  },
+  {
+    label: (
+      <CustomOptions
+        img={getPriorityIconById("high")}
+        label={"High"}
+        isAvatar={false}
+        isIcon={true}
+      />
+    ),
+    value: "high",
+  },
+  {
+    label: (
+      <CustomOptions
+        img={getPriorityIconById("medium")}
+        label={"medium"}
+        isAvatar={false}
+        isIcon={true}
+      />
+    ),
+    value: "medium",
+  },
+  {
+    label: (
+      <CustomOptions
+        img={getPriorityIconById("low")}
+        label={"Low"}
+        isAvatar={false}
+        isIcon={true}
+      />
+    ),
+    value: "low",
+  },
+  {
+    label: (
+      <CustomOptions
+        img={getPriorityIconById("lowest")}
+        label={"Lowest"}
+        isAvatar={false}
+        isIcon={true}
+      />
+    ),
+    value: "lowest",
+  },
+];
