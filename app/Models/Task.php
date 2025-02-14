@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use App\Traits\Searchable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
-    use Searchable;
+    use Searchable, HasFactory;
 
     protected $searchable = ['title', 'assignTo.name'];
 
@@ -20,5 +21,3 @@ class Task extends Model
         return $this->hasOne(User::class, 'id', 'assign_to');
     }
 }
-
-
