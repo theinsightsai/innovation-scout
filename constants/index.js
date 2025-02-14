@@ -3,16 +3,6 @@ import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
 import StateChip from "@/components/cards/StateChip";
 
-// Project imports
-import { CustomOptions } from "@/components";
-import { getPriorityIconById } from "@/utils";
-
-export const IMAGES = {
-  LOGO: "/assets/logo.webp",
-  BANNER: "/assets/main-banner-bg.webp",
-  LOGIN_BANNER: "/assets/login-side-banner.webp",
-};
-
 export const ROUTE = {
   LOGIN: "/login",
   REGISTER: "/register",
@@ -27,6 +17,12 @@ export const ROUTE = {
   TASK_MANAGEMENT: "/task-management",
   LOGS: "/logs",
   ROLE_MANAGEMENT: "/role-management",
+};
+
+export const IMAGES = {
+  LOGO: "/assets/logo.webp",
+  BANNER: "/assets/main-banner-bg.webp",
+  LOGIN_BANNER: "/assets/login-side-banner.webp",
 };
 
 export const ERROR_TEXT = {
@@ -149,60 +145,7 @@ export const TASK_STATUS_MENU_OPTIONS = [
   { label: "Completed", value: "completed" },
 ];
 
-export const TASK_PRIORITY_MENU_OPTIONS = [
-  {
-    label: (
-      <CustomOptions
-        img={getPriorityIconById("highest")}
-        label={"Highest"}
-        isAvatar={false}
-        isIcon={true}
-      />
-    ),
-    value: "highest",
-  },
-  {
-    label: (
-      <CustomOptions
-        img={getPriorityIconById("high")}
-        label={"High"}
-        isAvatar={false}
-        isIcon={true}
-      />
-    ),
-    value: "high",
-  },
-  {
-    label: (
-      <CustomOptions
-        img={getPriorityIconById("medium")}
-        label={"medium"}
-        isAvatar={false}
-        isIcon={true}
-      />
-    ),
-    value: "medium",
-  },
-  {
-    label: (
-      <CustomOptions
-        img={getPriorityIconById("low")}
-        label={"Low"}
-        isAvatar={false}
-        isIcon={true}
-      />
-    ),
-    value: "low",
-  },
-  {
-    label: (
-      <CustomOptions
-        img={getPriorityIconById("lowest")}
-        label={"Lowest"}
-        isAvatar={false}
-        isIcon={true}
-      />
-    ),
-    value: "lowest",
-  },
+export const ACTIVE_IN_ACTIVE_MENU = [
+  { label: "Active", value: 1 },
+  { label: "In-Active", value: 0 },
 ];

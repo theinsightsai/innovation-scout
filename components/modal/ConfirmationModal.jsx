@@ -8,6 +8,7 @@ const ConfirmationModal = ({
   handleConfirmClick,
   buttontext,
   user,
+  alertText,
 }) => {
   return (
     <>
@@ -15,6 +16,9 @@ const ConfirmationModal = ({
         <div className="p-5">
           <div className="p-2 px-5 text-lg text-black p-4 bg-[#e4f5ff] rounded-md">
             Alert
+            {alertText && (
+              <div className="text-sm mt-1 italic">{alertText}</div>
+            )}
           </div>
           <DialogContent>
             Are you sure you want to{" "}

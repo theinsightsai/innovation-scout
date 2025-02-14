@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 const FilledButton = ({ label, onClick, style, type }) => {
   return (

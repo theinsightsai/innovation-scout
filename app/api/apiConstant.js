@@ -14,4 +14,8 @@ export const API = {
   UPDATE_TASK: "/task/update",
   DELETE_TASK: "/task/delete",
   GET_TASK_BY_ID: "/task",
+  CREATE_ROLE: "/role/create",
+  GET_ROLE_LIST: "/roles",
+  GET_ROLE_BY_ID: "/roles",
+  UPDATE_ROLE: "/role/update",
 };

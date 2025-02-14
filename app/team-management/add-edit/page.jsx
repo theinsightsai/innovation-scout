@@ -21,35 +21,6 @@ const FormController = dynamic(() => import("@/components/FormController"), {
   ssr: false,
 });
 
-const roles = [
-  "Logs",
-  "Task Management",
-  "User Management",
-  "Team Management",
-  "Role Management",
-];
-const permissions = ["View", "Add", "Edit", "Delete"];
-
-const REGISTER_FORM = [
-  { id: "name", label: "Name", component: "TEXT" },
-  { id: "email", label: "Email Address", component: "TEXT" },
-  {
-    id: "status",
-    label: "Status",
-    component: "SELECT",
-    options: [
-      { label: "Active", value: 1 },
-      { label: "In-Active", value: 0 },
-    ],
-  },
-  { id: "password", label: "Password", component: "PASSWORD" },
-  {
-    id: "confirmPassword",
-    label: "Confirm Password",
-    component: "PASSWORD",
-  },
-];
-
 const initialValues = {
   name: "",
   email: "",
@@ -57,13 +28,7 @@ const initialValues = {
   confirmPassword: "",
   status: "",
   image: "",
-  permissions: {
-    Logs: { View: false, Add: false, Edit: false, Delete: false },
-    "Task Management": { View: false, Add: false, Edit: false, Delete: false },
-    "User Management": { View: false, Add: false, Edit: false, Delete: false },
-    "Team Management": { View: false, Add: false, Edit: false, Delete: false },
-    "Role Management": { View: false, Add: false, Edit: false, Delete: false },
-  },
+  assign_role: "",
 };
 
 const StyledForm = styled("form")(({ theme }) => ({
@@ -83,6 +48,7 @@ const AddEditMember = () => {
   const [getApi, setGetApi] = useState(null);
   const [loading, setLoading] = useState(true);
   const [profileImage, setProfileImage] = useState(null);
+  const [roleOptions, setRoleOptions] = useState([]);
 
   useEffect(() => {
     const loadApi = async () => {
@@ -94,11 +60,75 @@ const AddEditMember = () => {
     loadApi();
   }, []);
 
+  const fetchRoleList = async () => {
+    try {
+      setLoading(true);
+      const response = await getApi(API.GET_ROLE_LIST);
+
+      if (!response.error) {
+        const {
+          data: {
+            data: { data },
+          },
+        } = response;
+        if (data) {
+          const options = data.map((obj, i, arr) => {
+            return {
+              label: (
+                <span style={{ textTransform: "capitalize" }}>{obj?.name}</span>
+              ),
+              value: obj?.id,
+            };
+          });
+          setRoleOptions(options);
+        }
+      } else {
+        ToastMessage("error", response.message);
+      }
+    } catch (error) {
+      ToastMessage("error", "Error fetching user data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (getApi) {
+      fetchRoleList();
+    }
+  }, [getApi]);
+
   useEffect(() => {
     if (isEditMode && getApi) {
       fetchUserData();
     }
   }, [isEditMode, getApi]);
+
+  const REGISTER_FORM = [
+    { id: "name", label: "Name", component: "TEXT" },
+    { id: "email", label: "Email Address", component: "TEXT" },
+    {
+      id: "status",
+      label: "Status",
+      component: "SELECT",
+      options: [
+        { label: "Active", value: 1 },
+        { label: "In-Active", value: 0 },
+      ],
+    },
+    {
+      id: "assign_role",
+      label: "Assign Role",
+      component: "SELECT",
+      options: roleOptions,
+    },
+    { id: "password", label: "Password", component: "PASSWORD" },
+    {
+      id: "confirmPassword",
+      label: "Confirm Password",
+      component: "PASSWORD",
+    },
+  ];
 
   const fetchUserData = async () => {
     try {
@@ -115,7 +145,7 @@ const AddEditMember = () => {
             password: data?.password || "",
             confirmPassword: data?.password || "",
             status: data?.status,
-            permissions: data.permissions || initialValues.permissions,
+            assign_role: data?.role?.id,
           });
           if (data?.image !== "") {
             setProfileImage(`${ASSEST_BASE_URL}${data?.image}`);
@@ -148,7 +178,7 @@ const AddEditMember = () => {
       formData.append("email", values?.email);
       formData.append("password", values?.password || "");
       formData.append("status", values?.status);
-      formData.append("role_id", 2);
+      formData.append("role_id", values?.assign_role);
 
       if (values.image instanceof File) {
         formData.append("image", values.image);
@@ -217,13 +247,6 @@ const AddEditMember = () => {
   const { setFieldValue, values, handleSubmit, touched, errors, isSubmitting } =
     formik;
 
-  const handlePermissionChange = (role, permission) => {
-    setFieldValue(
-      `permissions.${role}.${permission}`,
-      !values.permissions[role][permission]
-    );
-  };
-
   const handleFileChange = (event) => {
     const file = event.target.files[0];
 
@@ -273,7 +296,34 @@ const AddEditMember = () => {
               />
             ))}
           </div>
-          <div className="flex flex-col col-span-1 sm:col-span-2 lg:col-span-3 mt-4">
+
+          <div className="flex justify-end col-span-1 sm:col-span-2 lg:col-span-3 text-center mt-4">
+            <button
+              type="submit"
+              className="gap-1 flex justify-center items-center bg-[#005B96] border-2 border-[#005B96] 
+             rounded-[5px] text-white text-lg font-semibold no-underline p-2 px-5 
+             hover:bg-white hover:text-[#005B96] hover:border-[#005B96] 
+             transition duration-300 ease-in-out"
+            >
+              {isSubmitting
+                ? "Processing..."
+                : isEditMode
+                ? "Update"
+                : isOpMode
+                ? "Clone"
+                : "Submit"}
+            </button>
+          </div>
+        </StyledForm>
+      </Paper>
+    </Fragment>
+  );
+};
+
+export default withLayout(AddEditMember);
+
+{
+  /* <div className="flex flex-col col-span-1 sm:col-span-2 lg:col-span-3 mt-4">
             <div className="text-4xl">Permissions</div>
             <table className="mt-7" style={{ width: "40%" }}>
               <thead>
@@ -303,28 +353,30 @@ const AddEditMember = () => {
                 ))}
               </tbody>
             </table>
-          </div>
-          <div className="flex justify-end col-span-1 sm:col-span-2 lg:col-span-3 text-center mt-4">
-            <button
-              type="submit"
-              className="gap-1 flex justify-center items-center bg-[#005B96] border-2 border-[#005B96] 
-             rounded-[5px] text-white text-lg font-semibold no-underline p-2 px-5 
-             hover:bg-white hover:text-[#005B96] hover:border-[#005B96] 
-             transition duration-300 ease-in-out"
-            >
-              {isSubmitting
-                ? "Processing..."
-                : isEditMode
-                ? "Update"
-                : isOpMode
-                ? "Clone"
-                : "Submit"}
-            </button>
-          </div>
-        </StyledForm>
-      </Paper>
-    </Fragment>
-  );
-};
+          </div> */
+}
 
-export default withLayout(AddEditMember);
+// const handlePermissionChange = (role, permission) => {
+//   setFieldValue(
+//     `permissions.${role}.${permission}`,
+//     !values.permissions[role][permission]
+//   );
+// };
+
+// const roles = [
+//   "Logs",
+//   "Task Management",
+//   "User Management",
+//   "Team Management",
+//   "Role Management",
+// ];
+// const permissions = ["View", "Add", "Edit", "Delete"];
+// permissions: {
+//   Logs: { View: false, Add: false, Edit: false, Delete: false },
+//   "Task Management": { View: false, Add: false, Edit: false, Delete: false },
+//   "User Management": { View: false, Add: false, Edit: false, Delete: false },
+//   "Team Management": { View: false, Add: false, Edit: false, Delete: false },
+//   "Role Management": { View: false, Add: false, Edit: false, Delete: false },
+// },
+
+// permissions: data.permissions || initialValues.permissions,

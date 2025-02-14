@@ -79,7 +79,7 @@ export const getRoleStatusById = (roleId) => {
   switch (roleId) {
     case 1:
       return "Active";
-    case 2:
+    case 0:
       return "In-Active";
     default:
       return "N/A";
@@ -90,7 +90,7 @@ export const getRoleColorById = (roleId) => {
   switch (roleId) {
     case 1:
       return "success";
-    case 2:
+    case 0:
       return "error";
     default:
       return "N/A";

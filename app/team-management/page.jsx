@@ -35,8 +35,16 @@ const COLUMNS = [
   {
     id: "name",
     label: "Full Name",
-    minWidth: 120,
-    maxWidth: 120,
+    minWidth: 140,
+    maxWidth: 140,
+    align: "left",
+    isVisible: true,
+  },
+  {
+    id: "role_name",
+    label: "Role",
+    minWidth: 100,
+    maxWidth: 100,
     align: "left",
     isVisible: true,
   },
@@ -51,16 +59,16 @@ const COLUMNS = [
   {
     id: "email_verified",
     label: "Email Verification",
-    minWidth: 100,
-    maxWidth: 100,
+    minWidth: 50,
+    maxWidth: 50,
     align: "left",
     isVisible: true,
   },
   {
     id: "active_status",
     label: "Status",
-    minWidth: 100,
-    maxWidth: 100,
+    minWidth: 50,
+    maxWidth: 50,
     align: "left",
     isVisible: true,
   },
@@ -128,7 +136,8 @@ const TeamManagement = () => {
     created_at,
     status,
     email_verified_at,
-    image
+    image,
+    role
   ) => {
     return {
       id,
@@ -138,6 +147,7 @@ const TeamManagement = () => {
       email_verified: email_verified_at === null ? "Pending" : "Completed",
       active_status: status === 1 ? "Active" : "In-Active",
       image: image ? `${ASSEST_BASE_URL}${image}` : null,
+      role_name: <span className="capitalize">{role}</span>,
     };
   };
 
@@ -215,7 +225,8 @@ const TeamManagement = () => {
               user.created_at,
               user.status,
               user.email_verified_at,
-              user.image
+              user.image,
+              user.role.name
             )
           );
           setTotalCount(response?.data?.data?.total);

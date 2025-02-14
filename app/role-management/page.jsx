@@ -3,14 +3,24 @@ import { Fragment, useState, useEffect } from "react";
 import { PageHeader, CustomTable, ConfirmationModal } from "@/components";
 import withLayout from "@/components/hoc/withLayout";
 import { useRouter } from "next/navigation";
-import { ROUTE, TABEL_ACTION, ROLE_ID_BY_NAME } from "@/constants";
+import { ROUTE, ROLE_ID_BY_NAME, TABEL_ACTION } from "@/constants";
 import { getApi } from "@/app/api/clientApi";
 import { API } from "@/app/api/apiConstant";
-import { createData } from "@/utils";
+import { formatDate } from "@/utils";
 import { useSelector } from "react-redux";
 import ToastMessage from "@/components/ToastMessage";
 import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+
+const createData = (id, created_at, name, status, is_deletable) => {
+  return {
+    id,
+    role_name: <span className="capitalize">{name}</span>,
+    created_at: formatDate(created_at),
+    roleStatus: status,
+    is_deletable,
+  };
+};
 
 const RoleManagement = () => {
   const router = useRouter();
@@ -18,7 +28,7 @@ const RoleManagement = () => {
 
   const [openConfirmation, setOpenConfirmation] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
-  // const [rows, setRows] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [totalCount, setTotalCount] = useState(0);
@@ -50,9 +60,7 @@ const RoleManagement = () => {
     }
   };
 
-  const handleConfirmClick = () => {
-    alert("Working over this functionality");
-    // async
+  const handleConfirmClick = async () => {
     // try {
     //   setLoading(true);
     //   if (!deleteApi) {
@@ -76,51 +84,41 @@ const RoleManagement = () => {
     // }
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const role_id = "2";
-  //       const response = await getApi(
-  //         `${API.GET_USERS}?role_id=${role_id}&page=${
-  //           page + 1
-  //         }&per_page=${rowsPerPage}`
-  //       );
+  console.log("selectedData==>", selectedData);
 
-  //       if (!response.error) {
-  //         const formattedData = response?.data?.data?.map((user) =>
-  //           createData(user.id, user.username, user.email, user.created_at)
-  //         );
-  //         setTotalCount(response?.data?.pagination?.total_items);
-  //         setRows(formattedData);
-  //       } else {
-  //         console.error(response.message);
-  //       }
-  //     } catch (error) {
-  //       console.error("An unexpected error occurred:", error);
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getApi(
+          `${API.GET_ROLE_LIST}?role_id=${role_id}&page=${
+            page + 1
+          }&per_page=${rowsPerPage}`
+        );
 
-  //   fetchData();
-  // }, [page, rowsPerPage, refresh]);
+        const taskList = response?.data?.data?.data;
 
-  const rows = [
-    {
-      id: 1,
-      roleId: 2,
-      created_at: "Tue, 02 February 2025",
-      roleStatus: 2,
-      roleDesc:
-        "Update the name and email for client XYZ – Task to modify client XYZ's personal details.",
-    },
-    {
-      id: 2,
-      roleId: 3,
-      created_at: "Tue, 03 February 2025",
-      roleStatus: 1,
-      roleDesc:
-        "Update the password for client XYZ – Task to reset the password for client XYZ's account.",
-    },
-  ];
+        if (!response.error) {
+          const formattedData = taskList?.map((role) =>
+            createData(
+              role.id,
+              role.created_at,
+              role.name,
+              role.status,
+              role.is_deletable
+            )
+          );
+          setTotalCount(response?.data?.data?.total);
+          setTableData(formattedData);
+        } else {
+          console.error(response.message);
+        }
+      } catch (error) {
+        console.error("An unexpected error occurred:", error);
+      }
+    };
+
+    fetchData();
+  }, [page, rowsPerPage, refresh]);
 
   const COLUMNS = [
     {
@@ -132,7 +130,7 @@ const RoleManagement = () => {
       isVisible: true,
     },
     {
-      id: "roleId",
+      id: "role_name",
       label: "Role",
       minWidth: 120,
       maxWidth: 120,
@@ -151,14 +149,6 @@ const RoleManagement = () => {
     {
       id: "roleStatus",
       label: "Role Status",
-      minWidth: 100,
-      maxWidth: 100,
-      align: "left",
-      isVisible: true,
-    },
-    {
-      id: "roleDesc",
-      label: "Details",
       minWidth: 100,
       maxWidth: 100,
       align: "left",
@@ -194,7 +184,7 @@ const RoleManagement = () => {
         ACTION_MENU={TABEL_ACTION}
         onActionClick={onActionClick}
         columns={COLUMNS}
-        rows={rows}
+        rows={tableData}
         setPage={setPage}
         page={page}
         setRowsPerPage={setRowsPerPage}
@@ -204,10 +194,11 @@ const RoleManagement = () => {
       <ConfirmationModal
         open={openConfirmation}
         handleClose={handleCloseModal}
+        alertText="Deleting this role will require all associated members to be reassigned to another role or a restricted role. Please select a role from the dropdown below."
         handleConfirmClick={handleConfirmClick}
         buttontext="Delete"
         user={{
-          user: selectedData?.taskId,
+          user: selectedData?.role_name,
           userType: "Role",
         }}
       />

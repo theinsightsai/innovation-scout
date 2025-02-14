@@ -9,8 +9,6 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { Chip, Tooltip, Avatar, Typography } from "@mui/material";
 import {
-  getTaskStatusById,
-  getColorByTaskId,
   getRoleStatusById,
   getRoleColorById,
   getRoleNameById,
@@ -31,7 +29,7 @@ const getColorByStatus = (value) => {
       return "error";
 
     default:
-      return "default"; // Handle unexpected values
+      return "default";
   }
 };
 
@@ -89,7 +87,11 @@ export default function CustomTable({
               onActionClick(event, actionObj?.identifier, row)
             }
           >
-            <span className="ml-1"> {actionObj.icon}</span>
+            {!(
+              actionObj?.identifier === "DELETE" &&
+              row?.is_deletable !== 1 &&
+              row?.is_deletable !== undefined
+            ) && <span className="ml-2 inline-block">{actionObj.icon}</span>}
           </Tooltip>
         ))}
       </>
@@ -118,7 +120,7 @@ export default function CustomTable({
                     background: "lightgray",
                     textTransform: "uppercase",
                     display: column?.isVisible ? "-ms-flexbox" : "none",
-                    ...FONT_STYLES, // Apply font styles here
+                    ...FONT_STYLES,
                   }}
                 >
                   {column.label}

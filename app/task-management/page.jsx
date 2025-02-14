@@ -23,8 +23,9 @@ import {
   ROLE_ID_BY_NAME,
   ASSEST_BASE_URL,
   TASK_STATUS_MENU_OPTIONS,
-  TASK_PRIORITY_MENU_OPTIONS,
 } from "@/constants";
+import { TASK_PRIORITY_MENU_OPTIONS } from "@/components/CustomOptions";
+
 import withLayout from "@/components/hoc/withLayout";
 
 const createData = (
