@@ -9,12 +9,7 @@ import { debounce } from "lodash";
 // Project Import
 import withLayout from "@/components/hoc/withLayout";
 import { PageHeader, CustomOptions } from "@/components";
-import {
-  ASSEST_BASE_URL,
-  ERROR_TEXT,
-  ROUTE,
-  TASK_PRIORITY_MENU_OPTIONS,
-} from "@/constants";
+import { ASSEST_BASE_URL, ERROR_TEXT, ROUTE } from "@/constants";
 import { API } from "@/app/api/apiConstant";
 import ToastMessage from "@/components/ToastMessage";
 import { getApi } from "@/app/api/clientApi";
@@ -40,6 +35,66 @@ const StyledForm = styled("form")(({ theme }) => ({
   width: "100%",
   marginTop: theme.spacing(1),
 }));
+
+import { getPriorityIconById } from "@/utils";
+
+export const TASK_PRIORITY_MENU_OPTIONS = [
+  {
+    label: (
+      <CustomOptions
+        img={getPriorityIconById("highest")}
+        label={"Highest"}
+        isAvatar={false}
+        isIcon={true}
+      />
+    ),
+    value: "highest",
+  },
+  {
+    label: (
+      <CustomOptions
+        img={getPriorityIconById("high")}
+        label={"High"}
+        isAvatar={false}
+        isIcon={true}
+      />
+    ),
+    value: "high",
+  },
+  {
+    label: (
+      <CustomOptions
+        img={getPriorityIconById("medium")}
+        label={"medium"}
+        isAvatar={false}
+        isIcon={true}
+      />
+    ),
+    value: "medium",
+  },
+  {
+    label: (
+      <CustomOptions
+        img={getPriorityIconById("low")}
+        label={"Low"}
+        isAvatar={false}
+        isIcon={true}
+      />
+    ),
+    value: "low",
+  },
+  {
+    label: (
+      <CustomOptions
+        img={getPriorityIconById("lowest")}
+        label={"Lowest"}
+        isAvatar={false}
+        isIcon={true}
+      />
+    ),
+    value: "lowest",
+  },
+];
 
 const AddEditTask = () => {
   const router = useRouter();

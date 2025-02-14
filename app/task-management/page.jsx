@@ -12,6 +12,7 @@ import {
   CustomTable,
   ConfirmationModal,
   CustomFilter,
+  CustomOptions,
 } from "@/components";
 import { formatDate } from "@/utils";
 import ToastMessage from "@/components/ToastMessage";
@@ -24,9 +25,67 @@ import {
   ASSEST_BASE_URL,
   TASK_STATUS_MENU_OPTIONS,
 } from "@/constants";
-import { TASK_PRIORITY_MENU_OPTIONS } from "@/components/CustomOptions";
 
 import withLayout from "@/components/hoc/withLayout";
+import { getPriorityIconById } from "@/utils";
+
+export const TASK_PRIORITY_MENU_OPTIONS = [
+  {
+    label: (
+      <CustomOptions
+        img={getPriorityIconById("highest")}
+        label={"Highest"}
+        isAvatar={false}
+        isIcon={true}
+      />
+    ),
+    value: "highest",
+  },
+  {
+    label: (
+      <CustomOptions
+        img={getPriorityIconById("high")}
+        label={"High"}
+        isAvatar={false}
+        isIcon={true}
+      />
+    ),
+    value: "high",
+  },
+  {
+    label: (
+      <CustomOptions
+        img={getPriorityIconById("medium")}
+        label={"medium"}
+        isAvatar={false}
+        isIcon={true}
+      />
+    ),
+    value: "medium",
+  },
+  {
+    label: (
+      <CustomOptions
+        img={getPriorityIconById("low")}
+        label={"Low"}
+        isAvatar={false}
+        isIcon={true}
+      />
+    ),
+    value: "low",
+  },
+  {
+    label: (
+      <CustomOptions
+        img={getPriorityIconById("lowest")}
+        label={"Lowest"}
+        isAvatar={false}
+        isIcon={true}
+      />
+    ),
+    value: "lowest",
+  },
+];
 
 const createData = (
   id,
