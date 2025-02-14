@@ -31,10 +31,10 @@ class TaskController extends Controller
         $search = $request->search ?? '';
 
         $tasks = Task::search($search)
-            ->when($request->has('status'), function ($query) use ($request) {
+            ->when($request->filled('status'), function ($query) use ($request) {
                 $query->where('status', $request->status);
             })
-            ->when($request->has('priority'), function ($query) use ($request) {
+            ->when($request->filled('priority'), function ($query) use ($request) {
                 $query->where('priority', $request->priority);
             })
             ->with(['user', 'assignTo'])->orderBy('created_at', 'desc')->paginate($limit);

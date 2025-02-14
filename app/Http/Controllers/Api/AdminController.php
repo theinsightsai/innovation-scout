@@ -14,6 +14,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class AdminController extends Controller
 {
@@ -31,7 +32,7 @@ class AdminController extends Controller
         $limit = $request->limit;
         $search = $request->search ?? '';
 
-        $users = User::search($search)->where('role_id', $type)->with(['role'])->orderBy('created_at','desc')->paginate($limit);
+        $users = User::search($search)->where('role_id', $type)->with(['role'])->orderBy('created_at', 'desc')->paginate($limit);
         $data  = $this->paginateData($users);
 
         return  ResponseHelper::SUCCESS('Users lists', $data);
@@ -147,11 +148,11 @@ class AdminController extends Controller
         try {
             $role =  new Role();
             $role->name = $request->name;
-            $role->slug = $request->name;
+            $role->slug = Str::slug($request->name);
             $role->save();
-            
+
             LogHelper::logAction(Auth::id(), 'Role created');
-            return ResponseHelper::SUCCESS('Role Created successfuly');
+            return ResponseHelper::SUCCESS('Role Created successfuly', $role);
         } catch (Exception $e) {
             return ResponseHelper::ERROR($this->exceptionMessage);
         }
