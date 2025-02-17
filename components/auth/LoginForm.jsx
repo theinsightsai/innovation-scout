@@ -91,7 +91,7 @@ const LoginForm = () => {
     }
   };
 
-  const REGISTER_FORM = [
+  const LOGIN_FORM = [
     { id: "email", label: "Email Address", component: "TEXT" },
     { id: "password", label: "Password", component: "PASSWORD" },
     {
@@ -112,11 +112,8 @@ const LoginForm = () => {
 
   return (
     <div>
-      <h1 className="text-xl mt-5 mb-2 font-outfit flex justify-center">
-        Login
-      </h1>
       <StyledForm noValidate onSubmit={handleSubmit} sx={{ marginTop: "20px" }}>
-        {REGISTER_FORM.map((fieldObj) => {
+        {LOGIN_FORM.map((fieldObj) => {
           return (
             <FormController
               key={fieldObj?.id}

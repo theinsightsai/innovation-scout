@@ -23,6 +23,7 @@ export const IMAGES = {
   LOGO: "/assets/logo.webp",
   BANNER: "/assets/main-banner-bg.webp",
   LOGIN_BANNER: "/assets/login-side-banner.webp",
+  AI_ICON: "/assets/AI.mp4",
 };
 
 export const ERROR_TEXT = {
