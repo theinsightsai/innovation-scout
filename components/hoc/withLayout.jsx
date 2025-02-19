@@ -29,7 +29,7 @@ const AuthWrapper = ({ children }) => {
 
   useEffect(() => {
     if (!isLoggedIn) {
-      router.push(ROUTE.LOGIN);
+      router.push(ROUTE.AUTH);
     }
   }, [isLoggedIn, router]);
 

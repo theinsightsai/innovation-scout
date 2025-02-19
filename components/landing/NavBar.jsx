@@ -17,8 +17,8 @@ import { IMAGES, ROUTE } from "@/constants";
 import Link from "next/link";
 
 const NAVBAR_MENU = [
-  { label: "Register", route: ROUTE.REGISTER },
-  { label: "Login", route: ROUTE.LOGIN },
+  { label: "Register", route: `${ROUTE.AUTH}?auth=register` },
+  { label: "Login", route: ROUTE.AUTH },
 ];
 
 const drawerWidth = 240;

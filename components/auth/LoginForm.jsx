@@ -11,10 +11,8 @@ import ToastMessage from "@/components/ToastMessage/";
 import { useDispatch } from "react-redux";
 import { loginStart, loginSuccess, loginFailure } from "@/store/authSlice";
 import { useSelector } from "react-redux";
+import { EmailIconSvg, PasswordSvg } from "@/constants/assets";
 
-const FilledButton = dynamic(() => import("@/components/Button/FilledButton"), {
-  ssr: false,
-});
 const FormController = dynamic(() => import("@/components/FormController"), {
   ssr: false,
 });
@@ -92,8 +90,18 @@ const LoginForm = () => {
   };
 
   const LOGIN_FORM = [
-    { id: "email", label: "Email Address", component: "TEXT" },
-    { id: "password", label: "Password", component: "PASSWORD" },
+    {
+      id: "email",
+      label: "Email Address",
+      component: "TEXT",
+      icon: <EmailIconSvg />,
+    },
+    {
+      id: "password",
+      label: "Password",
+      component: "PASSWORD",
+      icon: <PasswordSvg />,
+    },
     {
       id: "isChecked",
       label: <div className="font-outfit w-full">Remember Me</div>,
@@ -108,12 +116,22 @@ const LoginForm = () => {
     enableReinitialize: true,
   });
 
-  const { setFieldValue, values, handleSubmit, touched, errors } = formik;
+  const { setFieldValue, values, handleSubmit, touched, errors, isSubmitting } =
+    formik;
 
   return (
     <div>
-      <StyledForm noValidate onSubmit={handleSubmit} sx={{ marginTop: "20px" }}>
-        {LOGIN_FORM.map((fieldObj) => {
+      <StyledForm
+        noValidate
+        onSubmit={handleSubmit}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        {LOGIN_FORM.map((fieldObj, i, arr) => {
           return (
             <FormController
               key={fieldObj?.id}
@@ -125,15 +143,13 @@ const LoginForm = () => {
             />
           );
         })}
-
-        <div className="flex justify-center w-full mt-8">
-          <FilledButton
-            type="submit"
-            label={loading ? "Loading..." : "Login"}
-            disabled={loading}
-            style={{ width: "35%" }}
-          />
-        </div>
+        <button
+          className={`w-[180px] py-4 px-10 rounded-full text-white transition-colors duration-500 bg-[#1A22B5] mt-10`}
+          disabled={isSubmitting || loading}
+          type="submit"
+        >
+          {isSubmitting ? "Loading..." : "Login"}
+        </button>
       </StyledForm>
     </div>
   );

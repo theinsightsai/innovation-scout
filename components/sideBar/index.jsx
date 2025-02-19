@@ -42,7 +42,7 @@ const SETTING_MENU = [
   { label: "Profile", identifier: "PROFILE", route: "" },
   { label: "Account", identifier: "ACCOUNT", route: "" },
   { label: "Dashboard", identifier: "DASHBOARD", route: ROUTE.DASHBOARD },
-  { label: "Logout", identifier: "LOGOUT", route: ROUTE.LOGIN },
+  { label: "Logout", identifier: "LOGOUT", route: ROUTE.AUTH },
 ];
 
 export default function SideBar() {

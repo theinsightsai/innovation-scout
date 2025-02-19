@@ -2,12 +2,13 @@
 import { Fragment } from "react";
 import WithAuthLayout from "@/components/hoc/WithAuthLayout";
 import LoginForm from "@/components/auth/LoginForm";
+import RegisterForm from "@/components/auth/RegisterForm";
 
-const LoginPage = () => {
+const Auth = ({ activeTab }) => {
   return (
     <Fragment>
-      <LoginForm />
+      {activeTab === "LOGIN" ? <LoginForm /> : <RegisterForm />}
     </Fragment>
   );
 };
-export default WithAuthLayout(LoginPage);
+export default WithAuthLayout(Auth);

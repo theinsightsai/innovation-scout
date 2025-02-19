@@ -4,9 +4,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import StateChip from "@/components/cards/StateChip";
 
 export const ROUTE = {
-  LOGIN: "/login",
-  REGISTER: "/register",
   DASHBOARD: "/dashboard",
+  AUTH: "/auth",
   UPLOAD_DATA: "/upload-data",
   ANALYSIS: "/analysis",
   RESULTS: "/results",

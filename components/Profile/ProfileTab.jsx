@@ -63,7 +63,7 @@ export default function ProfileTab() {
       } else if (!response?.error) {
         dispatch(logout());
         localStorage.clear();
-        router.push(ROUTE.LOGIN);
+        router.push(ROUTE.AUTH);
         ToastMessage("success", response?.data?.message);
       }
     } catch (error) {

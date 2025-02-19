@@ -1,25 +1,15 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { styled } from "@mui/system";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
 
 // Project import
 import { IMAGES, ROUTE } from "@/constants";
-import {
-  EmailIconSvg,
-  FaceBookSvg,
-  AppleSvgIcon,
-  GoogleSvgIcon,
-  UserIconSvg,
-  PasswordSvg,
-} from "@/constants/assets";
+import { FaceBookSvg, AppleSvgIcon, GoogleSvgIcon } from "@/constants/assets";
 
 // Material UI Import
-import { CssBaseline, Paper, Box, FormControl } from "@mui/material";
-import InputLabel from "@mui/material/InputLabel";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import InputAdornment from "@mui/material/InputAdornment";
+import { CssBaseline, Paper, Box } from "@mui/material";
 
 const StyledBox = styled(Box)(({ theme }) => ({
   display: "flex",
@@ -27,18 +17,6 @@ const StyledBox = styled(Box)(({ theme }) => ({
   minHeight: "100vh",
   [theme.breakpoints.down("md")]: {
     flexDirection: "column",
-  },
-}));
-
-const StyledImage = styled(Box)(({ theme }) => ({
-  flex: 7,
-  backgroundImage: `url(${IMAGES.AI_ICON})`,
-  backgroundRepeat: "no-repeat",
-  backgroundColor: "black",
-  backgroundSize: "contain",
-  backgroundPosition: "center",
-  [theme.breakpoints.down("md")]: {
-    display: "none",
   },
 }));
 
@@ -57,17 +35,17 @@ const TAB_MENU = [
   { label: "Register", identifier: "REGISTER" },
 ];
 
-const FIELDS = [
-  { label: "Email Address", icon: <EmailIconSvg /> },
-  { label: "Full name", icon: <UserIconSvg /> },
-  { label: "Password", icon: <PasswordSvg /> },
-];
-
 const withAuthLayout = (Component) => {
   return function AuthLayoutWrapper(props) {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const auth = searchParams.get("auth");
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-    const [activeTab, setActiveTab] = useState(TAB_MENU?.[0]?.identifier);
+    const [activeTab, setActiveTab] = useState(
+      auth === "register"
+        ? TAB_MENU?.[1]?.identifier
+        : TAB_MENU?.[0]?.identifier
+    );
 
     useEffect(() => {
       if (isAuthenticated) {
@@ -102,7 +80,6 @@ const withAuthLayout = (Component) => {
           />
         </div>
 
-        {/* <StyledImage /> */}
         <StyledContent component={Paper} elevation={4}>
           <h1 className="text-xl mt-5 mb-2 font-outfit flex justify-center">
             Welcome to Innovation Scout
@@ -125,45 +102,10 @@ const withAuthLayout = (Component) => {
             })}
           </div>
 
-          {FIELDS.map((fieldObj, i, arr) => {
-            return (
-              <FormControl
-                sx={{ mt: 5, width: "70%" }}
-                key={`${fieldObj.label}-${i}`}
-              >
-                <InputLabel htmlFor="outlined-adornment-amount">
-                  {fieldObj.label} <span style={{ color: "red" }}>*</span>
-                </InputLabel>
-                <OutlinedInput
-                  id="outlined-adornment-amount"
-                  startAdornment={
-                    <InputAdornment position="start">
-                      {fieldObj.icon}
-                    </InputAdornment>
-                  }
-                  label={`${fieldObj.label} *`}
-                  sx={{
-                    borderRadius: "7px",
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#1A22B5",
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#1A22B5",
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: "#1A22B5",
-                    },
-                  }}
-                />
-              </FormControl>
-            );
-          })}
+          <div style={{ width: "100%" }}>
+            <Component {...props} activeTab={activeTab} />
+          </div>
 
-          <button
-            className={`w-[180px] py-4 px-10 rounded-full text-white transition-colors duration-500 bg-[#1A22B5] mt-10`}
-          >
-            {activeTab === "LOGIN" ? "Login" : "Register"}
-          </button>
           <div style={{ color: "#B5B5B5", marginTop: "15px" }}>
             or continue with
           </div>
@@ -172,8 +114,6 @@ const withAuthLayout = (Component) => {
             <AppleSvgIcon />
             <GoogleSvgIcon />
           </div>
-
-          {/* <Component {...props} /> */}
         </StyledContent>
       </StyledBox>
     );

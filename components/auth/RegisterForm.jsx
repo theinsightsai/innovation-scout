@@ -9,11 +9,8 @@ import { useState, useEffect } from "react";
 import ToastMessage from "@/components/ToastMessage";
 import { Tick } from "@/constants/assets";
 import { useRouter } from "next/navigation";
+import { UserIconSvg, EmailIconSvg, PasswordSvg } from "@/constants/assets";
 
-// Dynamically import the postApi
-const FilledButton = dynamic(() => import("@/components/Button/FilledButton"), {
-  ssr: false,
-});
 const FormController = dynamic(() => import("@/components/FormController"), {
   ssr: false,
 });
@@ -104,20 +101,35 @@ const RegisterForm = () => {
     formik;
 
   const REGISTER_FORM = [
-    { id: "name", label: "Name", component: "TEXT" },
-    { id: "email", label: "Email Address", component: "TEXT" },
-    { id: "password", label: "Password", component: "PASSWORD" },
-    { id: "confirmPassword", label: "Confirm Password", component: "PASSWORD" },
+    { id: "name", label: "Name", component: "TEXT", icon: <UserIconSvg /> },
+    {
+      id: "email",
+      label: "Email Address",
+      component: "TEXT",
+      icon: <EmailIconSvg />,
+    },
+    {
+      id: "password",
+      label: "Password",
+      component: "PASSWORD",
+      icon: <PasswordSvg />,
+    },
+    {
+      id: "confirmPassword",
+      label: "Confirm Password",
+      component: "PASSWORD",
+      icon: <PasswordSvg />,
+    },
     {
       id: "isChecked",
       label: (
         <div className="font-outfit w-full">
           I agree to the
-          <span href="/terms" target="_blank" className="text-[#005B96] mx-1">
+          <span href="/terms" target="_blank" className="text-[#1A22B5] mx-1">
             Terms and Conditions
           </span>
           <span className="mx-1">and</span>
-          <span href="/privacy" target="_blank" className="text-[#005B96]">
+          <span href="/privacy" target="_blank" className="text-[#1A22B5]">
             Privacy Policy
           </span>
         </div>
@@ -128,44 +140,51 @@ const RegisterForm = () => {
 
   return (
     <>
-      <h1 class="text-xl mt-5 mb-2 font-outfit">
-        {successPage ? "Registered" : "Register"}
-      </h1>
       {successPage ? (
         <div className="w-full flex flex-col items-center">
           <div className="my-5">
             <Tick />
           </div>
           <div>Registration Completed Successfully</div>
-          <FilledButton
+          <button
+            className={`w-[180px] py-4 px-10 rounded-full text-white transition-colors duration-500 bg-[#1A22B5] mt-10`}
+            disabled={isSubmitting || loading}
             type="button"
-            label={"Login"}
-            style={{ width: "35%", marginTop: "30px" }}
-            onClick={() => router.push(ROUTE.LOGIN)}
-          />
+            onClick={() => router.push(ROUTE.AUTH)}
+          >
+            Login
+          </button>
         </div>
       ) : (
-        <StyledForm noValidate onSubmit={handleSubmit}>
-          {REGISTER_FORM.map((fieldObj) => (
-            <FormController
-              key={fieldObj?.id}
-              fieldObj={fieldObj}
-              values={values}
-              touched={touched}
-              errors={errors}
-              setFieldValue={setFieldValue}
-            />
-          ))}
-          <div
-            style={{ width: "100%", display: "flex", justifyContent: "center" }}
+        <StyledForm
+          noValidate
+          onSubmit={handleSubmit}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          {REGISTER_FORM.map((fieldObj, i, arr) => {
+            return (
+              <FormController
+                key={fieldObj?.id}
+                fieldObj={fieldObj}
+                values={values}
+                touched={touched}
+                errors={errors}
+                setFieldValue={setFieldValue}
+              />
+            );
+          })}
+          <button
+            className={`w-[180px] py-4 px-10 rounded-full text-white transition-colors duration-500 bg-[#1A22B5] mt-10`}
+            disabled={isSubmitting || loading}
+            type="submit"
           >
-            <FilledButton
-              type="submit"
-              label={isSubmitting ? "Submitting..." : "Register"}
-              style={{ width: "35%", marginTop: "30px" }}
-              disabled={isSubmitting || loading}
-            />
-          </div>
+            {isSubmitting ? "Submitting..." : "Register"}
+          </button>
         </StyledForm>
       )}
     </>
@@ -173,5 +192,3 @@ const RegisterForm = () => {
 };
 
 export default RegisterForm;
-
-
