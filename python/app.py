@@ -64,7 +64,7 @@ def forecast():
         return jsonify({'error': str(e)})
 
 
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = ""
 
 @app.route('/data', methods=['POST'])
 def analyze_json_data():
