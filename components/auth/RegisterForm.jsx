@@ -146,14 +146,14 @@ const RegisterForm = () => {
             <Tick />
           </div>
           <div>Registration Completed Successfully</div>
-          <button
+          {/* <button
             className={`w-[180px] py-4 px-10 rounded-full text-white transition-colors duration-500 bg-[#1A22B5] mt-10`}
             disabled={isSubmitting || loading}
             type="button"
             onClick={() => router.push(ROUTE.AUTH)}
           >
             Login
-          </button>
+          </button> */}
         </div>
       ) : (
         <StyledForm
