@@ -118,7 +118,6 @@ class RoleController extends Controller
             LogHelper::logAction(Auth::id(), 'Role deleted');
             return ResponseHelper::SUCCESS('Role deleted successfuly');
         } catch (Exception $e) {
-            dd($e);
             return ResponseHelper::ERROR($this->exceptionMessage);
         }
     }

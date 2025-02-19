@@ -2,8 +2,11 @@
 
 namespace App\Traits;
 
+use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 
 trait CommonFunctionsTrait
 {
@@ -19,6 +22,30 @@ trait CommonFunctionsTrait
         ];
     }
 
+    #---- send notifications to admins -----#
+    public function storeNotificationForAdmins($msg)
+    {
+        $admins = User::where('role_id', 1);
+        if (Auth::user()->role->id === 1) {
+            $admins =  $admins->where('id','!=',Auth::id());
+        }
+        $admins = $admins->get();
+        foreach ($admins as $user) {
+            Notification::create([
+                'user_id' => $user->id,
+                'message' => $msg
+            ]);
+        }
+    }
+    
+    #---- send notifications to admins -----#
+    public function storeNotification($user_id, $msg)
+    {
+       return Notification::create([
+            'user_id' => $user_id,
+            'message' => $msg
+        ]);
+    }
 
     #--- UPLOAD FILE ----#
     public function uploadFile($file)

@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Imports\ExcelImport;
+use App\Imports\ExcelAnalysisImport;
+use App\Imports\ExcelDataForecastImport;
 use App\Traits\CommonFunctionsTrait;
 use Exception;
 use Illuminate\Http\Request;
@@ -19,8 +20,11 @@ class AnalysisController extends Controller
     #---- Data predictions service ----#
     public function index(Request $request)
     {
+       
         $validator = Validator::make($request->all(), [
             'file' => 'required|file|mimes:xlsx,csv|max:2048',
+            'column' => 'required|string',
+            'periods' => 'required|integer|min:1'
         ]);
 
         if ($validator->fails()) {
@@ -28,7 +32,7 @@ class AnalysisController extends Controller
         }
 
         try {
-            $import = new ExcelImport();
+            $import = new ExcelDataForecastImport($request->column);
             Excel::import($import, $request->file('file'));
             $data =  $import->getJsonData();
         } catch (ValidationException $e) {
@@ -37,13 +41,14 @@ class AnalysisController extends Controller
 
         try {
             if (isset($data) && !empty($data)) {
-                $this->uploadFile($request->file('file'));
-
+                // $this->uploadFile($request->file('file'));
                 // Send data to Flask API
                 $response = Http::withHeaders([
                     'Accept' => 'application/json',
                 ])->post('http://127.0.0.1:5000/forecast', [
-                    'data' => $data
+                    'data' => $data,
+                    'periods' => ($request->periods * 30)
+
                 ]);
                 return $response;
             }
@@ -56,12 +61,21 @@ class AnalysisController extends Controller
     #---- ANALYSIS DATA USING AI AND PYTHON -----#
     public function analysis(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|file|mimes:xlsx,csv|max:2048',
+        ]);
 
-        $data = [
-            "January" => [["Revenue" => 1000, "Expenses" => 800]],
-            "February" => ["Revenue" => 1200, "Expenses" => 900],
-            "March" => ["Revenue" => 1500, "Expenses" => 1000]
-        ];
+        if ($validator->fails()) {
+            return response()->json(['status' => 400, 'error' => $validator->errors()->first()], 400);
+        }
+
+        try {
+            $import = new ExcelAnalysisImport();
+            Excel::import($import, $request->file('file'));
+            $data =  $import->getJsonData();
+        } catch (ValidationException $e) {
+            return response()->json(['status' => 400, 'message' => $e->getMessage()], 400);
+        }
 
         $response = Http::withHeaders([
             'Accept' => 'application/json',

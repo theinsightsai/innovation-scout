@@ -42,5 +42,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 });
 
-Route::post('upload/csv', [AnalysisController::class, 'index']);
-Route::get('data', [AnalysisController::class, 'analysis']);
+Route::post('data-forecasting', [AnalysisController::class, 'index']);
+Route::post('data-analysis', [AnalysisController::class, 'analysis']);

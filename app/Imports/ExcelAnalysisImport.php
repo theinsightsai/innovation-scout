@@ -3,14 +3,16 @@
 namespace App\Imports;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class ExcelImport implements ToCollection, WithHeadingRow, SkipsEmptyRows
+class ExcelAnalysisImport implements ToCollection, WithHeadingRow, SkipsEmptyRows
 {
+    /**
+     * @param Collection $collection
+     */
     public $data  = [];
     /**
      * @param Collection $collection
@@ -33,21 +35,9 @@ class ExcelImport implements ToCollection, WithHeadingRow, SkipsEmptyRows
                 'error' => ['Duplicate rows found in the Excel file.']
             ]);
         }
-       
-        // Validate each row
-        foreach ($rows as $row) {
-            $validator = Validator::make($row->toArray(), [
-                'ds' => 'required',
-                'v'  => 'required',
-            ]);
 
-            if ($validator->fails()) {
-                throw ValidationException::withMessages([
-                    'error' => $validator->getMessageBag()->first()
-                ]);
-            }
-            $this->data[] = $row->toArray();
-        }
+        $this->data = $rows;
+
     }
 
     public function getJsonData()

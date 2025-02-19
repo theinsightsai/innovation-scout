@@ -80,10 +80,11 @@ class TaskController extends Controller
             $task->save();
 
             LogHelper::logAction(Auth::id(), 'Task created');
+            $this->storeNotificationForAdmins('New task added by ' . Auth::user()->name);
+            $this->storeNotification($request->assign_to, 'New task assign to you by ' . Auth::user()->name);
 
             return ResponseHelper::SUCCESS('Task created successfuly', $task);
         } catch (Exception $e) {
-
             return ResponseHelper::ERROR($this->exceptionMessage);
         }
     }
@@ -117,6 +118,9 @@ class TaskController extends Controller
 
             LogHelper::logAction(Auth::id(), 'Task updated');
 
+            $this->storeNotificationForAdmins('Task #' . $task->id . ' is updated by ' . Auth::user()->name);
+            $this->storeNotification($request->assign_to, 'Task #' . $task->id . ' is updated by ' . Auth::user()->name);
+
             return ResponseHelper::SUCCESS('Task updated successfuly', $task);
         } catch (Exception $e) {
 
@@ -137,6 +141,7 @@ class TaskController extends Controller
         try {
             Task::find($request->id)->delete();
             LogHelper::logAction(Auth::id(), 'Task deleted');
+            $this->storeNotificationForAdmins('Task #' . $request->id . ' is deleted by ' . Auth::user()->name);
             return ResponseHelper::SUCCESS('Task deleted successfuly');
         } catch (Exception $e) {
             return ResponseHelper::ERROR($this->exceptionMessage);
@@ -161,6 +166,9 @@ class TaskController extends Controller
             $task->save();
 
             LogHelper::logAction(Auth::id(), 'Task priority updated');
+            $this->storeNotificationForAdmins('Task #' . $task->id . ' priority is updated by ' . Auth::user()->name);
+            $this->storeNotification($task->assign_to, 'Task #' . $task->id . ' priority is updated by ' . Auth::user()->name);
+
 
             return ResponseHelper::SUCCESS('Task priority updated successfuly', $task,  200);
         } catch (Exception $e) {
@@ -184,12 +192,15 @@ class TaskController extends Controller
         try {
             $task = Task::find($request->id);
             $task->status = $request->status;
-            if($request->status === 'completed'){
+            if ($request->status === 'completed') {
                 $task->completed_at = now();
             }
             $task->save();
 
             LogHelper::logAction(Auth::id(), 'Task status updated');
+            if ($request->status === 'completed') {
+                $this->storeNotificationForAdmins('Task #' . $task->id . ' is completed ');
+            }
 
             return ResponseHelper::SUCCESS('Task status updated successfuly', $task,  200);
         } catch (Exception $e) {
@@ -198,3 +209,6 @@ class TaskController extends Controller
         }
     }
 }
+
+
+
