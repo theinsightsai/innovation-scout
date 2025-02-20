@@ -2,13 +2,12 @@
 import { styled } from "@mui/system";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { ERROR_TEXT, ROUTE } from "@/constants";
+import { ERROR_TEXT } from "@/constants";
 import { API } from "@/app/api/apiConstant";
 import dynamic from "next/dynamic";
 import { useState, useEffect } from "react";
 import ToastMessage from "@/components/ToastMessage";
 import { Tick } from "@/constants/assets";
-import { useRouter } from "next/navigation";
 import { UserIconSvg, EmailIconSvg, PasswordSvg } from "@/constants/assets";
 
 const FormController = dynamic(() => import("@/components/FormController"), {
@@ -42,7 +41,6 @@ const validationSchema = Yup.object({
 });
 
 const RegisterForm = () => {
-  const router = useRouter();
   const [postApi, setPostApi] = useState(null);
   const [loading, setLoading] = useState(true);
   const [successPage, setSuccessPage] = useState(false);
@@ -146,14 +144,6 @@ const RegisterForm = () => {
             <Tick />
           </div>
           <div>Registration Completed Successfully</div>
-          {/* <button
-            className={`w-[180px] py-4 px-10 rounded-full text-white transition-colors duration-500 bg-[#1A22B5] mt-10`}
-            disabled={isSubmitting || loading}
-            type="button"
-            onClick={() => router.push(ROUTE.AUTH)}
-          >
-            Login
-          </button> */}
         </div>
       ) : (
         <StyledForm
