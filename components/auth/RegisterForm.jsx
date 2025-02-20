@@ -149,12 +149,7 @@ const RegisterForm = () => {
         <StyledForm
           noValidate
           onSubmit={handleSubmit}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            width: "100%",
-          }}
+          className="flex flex-col items-center w-full mt-9 "
         >
           {REGISTER_FORM.map((fieldObj, i, arr) => {
             return (

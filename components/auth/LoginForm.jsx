@@ -120,38 +120,31 @@ const LoginForm = () => {
     formik;
 
   return (
-    <div>
-      <StyledForm
-        noValidate
-        onSubmit={handleSubmit}
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          width: "100%",
-        }}
+    <StyledForm
+      noValidate
+      onSubmit={handleSubmit}
+      className="flex flex-col items-center w-full"
+    >
+      {LOGIN_FORM.map((fieldObj, i, arr) => {
+        return (
+          <FormController
+            key={fieldObj?.id}
+            fieldObj={fieldObj}
+            values={values}
+            touched={touched}
+            errors={errors}
+            setFieldValue={setFieldValue}
+          />
+        );
+      })}
+      <button
+        className={`w-[180px] py-4 px-10 rounded-full text-white transition-colors duration-500 bg-[#1A22B5] mt-10`}
+        disabled={isSubmitting || loading}
+        type="submit"
       >
-        {LOGIN_FORM.map((fieldObj, i, arr) => {
-          return (
-            <FormController
-              key={fieldObj?.id}
-              fieldObj={fieldObj}
-              values={values}
-              touched={touched}
-              errors={errors}
-              setFieldValue={setFieldValue}
-            />
-          );
-        })}
-        <button
-          className={`w-[180px] py-4 px-10 rounded-full text-white transition-colors duration-500 bg-[#1A22B5] mt-10`}
-          disabled={isSubmitting || loading}
-          type="submit"
-        >
-          {isSubmitting ? "Loading..." : "Login"}
-        </button>
-      </StyledForm>
-    </div>
+        {isSubmitting ? "Loading..." : "Login"}
+      </button>
+    </StyledForm>
   );
 };
 

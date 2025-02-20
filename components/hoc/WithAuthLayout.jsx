@@ -64,11 +64,7 @@ const withAuthLayout = (Component) => {
     return (
       <StyledBox>
         <CssBaseline />
-
-        <div
-          className="flex-7 bg-black flex justify-center items-center"
-          style={{ flex: 7 }}
-        >
+        <div className="bg-black flex justify-center items-center hidden lg:flex lg:flex-[5] xl:flex-[7] ">
           <video
             src={IMAGES.AI_ICON}
             className="h-[60%]"
@@ -80,7 +76,11 @@ const withAuthLayout = (Component) => {
           />
         </div>
 
-        <StyledContent component={Paper} elevation={4}>
+        <StyledContent
+          component={Paper}
+          elevation={4}
+          className="pt-[58px] justify-start"
+        >
           <h1 className="text-xl mt-5 mb-2 font-outfit flex justify-center">
             Welcome to Innovation Scout
           </h1>
@@ -102,17 +102,17 @@ const withAuthLayout = (Component) => {
             })}
           </div>
 
-          <div style={{ width: "100%" }}>
+          <div className="w-full h-[65vh] min-h-[65vh] flex items-center justify-center ">
             <Component {...props} activeTab={activeTab} />
           </div>
 
-          <div style={{ color: "#B5B5B5", marginTop: "15px" }}>
-            or continue with
-          </div>
-          <div style={{ marginTop: "20px", display: "flex", gap: "10px" }}>
-            <FaceBookSvg />
-            <AppleSvgIcon />
-            <GoogleSvgIcon />
+          <div className="text-[#B5B5B5] mt-4 flex flex-col items-center">
+            <div>or continue with</div>
+            <div className="mt-5 flex gap-2">
+              <FaceBookSvg />
+              <AppleSvgIcon />
+              <GoogleSvgIcon />
+            </div>
           </div>
         </StyledContent>
       </StyledBox>
@@ -121,7 +121,3 @@ const withAuthLayout = (Component) => {
 };
 
 export default withAuthLayout;
-
-{
-  /* <img src={IMAGES.LOGO} alt="Logo" /> */
-}
