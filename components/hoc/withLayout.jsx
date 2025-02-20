@@ -17,7 +17,7 @@ const withLayout = (WrappedComponent) => {
         <Backdrop
           sx={(theme) => ({
             color: "#005B96",
-            zIndex: theme.zIndex.drawer + 1,
+            zIndex: 100000000,
           })}
           open={isLoading}
         >

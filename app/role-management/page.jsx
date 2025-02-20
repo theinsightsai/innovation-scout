@@ -84,8 +84,6 @@ const RoleManagement = () => {
     // }
   };
 
-  console.log("selectedData==>", selectedData);
-
   useEffect(() => {
     const fetchData = async () => {
       try {

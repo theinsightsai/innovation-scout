@@ -90,7 +90,6 @@ const AddEditRole = () => {
           data: { data },
         } = response;
         if (data) {
-          console.log("data==>", data);
           formik.setValues({
             title: data?.name,
             status: data?.status,

@@ -1,7 +1,7 @@
 "use client";
 
 import withLayout from "@/components/hoc/withLayout";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useSelector } from "react-redux";
 import { ExcelIcon } from "@/constants/assets";
 import {
@@ -23,6 +23,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import { DUMMY_DATA } from "@/constants/dummyData";
 
 // project import
 import {
@@ -37,31 +38,21 @@ import {
   UploadCsvModal,
 } from "@/components";
 
+import { LineChart } from "@mui/x-charts/LineChart";
+import { BarChart } from "@mui/x-charts/BarChart";
+import { ScatterChart } from "@mui/x-charts/ScatterChart";
+import { axisClasses } from "@mui/x-charts/ChartsAxis";
+import { PieChart } from "@mui/x-charts/PieChart";
+
 // assets
 import GiftOutlined from "@ant-design/icons/GiftOutlined";
 import MessageOutlined from "@ant-design/icons/MessageOutlined";
 import SettingOutlined from "@ant-design/icons/SettingOutlined";
 
-// avatar style
-const avatarSX = {
-  width: 36,
-  height: 36,
-  fontSize: "1rem",
-};
-
-// action style
-const actionSX = {
-  mt: 0.75,
-  ml: 1,
-  top: "auto",
-  right: "auto",
-  alignSelf: "flex-start",
-  transform: "none",
-};
-
 const Dashboard = () => {
   const role_id = useSelector((state) => state?.auth?.role_id);
   const [openUploadModal, setOpenUploadModal] = useState(false);
+  const [data, setData] = useState(null);
 
   const handleOpenModal = () => setOpenUploadModal(true);
   const handleCloseModal = () => setOpenUploadModal(false);
@@ -146,10 +137,269 @@ const Dashboard = () => {
           sx={{ display: { sm: "none", md: "block", lg: "none" } }}
         />
 
-        <Grid item xs={12} md={7} lg={8}>
-          <UniqueVisitorCard />
+        {data?.insights?.map((obj, i, arr) => {
+          return (
+            <Fragment key={i}>
+              {["line", "bar", "pie"].includes(
+                obj?.visualization?.chart_type
+              ) && (
+                <Grid item xs={12} md={12} lg={6} key={i}>
+                  <MainCard
+                    content={false}
+                    sx={{ mt: 1.5 }}
+                    style={{ padding: "20px" }}
+                  >
+                    <div style={{ fontSize: "20px" }}>
+                      {obj?.visualization?.title}
+                    </div>
+                    <Box
+                      sx={{ pt: 1, pr: 2 }}
+                      style={{ display: "flex", justifyContent: "center" }}
+                    >
+                      {obj?.visualization?.chart_type === "line" && (
+                        <LineChart
+                          dataset={obj?.visualization?.data}
+                          xAxis={[
+                            {
+                              dataKey: "x",
+                              scaleType: "band",
+                              label: obj?.visualization?.x_label || "X-Axis",
+                              stroke: "#1F2937", // Dark gray stroke
+                              labelStyle: {
+                                fill: "#1F2937", // Text color
+                                fontSize: "16px",
+                                fontWeight: "600",
+                                fontStyle: "italic",
+                                paddingTop: "10px",
+                              },
+                              tickLabelStyle: {
+                                fill: "#374151",
+                                fontSize: "14px",
+                              },
+                            },
+                          ]}
+                          series={[
+                            {
+                              dataKey: "y",
+                              label: obj?.visualization?.y_label || "Y-Axis",
+                              color: "#10B981", // Green line
+                              curveType: "monotone", // Smooth curved line
+                              strokeWidth: 3, // Thicker line
+                              markerShape: "circle", // Circle markers on data points
+                              markerSize: 6, // Bigger markers
+                              showMark: true, // Ensures markers appear
+                              highlightScope: {
+                                faded: "global",
+                                highlighted: "item",
+                              }, // Highlighting effect on hover
+                            },
+                          ]}
+                          height={350}
+                          margin={{ left: 40, right: 40, top: 60, bottom: 60 }}
+                          grid={{
+                            vertical: true,
+                            horizontal: true,
+                            strokeDasharray: "4 4",
+                            stroke: "#E5E7EB",
+                          }}
+                          tooltip={{
+                            enabled: true,
+                            trigger: "axis",
+                            background: "#fff",
+                            borderColor: "#E5E7EB",
+                            borderWidth: 1,
+                            borderRadius: 6,
+                            textStyle: { color: "#1F2937", fontSize: "14px" },
+                          }}
+                          legend={{
+                            position: { vertical: "top", horizontal: "center" },
+                            itemStyle: {
+                              fontSize: "14px",
+                              fontWeight: "500",
+                              color: "#374151",
+                            },
+                          }}
+                        />
+                      )}
+                      {obj?.visualization?.chart_type === "bar" && (
+                        <BarChart
+                          dataset={obj?.visualization?.data}
+                          xAxis={[
+                            {
+                              dataKey: "x",
+                              scaleType: "band",
+                              label: obj?.visualization?.x_label,
+                              stroke: "#374151", // Dark gray
+                              labelStyle: {
+                                fill: "#1F2937",
+                                fontSize: "16px",
+                                fontWeight: "600",
+                                paddingTop: "10px",
+                                fontStyle: "italic",
+                              },
+                              tickLabelStyle: {
+                                fill: "#4B5563",
+                                fontSize: "14px",
+                                fontWeight: "500",
+                              },
+                            },
+                          ]}
+                          series={[
+                            {
+                              dataKey: "y",
+                              label: obj?.visualization?.y_label,
+                              color: "#6366F1", // Soft blue
+                              highlightScope: {
+                                faded: "global",
+                                highlighted: "item",
+                              },
+                              barWidth: 30, // Custom bar width
+                              showMark: true, // Show markers at data points
+                              gradient: true, // Adds gradient effect
+                              opacity: 0.9, // Slight transparency
+                            },
+                          ]}
+                          height={350}
+                          margin={{ left: 100, right: 50, top: 50, bottom: 60 }}
+                          grid={{
+                            vertical: true,
+                            horizontal: true,
+                            strokeDasharray: "4 4",
+                            stroke: "#E5E7EB",
+                          }}
+                          tooltip={{
+                            enabled: true,
+                            trigger: "axis",
+                            background: "#fff",
+                            borderColor: "#E5E7EB",
+                            borderWidth: 1,
+                            borderRadius: 6,
+                            textStyle: { color: "#1F2937", fontSize: "14px" },
+                          }}
+                          legend={{
+                            position: { vertical: "top", horizontal: "center" },
+                            itemStyle: {
+                              fontSize: "14px",
+                              fontWeight: "500",
+                              color: "#374151",
+                            },
+                          }}
+                        />
+                      )}
+
+                      {obj?.visualization?.chart_type === "pie" && (
+                        <PieChart
+                          series={[
+                            {
+                              data: obj?.visualization?.data?.map((item) => ({
+                                id: item.x, // Using `x` as unique identifier
+                                value: item.y, // `y` is the numeric value
+                                label: item.x, // Display `x` as label
+                              })),
+                              innerRadius: 30, // Creates a donut-style effect
+                              outerRadius: 100,
+                              paddingAngle: 3, // Adds spacing between slices
+                              cornerRadius: 6, // Smooth corners
+                              cx: "50%", // Centers the chart
+                              cy: "50%",
+                              highlightScope: {
+                                faded: "global",
+                                highlighted: "item",
+                              },
+                            },
+                          ]}
+                          width={400}
+                          height={350}
+                          margin={{ left: 50, right: 50, top: 50, bottom: 50 }}
+                          legend={{
+                            position: {
+                              vertical: "bottom",
+                              horizontal: "center",
+                            },
+                            itemStyle: {
+                              fontSize: "14px",
+                              fontWeight: "500",
+                              color: "#374151",
+                            },
+                          }}
+                          tooltip={{
+                            enabled: true,
+                            background: "#fff",
+                            borderColor: "#E5E7EB",
+                            borderWidth: 1,
+                            borderRadius: 6,
+                            textStyle: { color: "#1F2937", fontSize: "14px" },
+                          }}
+                        />
+                      )}
+                    </Box>
+                    <div className="mt-2">
+                      Details<div className="mt-2">{obj.summary}</div>
+                    </div>
+                  </MainCard>
+                </Grid>
+              )}
+            </Fragment>
+          );
+        })}
+      </Grid>
+      <UploadCsvModal
+        open={openUploadModal}
+        handleClose={handleCloseModal}
+        setData={setData}
+      />
+    </>
+  );
+};
+export default withLayout(Dashboard);
+
+{
+  /* <Grid item xs={12} md={12} lg={6}>
+          <MainCard
+            content={false}
+            sx={{ mt: 1.5 }}
+            style={{ padding: "20px" }}
+          >
+            text
+            <Box sx={{ pt: 1, pr: 2 }}>
+              <LineChart
+                dataset={data?.insights?.[0]?.visualization?.data}
+                xAxis={[{ dataKey: "x", scaleType: "band" }]}
+                series={[{ dataKey: "y" }]}
+                height={300}
+                margin={{ left: 30, right: 30, top: 30, bottom: 30 }}
+                grid={{ vertical: true, horizontal: true }}
+              />
+            </Box>
+          </MainCard>
         </Grid>
-        <Grid item xs={12} md={5} lg={4}>
+        <Grid item xs={12} md={12} lg={6}>
+          <MainCard
+            content={false}
+            sx={{ mt: 1.5 }}
+            style={{ padding: "20px" }}
+          >
+            text
+            <Box sx={{ pt: 1, pr: 2 }}>
+              <LineChart
+                dataset={data?.insights?.[0]?.visualization?.data}
+                xAxis={[{ dataKey: "x", scaleType: "band" }]}
+                series={[{ dataKey: "y" }]}
+                height={300}
+                margin={{ left: 30, right: 30, top: 30, bottom: 30 }}
+                grid={{ vertical: true, horizontal: true }}
+              />
+            </Box>
+          </MainCard>
+        </Grid> */
+}
+
+{
+  /* <UniqueVisitorCard /> */
+}
+
+{
+  /* <Grid item xs={12} md={5} lg={4}>
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography variant="h5">Income Overview</Typography>
@@ -167,9 +417,11 @@ const Dashboard = () => {
             </Box>
             <MonthlyBarChart />
           </MainCard>
-        </Grid>
+        </Grid> */
+}
 
-        <Grid item xs={12} md={7} lg={8}>
+{
+  /* <Grid item xs={12} md={7} lg={8}>
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography variant="h5">Recent Orders</Typography>
@@ -179,8 +431,10 @@ const Dashboard = () => {
           <MainCard sx={{ mt: 2 }} content={false}>
             <OrdersTable />
           </MainCard>
-        </Grid>
-        <Grid item xs={12} md={5} lg={4}>
+        </Grid> */
+}
+{
+  /* <Grid item xs={12} md={5} lg={4}>
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography variant="h5">Analytics Report</Typography>
@@ -204,12 +458,16 @@ const Dashboard = () => {
             </List>
             <ReportAreaChart />
           </MainCard>
-        </Grid>
+        </Grid> */
+}
 
-        <Grid item xs={12} md={7} lg={8}>
+{
+  /* <Grid item xs={12} md={7} lg={8}>
           <SaleReportCard />
-        </Grid>
-        <Grid item xs={12} md={5} lg={4}>
+        </Grid> */
+}
+{
+  /* <Grid item xs={12} md={5} lg={4}>
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography variant="h5">Transaction History</Typography>
@@ -358,10 +616,25 @@ const Dashboard = () => {
               </Button>
             </Stack>
           </MainCard>
-        </Grid>
-      </Grid>
-      <UploadCsvModal open={openUploadModal} handleClose={handleCloseModal} />
-    </>
-  );
-};
-export default withLayout(Dashboard);
+        </Grid> */
+}
+
+// {obj?.visualization?.chart_type === "scatter" && (
+//   <ScatterChart
+//     width={500}
+//     height={300}
+//     xAxis={[{ dataKey: "x", scaleType: "band" }]}
+//     series={[{ dataKey: "y" }]}
+//     series={[
+//       ...obj?.visualization?.data?.map((minObj, i, arr) => {
+//         return {
+//           data: [minObj],
+//           label: minObj.label,
+//           id: `${i}-${minObj.label}`,
+//         };
+//       }),
+//     ]}
+//     xAxis={[{ min: 0 }]}
+//     margin={{ left: 50, right: 30, top: 100, bottom: 30 }}
+//   />
+// )}
