@@ -2,6 +2,7 @@
 import axiosInstance from "./axiosInstance";
 
 export const postApi = async (api, data, header = {}) => {
+  console.log("data==>", data);
   try {
     const response = await axiosInstance.post(api, data, { ...header });
     return {

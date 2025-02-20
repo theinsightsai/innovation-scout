@@ -18,4 +18,5 @@ export const API = {
   GET_ROLE_LIST: "/roles",
   GET_ROLE_BY_ID: "/roles",
   UPDATE_ROLE: "/role/update",
+  UPLOAD_FILE: "/data-analysis?file",
 };

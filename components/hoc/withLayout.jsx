@@ -1,20 +1,31 @@
 "use client";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
 import SideBar from "../sideBar";
 import { ROUTE } from "../../constants/index";
-import { useSelector } from "react-redux";
+import Stack from "@mui/material/Stack";
+import CircularProgress from "@mui/material/CircularProgress";
+import Backdrop from "@mui/material/Backdrop";
 
 const withLayout = (WrappedComponent) => {
   return (props) => {
+    const isLoading = useSelector((state) => state.loader.loading);
+
     return (
       <AuthWrapper>
+        <Backdrop
+          sx={(theme) => ({
+            color: "#005B96",
+            zIndex: theme.zIndex.drawer + 1,
+          })}
+          open={isLoading}
+        >
+          <CircularProgress color="#005B96" />
+        </Backdrop>
         <div className="flex min-h-screen">
           <SideBar />
-          <div
-            className="flex-1 bg-gray-100 p-6 text-black overflow-y-auto"
-            style={{ paddingTop: "100px", maxHeight: "100vh" }}
-          >
+          <div className="flex-1 bg-gray-100 p-6 text-black overflow-y-auto pt-[100px] max-h-screen">
             <WrappedComponent {...props} />
           </div>
         </div>

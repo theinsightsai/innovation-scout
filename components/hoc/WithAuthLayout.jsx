@@ -41,6 +41,7 @@ const withAuthLayout = (Component) => {
     const searchParams = useSearchParams();
     const auth = searchParams.get("auth");
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
     const [activeTab, setActiveTab] = useState(
       auth === "register"
         ? TAB_MENU?.[1]?.identifier
