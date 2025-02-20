@@ -99,23 +99,28 @@ const RegisterForm = () => {
     formik;
 
   const REGISTER_FORM = [
-    { id: "name", label: "Name", component: "TEXT", icon: <UserIconSvg /> },
+    {
+      id: "name",
+      label: "Name",
+      component: "CUSTOM_TEXT",
+      icon: <UserIconSvg />,
+    },
     {
       id: "email",
       label: "Email Address",
-      component: "TEXT",
+      component: "CUSTOM_TEXT",
       icon: <EmailIconSvg />,
     },
     {
       id: "password",
       label: "Password",
-      component: "PASSWORD",
+      component: "CUSTOM_PASSWORD",
       icon: <PasswordSvg />,
     },
     {
       id: "confirmPassword",
       label: "Confirm Password",
-      component: "PASSWORD",
+      component: "CUSTOM_PASSWORD",
       icon: <PasswordSvg />,
     },
     {

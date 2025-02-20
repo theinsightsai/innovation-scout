@@ -49,6 +49,70 @@ const FormController = ({
   return (
     <>
       {fieldObj?.component === "TEXT" && (
+        <TextField
+          key={fieldObj?.id}
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id={fieldObj.id}
+          label={fieldObj.label}
+          name={fieldObj.id}
+          autoComplete={fieldObj.id}
+          onChange={(event) => setFieldValue(fieldObj.id, event.target.value)}
+          autoFocus
+          value={values?.[fieldObj.id]}
+          error={touched?.[fieldObj.id] && Boolean(errors?.[fieldObj.id])}
+          helperText={
+            <ErrorSection
+              fieldName={fieldObj.id}
+              touched={touched}
+              errors={errors}
+            />
+          }
+          style={{ marginTop: "2px", ...FONT_STYLES }}
+        />
+      )}
+      {fieldObj?.component === "PASSWORD" && (
+        <TextField
+          key={fieldObj?.id}
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          name={fieldObj.id}
+          label={fieldObj.label}
+          type={showPassword ? "text" : "password"}
+          id={fieldObj.id}
+          autoComplete={fieldObj.id}
+          onChange={(event) => setFieldValue(fieldObj.id, event.target.value)}
+          value={values?.[fieldObj.id]}
+          error={touched?.[fieldObj.id] && Boolean(errors?.[fieldObj.id])}
+          helperText={
+            <ErrorSection
+              fieldName={fieldObj.id}
+              touched={touched}
+              errors={errors}
+            />
+          }
+          sx={{ marginTop: "0px" }}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDown}
+                  edge="end"
+                >
+                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          style={{ ...FONT_STYLES }}
+        />
+      )}
+      {fieldObj?.component === "CUSTOM_TEXT" && (
         <FormControl
           sx={{
             mt: 5,
@@ -64,7 +128,11 @@ const FormController = ({
           <OutlinedInput
             id={fieldObj.id}
             startAdornment={
-              <InputAdornment position="start">{fieldObj.icon}</InputAdornment>
+              <div className="border-r border-gray-300 pr-2 mr-2">
+                <InputAdornment position="start">
+                  {fieldObj.icon}
+                </InputAdornment>
+              </div>
             }
             name={fieldObj.id}
             autoComplete={fieldObj.id}
@@ -90,7 +158,7 @@ const FormController = ({
           <ErrorSection touched={touched} errors={errors} fieldObj={fieldObj} />
         </FormControl>
       )}
-      {fieldObj?.component === "PASSWORD" && (
+      {fieldObj?.component === "CUSTOM_PASSWORD" && (
         <FormControl
           sx={{
             mt: 5,
@@ -106,7 +174,11 @@ const FormController = ({
           <OutlinedInput
             id={fieldObj.id}
             startAdornment={
-              <InputAdornment position="start">{fieldObj.icon}</InputAdornment>
+              <div className="border-r border-gray-300 pr-2 mr-2">
+                <InputAdornment position="start">
+                  {fieldObj.icon}
+                </InputAdornment>
+              </div>
             }
             endAdornment={
               <InputAdornment position="end">
@@ -217,65 +289,3 @@ const FormController = ({
   );
 };
 export default FormController;
-
-// <TextField
-//   key={fieldObj?.id}
-//   variant="outlined"
-//   margin="normal"
-//   required
-//   fullWidth
-//   id={fieldObj.id}
-//   label={fieldObj.label}
-//   name={fieldObj.id}
-//   autoComplete={fieldObj.id}
-//   onChange={(event) => setFieldValue(fieldObj.id, event.target.value)}
-//   autoFocus
-//   value={values?.[fieldObj.id]}
-//   error={touched?.[fieldObj.id] && Boolean(errors?.[fieldObj.id])}
-//   helperText={
-//     <ErrorSection
-//       fieldName={fieldObj.id}
-//       touched={touched}
-//       errors={errors}
-//     />
-//   }
-//   style={{ marginTop: "2px", ...FONT_STYLES }}
-// />
-
-// <TextField
-//   key={fieldObj?.id}
-//   variant="outlined"
-//   margin="normal"
-//   required
-//   fullWidth
-//   name={fieldObj.id}
-//   label={fieldObj.label}
-//   type={showPassword ? "text" : "password"}
-//   id={fieldObj.id}
-//   autoComplete={fieldObj.id}
-//   onChange={(event) => setFieldValue(fieldObj.id, event.target.value)}
-//   value={values?.[fieldObj.id]}
-//   error={touched?.[fieldObj.id] && Boolean(errors?.[fieldObj.id])}
-//   helperText={
-//     <ErrorSection
-//       fieldName={fieldObj.id}
-//       touched={touched}
-//       errors={errors}
-//     />
-//   }
-//   sx={{ marginTop: "0px" }}
-//   InputProps={{
-//     endAdornment: (
-//       <InputAdornment position="end">
-//         <IconButton
-//           onClick={handleClickShowPassword}
-//           onMouseDown={handleMouseDown}
-//           edge="end"
-//         >
-//           {showPassword ? <Visibility /> : <VisibilityOff />}
-//         </IconButton>
-//       </InputAdornment>
-//     ),
-//   }}
-//   style={{ ...FONT_STYLES }}
-// />

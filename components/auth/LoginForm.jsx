@@ -93,13 +93,13 @@ const LoginForm = () => {
     {
       id: "email",
       label: "Email Address",
-      component: "TEXT",
+      component: "CUSTOM_TEXT",
       icon: <EmailIconSvg />,
     },
     {
       id: "password",
       label: "Password",
-      component: "PASSWORD",
+      component: "CUSTOM_PASSWORD",
       icon: <PasswordSvg />,
     },
     {
