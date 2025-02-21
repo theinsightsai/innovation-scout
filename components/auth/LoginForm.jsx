@@ -124,6 +124,7 @@ const LoginForm = () => {
       noValidate
       onSubmit={handleSubmit}
       className="flex flex-col items-center w-full"
+      style={{ paddingBottom: "0px" }}
     >
       {LOGIN_FORM.map((fieldObj, i, arr) => {
         return (
@@ -137,8 +138,10 @@ const LoginForm = () => {
           />
         );
       })}
+
       <button
-        className={`w-[180px] py-4 px-10 rounded-full text-white transition-colors duration-500 bg-[#1A22B5] mt-10`}
+        className="w-full max-w-[180px] py-4 px-10 rounded-full text-white transition-all duration-500 bg-primary_color border-2 border-primary_color mt-4 
+             hover:bg-white hover:text-primary_color hover:border-primary_color"
         disabled={isSubmitting || loading}
         type="submit"
       >

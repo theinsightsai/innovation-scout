@@ -128,11 +128,15 @@ const RegisterForm = () => {
       label: (
         <div className="font-outfit w-full">
           I agree to the
-          <span href="/terms" target="_blank" className="text-[#1A22B5] mx-1">
+          <span
+            href="/terms"
+            target="_blank"
+            className="text-primary_color mx-1"
+          >
             Terms and Conditions
           </span>
           <span className="mx-1">and</span>
-          <span href="/privacy" target="_blank" className="text-[#1A22B5]">
+          <span href="/privacy" target="_blank" className="text-primary_color">
             Privacy Policy
           </span>
         </div>
@@ -144,32 +148,35 @@ const RegisterForm = () => {
   return (
     <>
       {successPage ? (
-        <div className="w-full flex flex-col items-center">
+        <div className="w-full flex flex-col items-center justify-center max-w-md mx-auto text-center p-5">
           <div className="my-5">
             <Tick />
           </div>
-          <div>Registration Completed Successfully</div>
+          <div className="text-lg font-semibold">
+            Registration Completed Successfully
+          </div>
         </div>
       ) : (
         <StyledForm
           noValidate
           onSubmit={handleSubmit}
-          className="flex flex-col items-center w-full mt-9 "
+          className="flex flex-col items-center w-full max-w-lg mx-auto mt-9 p-5"
+          style={{ paddingBottom: "0px" }}
         >
-          {REGISTER_FORM.map((fieldObj, i, arr) => {
-            return (
-              <FormController
-                key={fieldObj?.id}
-                fieldObj={fieldObj}
-                values={values}
-                touched={touched}
-                errors={errors}
-                setFieldValue={setFieldValue}
-              />
-            );
-          })}
+          {REGISTER_FORM.map((fieldObj) => (
+            <FormController
+              key={fieldObj?.id}
+              fieldObj={fieldObj}
+              values={values}
+              touched={touched}
+              errors={errors}
+              setFieldValue={setFieldValue}
+            />
+          ))}
+
           <button
-            className={`w-[180px] py-4 px-10 rounded-full text-white transition-colors duration-500 bg-[#1A22B5] mt-10`}
+            className="w-full max-w-[180px] py-4 px-10 rounded-full text-white transition-all duration-500 bg-primary_color border-2 border-primary_color mt-4 
+             hover:bg-white hover:text-primary_color hover:border-primary_color"
             disabled={isSubmitting || loading}
             type="submit"
           >

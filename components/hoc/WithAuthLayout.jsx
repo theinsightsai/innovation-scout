@@ -86,13 +86,13 @@ const withAuthLayout = (Component) => {
             Welcome to Innovation Scout
           </h1>
 
-          <div className="flex mt-5 p-2 bg-[#6368D2] rounded-full">
+          <div className="flex mt-5 p-2 bg-[#C9A9FE] rounded-full">
             {TAB_MENU.map((tab, i, arr) => {
               return (
                 <button
                   className={`w-[125px] py-2 px-4 rounded-full text-white transition-colors duration-500 ${
                     activeTab === tab.identifier
-                      ? "bg-[#1A22B5]"
+                      ? "bg-primary_color"
                       : "bg-transparent"
                   }`}
                   onClick={(event) => handleTabChange(event, tab.identifier)}
@@ -107,9 +107,9 @@ const withAuthLayout = (Component) => {
             <Component {...props} activeTab={activeTab} />
           </div>
 
-          <div className="text-[#B5B5B5] mt-4 flex flex-col items-center">
+          <div className="text-[#B5B5B5] mt-1 flex flex-col items-center">
             <div>or continue with</div>
-            <div className="mt-5 flex gap-2">
+            <div className="mt-1 flex gap-2">
               <FaceBookSvg />
               <AppleSvgIcon />
               <GoogleSvgIcon />

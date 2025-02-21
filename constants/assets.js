@@ -1,3 +1,5 @@
+import { PRIMARY_COLOR } from ".";
+
 export const ExcelIcon = ({ height, width }) => {
   return (
     <svg

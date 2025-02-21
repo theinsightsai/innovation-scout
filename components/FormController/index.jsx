@@ -19,13 +19,21 @@ import dayjs from "dayjs";
 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useState } from "react";
-import { FONT_STYLES } from "@/constants";
+import { FONT_STYLES, PRIMARY_COLOR } from "@/constants";
 
 const ErrorSection = ({ touched, errors, fieldObj }) => {
   return (
     <>
       {touched?.[fieldObj?.id] && errors?.[fieldObj?.id] ? (
-        <FormHelperText>{errors[fieldObj?.id]}</FormHelperText>
+        <FormHelperText
+          style={{
+            display: "flex",
+            justifyContent: "end",
+            fontStyle: "italic",
+          }}
+        >
+          {errors[fieldObj?.id]}
+        </FormHelperText>
       ) : (
         <FormHelperText style={{ visibility: "hidden" }}>text</FormHelperText>
       )}
@@ -117,12 +125,12 @@ const FormController = ({
           sx={{
             mt: 5,
             width: "70%",
-            marginTop: "25px",
+            marginTop: "12px",
           }}
           key={fieldObj?.id}
           error={touched?.[fieldObj.id] && Boolean(errors?.[fieldObj.id])}
         >
-          <InputLabel htmlFor={fieldObj.id} sx={{ color: "#1A22B5" }}>
+          <InputLabel htmlFor={fieldObj.id} sx={{ color: PRIMARY_COLOR }}>
             {fieldObj.label} <span style={{ color: "red" }}>*</span>
           </InputLabel>
           <OutlinedInput
@@ -145,13 +153,13 @@ const FormController = ({
             sx={{
               borderRadius: "7px",
               "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#1A22B5",
+                borderColor: PRIMARY_COLOR,
               },
               "&:hover .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#1A22B5",
+                borderColor: PRIMARY_COLOR,
               },
               "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#1A22B5",
+                borderColor: PRIMARY_COLOR,
               },
             }}
           />
@@ -163,12 +171,12 @@ const FormController = ({
           sx={{
             mt: 5,
             width: "70%",
-            marginTop: "25px",
+            marginTop: "12px",
           }}
           key={fieldObj?.id}
           error={touched?.[fieldObj.id] && Boolean(errors?.[fieldObj.id])}
         >
-          <InputLabel htmlFor={fieldObj.id} sx={{ color: "#1A22B5" }}>
+          <InputLabel htmlFor={fieldObj.id} sx={{ color: PRIMARY_COLOR }}>
             {fieldObj.label} <span style={{ color: "red" }}>*</span>
           </InputLabel>
           <OutlinedInput
@@ -187,7 +195,11 @@ const FormController = ({
                   onMouseDown={handleMouseDown}
                   edge="end"
                 >
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
+                  {showPassword ? (
+                    <Visibility style={{ color: PRIMARY_COLOR }} />
+                  ) : (
+                    <VisibilityOff style={{ color: PRIMARY_COLOR }} />
+                  )}
                 </IconButton>
               </InputAdornment>
             }
@@ -202,13 +214,13 @@ const FormController = ({
             sx={{
               borderRadius: "7px",
               "& .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#1A22B5",
+                borderColor: PRIMARY_COLOR,
               },
               "&:hover .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#1A22B5",
+                borderColor: PRIMARY_COLOR,
               },
               "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#1A22B5",
+                borderColor: PRIMARY_COLOR,
               },
             }}
           />

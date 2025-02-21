@@ -10,7 +10,7 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        primary_color:"#8635FD"
+        primary_color: "#8635FD",
       },
       fontFamily: {
         outfit: ["Outfit", "sans-serif"],
