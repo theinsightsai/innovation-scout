@@ -11,12 +11,11 @@ import { API } from "@/app/api/apiConstant";
 import { showLoader, hideLoader } from "@/store/loaderSlice";
 import { useDispatch } from "react-redux";
 
-const UploadCsvModal = ({ open, handleClose, setData }) => {
+const UploadCsvModal = ({ open, handleClose, setData, setLoading }) => {
   const dispatch = useDispatch();
   const [csvFile, setCsvFile] = useState(null);
   const [openAlert, setOpenAlert] = useState(false);
   const [postApi, setPostApi] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   const onDrop = (acceptedFiles) => {
     const file = acceptedFiles[0];
@@ -37,7 +36,7 @@ const UploadCsvModal = ({ open, handleClose, setData }) => {
     const loadApi = async () => {
       const { postApi } = await import("@/app/api/clientApi");
       setPostApi(() => postApi);
-      setLoading(false);
+      // setLoading(false);
     };
 
     loadApi();
@@ -49,14 +48,17 @@ const UploadCsvModal = ({ open, handleClose, setData }) => {
   });
 
   const handleFileUpload = async () => {
+    setData(null);
     try {
-      dispatch(showLoader());
+      // dispatch(showLoader());
+      setLoading(true);
       if (!postApi) {
         ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
         return;
       }
       const formData = new FormData();
       formData.append("file", csvFile);
+      handleClose();
 
       const response = await postApi(API.UPLOAD_FILE, formData, {
         headers: {
@@ -68,12 +70,13 @@ const UploadCsvModal = ({ open, handleClose, setData }) => {
         ToastMessage("error", response?.message);
       } else if (!response?.error) {
         setData(response?.data);
-        handleClose();
       }
     } catch (error) {
       ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
     } finally {
-      dispatch(hideLoader());
+      setLoading(false);
+
+      // dispatch(hideLoader());
     }
   };
 

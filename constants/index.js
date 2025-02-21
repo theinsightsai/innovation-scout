@@ -23,6 +23,7 @@ export const IMAGES = {
   BANNER: "/assets/main-banner-bg.webp",
   LOGIN_BANNER: "/assets/login-side-banner.webp",
   AI_ICON: "/assets/AI.mp4",
+  LOADER_FILE: "/assets/loader.gif",
 };
 
 export const ERROR_TEXT = {
