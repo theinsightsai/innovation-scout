@@ -13,12 +13,15 @@ import {
   Drawer,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { IMAGES, ROUTE } from "@/constants";
+import { FONT_STYLES, IMAGES, ROUTE, LANDING_PAGE_BG } from "@/constants";
 import Link from "next/link";
 
 const NAVBAR_MENU = [
-  { label: "Register", route: `${ROUTE.AUTH}?auth=register` },
-  { label: "Login", route: ROUTE.AUTH },
+  { label: "PRICING", route: "" },
+  { label: "CONTACT", route: "" },
+  { label: "KNOW MORE", route: "" },
+  { label: "LOGIN", route: ROUTE.AUTH },
+  { label: "REGISTER", route: `${ROUTE.AUTH}?auth=register` },
 ];
 
 const drawerWidth = 240;
@@ -87,17 +90,22 @@ const Navbar = () => {
       <AppBar
         component="nav"
         style={{
-          background: "white",
+          background: LANDING_PAGE_BG,
           padding: "5px 0px ",
           transition: "transform 1s ease-in-out",
           transform: isVisible ? "translateY(0)" : "translateY(-100%)",
+          display: "flex",
+          alignItems: "center",
         }}
         position="fixed"
         className={`transition-all duration-700 ease-out transform ${
           isVisible ? "translate-y-0" : "-translate-y-full"
         }`}
       >
-        <Toolbar>
+        <Toolbar
+          sx={{ width: { xs: "90%", sm: "80%" } }}
+          style={{ padding: "0px 0px" }}
+        >
           <Typography
             variant="h6"
             component="div"
@@ -130,8 +138,15 @@ const Navbar = () => {
               flexGrow: 1,
               display: { xs: "none", sm: "block" },
             }}
+            style={{
+              color: "black",
+              fontWeight: 500,
+              lineHeight: "37.95px",
+              ...FONT_STYLES,
+            }}
           >
-            <img src={IMAGES.LOGO} alt="insight-ai" style={{ width: "12%" }} />
+            Innovative Scout
+            {/* <img src={IMAGES.LOGO} alt="insight-ai" style={{ width: "12%" }} /> */}
           </Typography>
 
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
@@ -140,7 +155,7 @@ const Navbar = () => {
                 <Link
                   key={`${menuObj.label}-${i}`}
                   href={menuObj.route}
-                  className="text-black font-medium cursor-pointer hover:text-[#005B96] mr-5"
+                  className="text-black font-medium cursor-pointer hover:text-primary_color mr-7"
                 >
                   {menuObj.label}
                 </Link>

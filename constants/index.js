@@ -20,10 +20,11 @@ export const ROUTE = {
 
 export const IMAGES = {
   LOGO: "/assets/logo.webp",
-  BANNER: "/assets/main-banner-bg.webp",
+  // BANNER: "/assets/main-banner-bg.webp",
   LOGIN_BANNER: "/assets/login-side-banner.webp",
   AI_ICON: "/assets/AI.mp4",
   LOADER_FILE: "/assets/loader.gif",
+  BANNER: "/assets/banner.png",
 };
 
 export const ERROR_TEXT = {
@@ -130,6 +131,10 @@ export const TEAM_COUNTERS_DATA = [
 export const FONT_STYLES = {
   fontFamily: "Outfit, sans-serif",
 };
+
+export const LANDING_PAGE_BG = "#F9F5FF";
+
+export const PRIMARY_COLOR = "#8635FD";
 
 export const ACTION_IDENTIFIER = {
   ADD: "add",
