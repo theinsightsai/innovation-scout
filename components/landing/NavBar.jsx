@@ -13,7 +13,13 @@ import {
   Drawer,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { FONT_STYLES, IMAGES, ROUTE, LANDING_PAGE_BG } from "@/constants";
+import {
+  FONT_STYLES,
+  IMAGES,
+  ROUTE,
+  LANDING_PAGE_BG,
+  PRIMARY_COLOR,
+} from "@/constants";
 import Link from "next/link";
 
 const NAVBAR_MENU = [
@@ -47,7 +53,7 @@ const Navbar = () => {
       sx={{
         textAlign: "center",
         height: "100vh",
-        borderRight: "5px solid #005B96",
+        borderRight: `5px solid ${PRIMARY_COLOR}`,
       }}
     >
       <Typography
@@ -56,17 +62,25 @@ const Navbar = () => {
         sx={{
           flexGrow: 1,
           display: { xs: "flex", sm: "none" },
-          justifyContent: "center",
+          // justifyContent: "center",
+        }}
+        style={{
+          padding: "15px 10px",
+          color: "black",
+          fontWeight: 500,
+          lineHeight: "37.95px",
+          ...FONT_STYLES,
         }}
       >
-        <img
+        Innovative Scout
+        {/* <img
           src={IMAGES.LOGO}
           alt="insight-ai"
           style={{
             width: "70%",
             padding: "20px 0px",
           }}
-        />
+        /> */}
       </Typography>
       <Divider />
       <List>
@@ -113,8 +127,14 @@ const Navbar = () => {
               flexGrow: 1,
               display: { xs: "flex", sm: "none" },
             }}
+            style={{
+              color: "black",
+              fontWeight: 500,
+              lineHeight: "37.95px",
+              ...FONT_STYLES,
+            }}
           >
-            <img src={IMAGES.LOGO} alt="insight-ai" style={{ width: "50%" }} />
+            Innovative Scout
           </Typography>
 
           <IconButton
@@ -124,7 +144,7 @@ const Navbar = () => {
             onClick={handleDrawerToggle}
             sx={{
               display: { sm: "none" },
-              color: "#005B96",
+              color: PRIMARY_COLOR,
               justifyContent: "end",
             }}
           >
@@ -146,7 +166,6 @@ const Navbar = () => {
             }}
           >
             Innovative Scout
-            {/* <img src={IMAGES.LOGO} alt="insight-ai" style={{ width: "12%" }} /> */}
           </Typography>
 
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
