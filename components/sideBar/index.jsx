@@ -17,7 +17,7 @@ import {
   Badge,
   MenuItem,
 } from "@mui/material";
-import { IMAGES, ROUTE, ROLE_ID_BY_NAME } from "@/constants";
+import { IMAGES, ROUTE, ROLE_ID_BY_NAME, PRIMARY_COLOR } from "@/constants";
 import MenuIcon from "@mui/icons-material/Menu";
 import HomeIcon from "@mui/icons-material/Home";
 import UploadIcon from "@mui/icons-material/Upload";
@@ -141,7 +141,7 @@ export default function SideBar() {
             key={`${menuObj?.label}-${index}`}
             disablePadding
             sx={{
-              background: pathname === menuObj.route && "#005B96",
+              background: pathname === menuObj.route && PRIMARY_COLOR,
               color: pathname === menuObj.route && "white",
               borderRadius: "0px 15px 15px 0px",
               display: menuObj?.isVisible ? "flex" : "none",
@@ -170,7 +170,7 @@ export default function SideBar() {
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
         }}
-        style={{ background: "#005B96" }}
+        style={{ background: PRIMARY_COLOR }}
       >
         <Toolbar
           sx={{
