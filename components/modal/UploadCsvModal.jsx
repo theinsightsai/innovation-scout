@@ -11,7 +11,13 @@ import { API } from "@/app/api/apiConstant";
 import { showLoader, hideLoader } from "@/store/loaderSlice";
 import { useDispatch } from "react-redux";
 
-const UploadCsvModal = ({ open, handleClose, setData, setLoading }) => {
+const UploadCsvModal = ({
+  open,
+  handleClose,
+  setData,
+  setLoading,
+  selectedService,
+}) => {
   const dispatch = useDispatch();
   const [csvFile, setCsvFile] = useState(null);
   const [openAlert, setOpenAlert] = useState(false);
@@ -48,35 +54,39 @@ const UploadCsvModal = ({ open, handleClose, setData, setLoading }) => {
   });
 
   const handleFileUpload = async () => {
-    setData(null);
-    try {
-      // dispatch(showLoader());
-      setLoading(true);
-      if (!postApi) {
-        ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
-        return;
+    if (selectedService?.identifier === "ANALYZE") {
+      setData(null);
+      try {
+        // dispatch(showLoader());
+        setLoading(true);
+        if (!postApi) {
+          ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
+          return;
+        }
+        const formData = new FormData();
+        formData.append("file", csvFile);
+        handleClose();
+
+        const response = await postApi(API.UPLOAD_FILE, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        if (response?.error) {
+          ToastMessage("error", response?.message);
+        } else if (!response?.error) {
+          setData(response?.data);
+        }
+      } catch (error) {
+        ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
+      } finally {
+        setLoading(false);
+
+        // dispatch(hideLoader());
       }
-      const formData = new FormData();
-      formData.append("file", csvFile);
-      handleClose();
-
-      const response = await postApi(API.UPLOAD_FILE, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      if (response?.error) {
-        ToastMessage("error", response?.message);
-      } else if (!response?.error) {
-        setData(response?.data);
-      }
-    } catch (error) {
-      ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
-    } finally {
-      setLoading(false);
-
-      // dispatch(hideLoader());
+    } else {
+      alert("working over this ");
     }
   };
 
@@ -130,7 +140,7 @@ const UploadCsvModal = ({ open, handleClose, setData, setLoading }) => {
               }`}
               disabled={csvFile === null}
             >
-              Upload
+              {selectedService.buttonLabel}
             </button>
           </DialogActions>
         </div>

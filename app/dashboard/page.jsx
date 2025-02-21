@@ -45,36 +45,70 @@ import { BarChart } from "@mui/x-charts/BarChart";
 import { ScatterChart } from "@mui/x-charts/ScatterChart";
 import { axisClasses } from "@mui/x-charts/ChartsAxis";
 import { PieChart } from "@mui/x-charts/PieChart";
+import AutoGraphIcon from "@mui/icons-material/AutoGraph";
+import TroubleshootIcon from "@mui/icons-material/Troubleshoot";
 
 // assets
 import GiftOutlined from "@ant-design/icons/GiftOutlined";
 import MessageOutlined from "@ant-design/icons/MessageOutlined";
 import SettingOutlined from "@ant-design/icons/SettingOutlined";
 
+const HEADER_IDENTIFIER = {
+  ANALYZE: "ANALYZE",
+  FORECAST: "FORECAST",
+};
+
+const BUTTON_CONSTANT = [
+  {
+    label: "Analyze & Visual",
+    identifier: HEADER_IDENTIFIER.ANALYZE,
+    icon: <AutoGraphIcon />,
+  },
+  {
+    label: "Forecast",
+    identifier: HEADER_IDENTIFIER.FORECAST,
+    icon: <TroubleshootIcon />,
+  },
+];
+
 const Dashboard = () => {
   const role_id = useSelector((state) => state?.auth?.role_id);
   const [openUploadModal, setOpenUploadModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState(null);
-  const [counter, setCounter] = useState(0);
   const [showMessage, setShowMessage] = useState(false);
-  const [newData, setNewData] = useState([]);
+  const [selectedService, setSelectedService] = useState({});
 
-  const handleOpenModal = () => setOpenUploadModal(true);
-  const handleCloseModal = () => setOpenUploadModal(false);
+  const handleCloseModal = () => {
+    setSelectedService({});
+    setOpenUploadModal(false);
+  };
 
-  console.log("newData==>", newData);
+  const handleOpenModal = (event, obj) => {
+    if (obj.identifier === HEADER_IDENTIFIER.ANALYZE) {
+      setSelectedService({
+        buttonLabel: obj.label,
+        identifier: obj.identifier,
+      });
+    } else if (obj.identifier === HEADER_IDENTIFIER.FORECAST) {
+      setSelectedService({
+        buttonLabel: obj.label,
+        identifier: obj.identifier,
+      });
+    } else {
+      console.log("Handle the array button click");
+    }
+    setOpenUploadModal(true);
+  };
 
   useEffect(() => {
     let timer;
 
     if (loading) {
-      setCounter(7);
       timer = setTimeout(() => {
         setShowMessage(true);
       }, 7000);
     } else {
-      setCounter(0);
       setShowMessage(false);
       clearTimeout(timer);
     }
@@ -88,9 +122,11 @@ const Dashboard = () => {
         <Grid item xs={12} sx={{ mb: -2.25 }}>
           <PageHeader
             text="Home"
-            buttonText="Upload CSV"
-            onButtonClick={handleOpenModal}
+            buttonText=""
+            onButtonClick={() => {}}
             icon={<ExcelIcon height={30} width={30} />}
+            buttonArray={BUTTON_CONSTANT}
+            onArrayButtonClick={handleOpenModal}
           />
         </Grid>
 
@@ -172,7 +208,7 @@ const Dashboard = () => {
               alignItems: "center",
             }}
           >
-            <div>Upload file to analysis CSV</div>
+            <div>Upload file to Analysis or Forecast CSV</div>
           </div>
         )}
 
@@ -455,6 +491,7 @@ const Dashboard = () => {
           })}
       </Grid>
       <UploadCsvModal
+        selectedService={selectedService}
         setLoading={setLoading}
         open={openUploadModal}
         handleClose={handleCloseModal}
