@@ -17,6 +17,7 @@ const UploadCsvModal = ({
   setData,
   setLoading,
   selectedService,
+  setForeCastingData,
 }) => {
   const dispatch = useDispatch();
   const [csvFile, setCsvFile] = useState(null);
@@ -82,11 +83,40 @@ const UploadCsvModal = ({
         ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
       } finally {
         setLoading(false);
-
         // dispatch(hideLoader());
       }
     } else {
-      alert("working over this ");
+      setData(null);
+      try {
+        // dispatch(showLoader());
+        setLoading(true);
+        if (!postApi) {
+          ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);
+          return;
+        }
+        const formData = new FormData();
+        formData.append("file", csvFile);
+        formData.append("column", "sales");
+        formData.append("periods", 3);
+        handleClose();
+
+        const response = await postApi(API.FORCASTING, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        if (response?.error) {
+          ToastMessage("error", response?.message);
+        } else if (!response?.error) {
+          setForeCastingData(response?.data);
+        }
+      } catch (error) {
+        ToastMessage("error", ERROR_TEXT.SOMETHING_WENT_WRONG);
+      } finally {
+        setLoading(false);
+        // dispatch(hideLoader());
+      }
     }
   };
 

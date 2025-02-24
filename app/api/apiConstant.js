@@ -19,4 +19,5 @@ export const API = {
   GET_ROLE_BY_ID: "/roles",
   UPDATE_ROLE: "/role/update",
   UPLOAD_FILE: "/data-analysis?file",
+  FORCASTING: "/data-forecasting",
 };

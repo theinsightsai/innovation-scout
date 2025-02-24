@@ -27,3 +27,5 @@ export { default as ConfirmationModal } from "./modal/ConfirmationModal";
 export { default as ProfileUpload } from "./ProfileUpload";
 export { default as CustomOptions } from "./CustomOptions";
 export { default as CustomFilter } from "./CustomFilter";
+export { default as ForecastTable } from "./ForecastTable";
+export { default as AnaVisual } from "./AnaVisual";
