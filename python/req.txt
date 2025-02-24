@@ -4,3 +4,7 @@ openai
 prophet
 pandas
 matplotlib
+plotly
+
+
+

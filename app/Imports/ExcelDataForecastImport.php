@@ -34,16 +34,16 @@ class ExcelDataForecastImport implements ToCollection, WithHeadingRow, SkipsEmpt
         $rows = $rows->toArray();
 
         // Check for duplicate rows
-        if (count($rows) !== count(array_unique($rows, SORT_REGULAR))) {
-            throw ValidationException::withMessages([
-                'error' => ['Duplicate rows found in the Excel file.']
-            ]);
-        }
+        // if (count($rows) !== count(array_unique($rows, SORT_REGULAR))) {
+        //     throw ValidationException::withMessages([
+        //         'error' => ['Duplicate rows found in the Excel file.']
+        //     ]);
+        // }
         // Validate each row
         foreach ($rows as $row) {
             $validator = Validator::make($row, [
                 'date' => 'required|date',
-                $this->column => 'required|numeric'
+                $this->column => 'required'
             ]);
 
             if ($validator->fails()) {
@@ -51,8 +51,6 @@ class ExcelDataForecastImport implements ToCollection, WithHeadingRow, SkipsEmpt
                     'error' => $validator->getMessageBag()->first()
                 ]);
             }
-
-           
             $this->data[] = [
                 'ds' => $row['date'],
                 'y' => $row[$this->column]

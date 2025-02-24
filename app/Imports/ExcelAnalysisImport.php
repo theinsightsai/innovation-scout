@@ -30,13 +30,13 @@ class ExcelAnalysisImport implements ToCollection, WithHeadingRow, SkipsEmptyRow
         $data = $rows->toArray();
 
         // Check for duplicate rows
-        if (count($data) !== count(array_unique($data, SORT_REGULAR))) {
-            throw ValidationException::withMessages([
-                'error' => ['Duplicate rows found in the Excel file.']
-            ]);
-        }
+        // if (count($data) !== count(array_unique($data, SORT_REGULAR))) {
+        //     throw ValidationException::withMessages([
+        //         'error' => ['Duplicate rows found in the Excel file.']
+        //     ]);
+        // }
 
-        $this->data = $rows;
+        $this->data = $data;
 
     }
 
