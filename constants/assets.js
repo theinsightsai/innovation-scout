@@ -221,3 +221,61 @@ export const PasswordSvg = () => {
     </svg>
   );
 };
+
+export const ZikZackSvg = () => {
+  return (
+    <svg
+      width="1782"
+      height="543"
+      viewBox="0 0 1782 543"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <g filter="url(#filter0_d_64_17)">
+        <path
+          d="M-36 253C79.1667 197.167 386.8 174.5 356 308.5C317.5 476 250.5 354 291 289.5C331.5 225 594 51.4998 690 224C766.8 362 442.5 459 652 518.5C861.5 578 771.5 101.5 902 106.5C1032.5 111.5 1014 656 1322.5 506.5C1631 357 1116.5 89.9998 1201 31.9999C1285.5 -26.0001 1687.5 18.4999 1777 31.9999"
+          stroke="#6367F2"
+          stroke-width="4"
+          shape-rendering="crispEdges"
+        />
+      </g>
+      <defs>
+        <filter
+          id="filter0_d_64_17"
+          x="-40.8725"
+          y="0.951904"
+          width="1822.17"
+          height="541.519"
+          filterUnits="userSpaceOnUse"
+          color-interpolation-filters="sRGB"
+        >
+          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feColorMatrix
+            in="SourceAlpha"
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+            result="hardAlpha"
+          />
+          <feOffset dy="4" />
+          <feGaussianBlur stdDeviation="2" />
+          <feComposite in2="hardAlpha" operator="out" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
+          />
+          <feBlend
+            mode="normal"
+            in2="BackgroundImageFix"
+            result="effect1_dropShadow_64_17"
+          />
+          <feBlend
+            mode="normal"
+            in="SourceGraphic"
+            in2="effect1_dropShadow_64_17"
+            result="shape"
+          />
+        </filter>
+      </defs>
+    </svg>
+  );
+};
