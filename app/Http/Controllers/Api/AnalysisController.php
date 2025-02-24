@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Helpers\LogHelper;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Imports\ExcelAnalysisImport;
@@ -65,6 +66,7 @@ class AnalysisController extends Controller
                     'periods' => ($request->periods * 30)
 
                 ]);
+                LogHelper::logAction(Auth::id(), 'Forecasting request');
                 return $response;
             }
         } catch (ValidationException $e) {
@@ -100,6 +102,8 @@ class AnalysisController extends Controller
             'data' => $data,
             'prompt' => 'profit and loss'
         ]);
+        LogHelper::logAction(Auth::id(), 'Data analysis request');
+
         return $response;
     }
 
@@ -128,7 +132,8 @@ class AnalysisController extends Controller
                 Excel::import($import, $filePath);
                 $data->columns = $import->getHeaders();
 
-            
+                LogHelper::logAction(Auth::id(), 'Excel file uploaded');
+
                 return ResponseHelper::SUCCESS('File uploaded successfuly', $data);
             }
         } catch (Exception $e) {
@@ -168,6 +173,8 @@ class AnalysisController extends Controller
                     'periods' => ($request->periods * 30)
 
                 ]);
+                LogHelper::logAction(Auth::id(), 'New Dataforecasting api request');
+
                 return $response;
             }
         } catch (ValidationException $e) {

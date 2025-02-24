@@ -65,7 +65,6 @@ def forecast():
 
 
 
-
 @app.route('/data', methods=['POST'])
 def analyze_json_data():
     try:
@@ -79,104 +78,82 @@ def analyze_json_data():
         data = req_data['data']
         user_prompt = req_data['prompt']
 
-        # Construct the messages list with explicit mention of JSON
-        # prompt = [
-        #     {
-        #         "role": "system",
-        #         "content": "You are an advanced AI assistant skilled in data analysis.  Always return your findings in a well-structured JSON format."
-        #     },
-        #     {
-        #         "role": "user",
-        #         "content": "Please analyze the following dataset to extract meaningful insights. Depending on the type of data, your analysis should cover:"
-        #     },
-        #     {
-        #         "role": "user",
-        #         "content": "- **Time-Series Data**: Identify trends over time, seasonality, and provide potential forecasting insights."
-        #     },
-        #     {
-        #         "role": "user",
-        #         "content": "- **Financial Data**: Evaluate revenue streams, analyze expenses, and calculate profitability metrics."
-        #     },
-        #     {
-        #         "role": "user",
-        #         "content": "- **Customer/Sales Data**: Summarize customer purchase behavior, product demand trends, and identify key customer segments."
-        #     },
-        #     {
-        #         "role": "user",
-        #         "content": "- **Operational Data**: Uncover inefficiencies, highlight patterns, and provide recommendations for process improvements."
-        #     },
-        #     {
-        #         "role": "user",
-        #         "content": "- **Text Data**: Conduct sentiment analysis, extract key topics, and identify emerging themes."
-        #     },
-        #     {
-        #         "role": "user",
-        #         "content": "Ensure that all insights are presented in a clear, concise JSON format, and include relevant visualizations or statistical summaries if applicable."
-        #     },
-        #     {
-        #         "role": "user",
-        #         "content": f"Data to analyze: {json.dumps(data)}"
-        #     }
-        # ]
         prompt = [
-            {
-                "role": "system",
-                "content": (
-                    "You are an advanced AI assistant skilled in data analysis and visualization. "
-                    "Your task is to analyze datasets and provide structured insights in JSON format. "
-                    "For each analysis, suggest an appropriate visualization type (e.g., line chart, bar chart, scatter plot). "
-                    "Ensure the output includes labeled data for easy plotting."
-                )
-            },
-            {
-                "role": "user",
-                "content": "Analyze the following dataset and provide meaningful insights. Your analysis should cover:"
-            },
-            {
-                "role": "user",
-                "content": "- **Time-Series Data**: Identify trends, seasonality, and cyclical patterns. Suggest a line chart or area plot."
-            },
-            {
-                "role": "user",
-                "content": "- **Financial Data**: Evaluate revenue trends, expense breakdowns, and profitability metrics. Suggest bar charts or pie charts."
-            },
-            {
-                "role": "user",
-                "content": "- **Customer/Sales Data**: Identify purchase behavior, product demand trends, and customer segmentation. Suggest scatter plots or heatmaps."
-            },
-            {
-                "role": "user",
-                "content": "- **Operational Data**: Highlight process inefficiencies, workload distribution, and performance metrics. Suggest histograms or bar charts."
-            },
-            {
-                "role": "user",
-                "content": "- **Text Data**: Conduct sentiment analysis, extract key topics, and identify emerging themes. Suggest word clouds or bar charts."
-            },
-            {
-                "role": "user",
-                "content": (
-                    "Ensure that all insights are presented in a structured JSON format. "
-                    "For each insight, include a recommended visualization type and properly formatted data for graphing. "
-                    "The output should follow this structure:\n\n"
-                    "{\n"
-                    '  "insights": [...],\n'
-                    '  "visualizations": [\n'
-                    "    {\n"
-                    '      "title": "Graph Title",\n'
-                    '      "chart_type": "bar",\n'
-                    '      "x_label": "Category",\n'
-                    '      "y_label": "Value",\n'
-                    '      "data": [{"x": "Label1", "y": 123}, {"x": "Label2", "y": 456}]\n'
-                    "    }\n"
-                    "  ]\n"
-                    "}"
-                )
-            },
-            {
-                "role": "user",
-                "content": f"Data to analyze: {json.dumps(data)}"
-            }
-        ]
+    {
+        "role": "system",
+        "content": (
+            "You are an advanced AI assistant specializing in data analysis and visualization. "
+            "Your task is to analyze datasets and generate structured insights in JSON format, "
+            "with a corresponding visualization for each insight. "
+            "Ensure all visualizations follow a standardized data format for easy graph rendering."
+        )
+    },
+    {
+        "role": "user",
+        "content": "Analyze the following dataset and provide structured insights along with visualizations. "
+                   "Each insight should contain a detailed explanation and a recommended chart with well-formatted data."
+    },
+    {
+        "role": "user",
+        "content": "- **Time-Series Data**: Identify trends, seasonality, and patterns. Use a line chart or area plot."
+    },
+    {
+        "role": "user",
+        "content": "- **Financial Data**: Analyze revenue, expenses, and profitability. Use bar charts or pie charts."
+    },
+    {
+        "role": "user",
+        "content": "- **Customer/Sales Data**: Identify purchase trends and segment customers. Use scatter plots or heatmaps."
+    },
+    {
+        "role": "user",
+        "content": "- **Operational Data**: Evaluate workload distribution and inefficiencies. Use histograms or bar charts."
+    },
+    {
+        "role": "user",
+        "content": "- **Text Data**: Conduct sentiment analysis, extract key topics, and identify emerging themes. Use word clouds or bar charts."
+    },
+    {
+        "role": "user",
+        "content": (
+            "Each insight must contain:\n"
+            "1. A brief summary explaining the finding.\n"
+            "2. A visualization section containing:\n"
+            "   - `chart_type`: The type of chart (bar, line, scatter, pie, heatmap, etc.).\n"
+            "   - `x_label`: Label for the x-axis.\n"
+            "   - `y_label`: Label for the y-axis.\n"
+            "   - `data`: A list of objects with `{ \"x\": <value>, \"y\": <value> }` format for consistency.\n\n"
+            "Ensure that all charts use the same data structure for easy rendering."
+        )
+    },
+    {
+        "role": "user",
+        "content": (
+            "The final JSON response should be structured like this:\n\n"
+            "{\n"
+            '  "insights": [\n'
+            "    {\n"
+            '      "summary": "Brief explanation of the insight.",\n'
+            '      "visualization": {\n'
+            '        "title": "Graph Title",\n'
+            '        "chart_type": "bar",\n'
+            '        "x_label": "Category",\n'
+            '        "y_label": "Value",\n'
+            '        "data": [\n'
+            '          {"x": "Category 1", "y": 120},\n'
+            '          {"x": "Category 2", "y": 300}\n'
+            "        ]\n"
+            "      }\n"
+            "    }\n"
+            "  ]\n"
+            "}"
+        )
+    },
+    {
+        "role": "user",
+        "content": f"Data to analyze: {json.dumps(data)}"
+    }
+]
 
         # Call OpenAI API (new method)
         client = openai.OpenAI(api_key=OPENAI_API_KEY)
@@ -201,4 +178,4 @@ def analyze_json_data():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=5001)
