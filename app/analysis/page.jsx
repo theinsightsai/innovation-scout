@@ -6,7 +6,7 @@
 const Analysis = () => {
   return (
     <>
-    Analysis
+      Analysis
       {/* <PageHeader text="Analysis" />
       <Paper elevation={3} className="mt-5 p-10">
         test
