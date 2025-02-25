@@ -5,6 +5,8 @@ prophet
 pandas
 matplotlib
 plotly
+python-dotenv
+
 
 
 

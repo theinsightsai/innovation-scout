@@ -183,4 +183,29 @@ class AnalysisController extends Controller
             return ResponseHelper::ERROR($e->getMessage());
         }
     }
+
+
+    #--- SENTIMENT ANALYSIS ----#
+    public function sentimentAnalysis(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'text' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return ResponseHelper::ERROR($validator->errors()->first());
+        }
+
+        try {
+            $response = Http::timeout(300)->withHeaders([
+                'Accept' => 'application/json',
+            ])->post($this->PYTHON_URL . '/sentiment-analysis', [
+                'data' => $request->text
+            ]);
+            
+            return $response;
+        } catch (Exception) {
+            ResponseHelper::ERROR('Something went wrong');
+        }
+    }
 }

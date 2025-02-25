@@ -3,15 +3,22 @@ import matplotlib.pyplot as plt
 import base64
 import io
 import requests
-import openai
+from openai import OpenAI
 from prophet import Prophet
 import pandas as pd
 from flask import Flask, jsonify, request
+import os
+from dotenv import load_dotenv
 import matplotlib
 matplotlib.use('Agg')  # Use non-interactive backend
 
 
 app = Flask(__name__)
+
+load_dotenv()
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
 
 
 @app.route('/', methods=['GET'])
@@ -33,7 +40,7 @@ def forecast():
         periods = data['periods']
 
         # Train Prophet Model
-        model = Prophet()
+        model = Prophet(growth='linear',daily_seasonality=True,weekly_seasonality=True, yearly_seasonality=True)
         model.fit(df)
 
         # Predict
@@ -41,9 +48,9 @@ def forecast():
         forecast = model.predict(future)
         forecast_json = forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].to_dict(
             orient="records")
-
+        
         fig = model.plot_components(forecast)
-
+        
         # Convert the plot to a Base64 string
         img_bytes = io.BytesIO()
         fig.savefig(img_bytes, format='png')  # Save as PNG
@@ -53,7 +60,7 @@ def forecast():
 
         # Close the plot to free memory
         plt.close(fig)
-
+        
         # Return JSON response with forecast data & image
         return jsonify({
             'forecast': forecast_json,
@@ -156,9 +163,9 @@ def analyze_json_data():
 ]
 
         # Call OpenAI API (new method)
-        client = openai.OpenAI(api_key=OPENAI_API_KEY)
+        client = OpenAI(api_key=OPENAI_API_KEY)
         response = client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-4o-2024-08-06",
             messages=prompt,
             response_format={
                 "type": "json_object"
@@ -176,6 +183,30 @@ def analyze_json_data():
     except Exception as e:
         return jsonify({"error": "Internal Server Error", "details": str(e)}), 500
 
+
+@app.route('/sentiment-analysis', methods=['POST'])
+def analyze_sentiment():
+    try:
+        req_data = request.get_json()
+        data = req_data['data']
+        
+        client = OpenAI(api_key=OPENAI_API_KEY)
+        response = client.chat.completions.create(
+            model="gpt-4o-2024-08-06",
+            messages=[
+                {"role": "system", "content": "You are a sentiment analyzer. Analyze the sentiment as Positive, Negative, or Neutral."},
+                {"role": "system", "content": "Always return only one word from these Positive, Negative, or Neutral."},
+                {"role": "user", "content": f"Analyze the sentiment of the following text: '{data}'"}
+            ],
+            max_tokens=1
+        )
+        # print(response)
+        sentiment = response.choices[0].message.content.strip()
+
+        return jsonify({"sentiment": sentiment})
+
+    except Exception as e:
+        return jsonify({"error": "Internal Server Error", "details": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

@@ -65,7 +65,7 @@ class AuthController extends Controller
             }
             return ResponseHelper::ERROR('Email or password not match');
         } catch (Exception $e) {
-
+            dd($e);
             return ResponseHelper::ERROR($this->exceptionMessage);
         }
     }

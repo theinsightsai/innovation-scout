@@ -46,7 +46,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('data-analysis', [AnalysisController::class, 'analysis']);
 
     Route::post('data-forecasting', [AnalysisController::class, 'index']);
+
     Route::post('v1/data-forecasting', [AnalysisController::class, 'forecastingVersion1']);
+    Route::post('sentiment-analysis', [AnalysisController::class, 'sentimentAnalysis']);
 });
 
 
