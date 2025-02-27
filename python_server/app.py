@@ -10,6 +10,7 @@ from flask import Flask, jsonify, request
 import os
 from dotenv import load_dotenv
 import matplotlib
+from bs4 import BeautifulSoup
 matplotlib.use('Agg')  # Use non-interactive backend
 
 
@@ -86,81 +87,70 @@ def analyze_json_data():
         user_prompt = req_data['prompt']
 
         prompt = [
-    {
-        "role": "system",
-        "content": (
-            "You are an advanced AI assistant specializing in data analysis and visualization. "
-            "Your task is to analyze datasets and generate structured insights in JSON format, "
-            "with a corresponding visualization for each insight. "
-            "Ensure all visualizations follow a standardized data format for easy graph rendering."
-        )
-    },
-    {
-        "role": "user",
-        "content": "Analyze the following dataset and provide structured insights along with visualizations. "
-                   "Each insight should contain a detailed explanation and a recommended chart with well-formatted data."
-    },
-    {
-        "role": "user",
-        "content": "- **Time-Series Data**: Identify trends, seasonality, and patterns. Use a line chart or area plot."
-    },
-    {
-        "role": "user",
-        "content": "- **Financial Data**: Analyze revenue, expenses, and profitability. Use bar charts or pie charts."
-    },
-    {
-        "role": "user",
-        "content": "- **Customer/Sales Data**: Identify purchase trends and segment customers. Use scatter plots or heatmaps."
-    },
-    {
-        "role": "user",
-        "content": "- **Operational Data**: Evaluate workload distribution and inefficiencies. Use histograms or bar charts."
-    },
-    {
-        "role": "user",
-        "content": "- **Text Data**: Conduct sentiment analysis, extract key topics, and identify emerging themes. Use word clouds or bar charts."
-    },
-    {
-        "role": "user",
-        "content": (
-            "Each insight must contain:\n"
-            "1. A brief summary explaining the finding.\n"
-            "2. A visualization section containing:\n"
-            "   - `chart_type`: The type of chart (bar, line, scatter, pie, heatmap, etc.).\n"
-            "   - `x_label`: Label for the x-axis.\n"
-            "   - `y_label`: Label for the y-axis.\n"
-            "   - `data`: A list of objects with `{ \"x\": <value>, \"y\": <value> }` format for consistency.\n\n"
-            "Ensure that all charts use the same data structure for easy rendering."
-        )
-    },
-    {
-        "role": "user",
-        "content": (
-            "The final JSON response should be structured like this:\n\n"
-            "{\n"
-            '  "insights": [\n'
-            "    {\n"
-            '      "summary": "Brief explanation of the insight.",\n'
-            '      "visualization": {\n'
-            '        "title": "Graph Title",\n'
-            '        "chart_type": "bar",\n'
-            '        "x_label": "Category",\n'
-            '        "y_label": "Value",\n'
-            '        "data": [\n'
-            '          {"x": "Category 1", "y": 120},\n'
-            '          {"x": "Category 2", "y": 300}\n'
-            "        ]\n"
-            "      }\n"
-            "    }\n"
-            "  ]\n"
-            "}"
-        )
-    },
-    {
-        "role": "user",
-        "content": f"Data to analyze: {json.dumps(data)}"
-    }
-]
+            {
+                "role": "system",
+                "content": (
+                    "You are an AI specializing in data analysis and visualization. "
+                    "Analyze datasets and generate structured insights in JSON format, "
+                    "with a matching visualization for each insight using a standardized format."
+                )
+            },
+            {
+                "role": "user",
+                "content": "Analyze the dataset and provide structured insights with visualizations. "
+                        "Ensure each insight includes a summary and a well-formatted chart."
+            },
+            {
+                "role": "user",
+                "content": (
+                    "- **Time-Series**: Identify trends and seasonality (line/area chart).\n"
+                    "- **Financial Data**: Analyze revenue, expenses, and profitability (bar/pie chart).\n"
+                    "- **Sales Data**: Identify purchase trends and segments (scatter/heatmap).\n"
+                    "- **Operations**: Evaluate inefficiencies and workload (histogram/bar chart).\n"
+                    "- **Text Data**: Perform sentiment analysis and key topic extraction (word cloud/bar chart)."
+                )
+            },
+            {
+                "role": "user",
+                "content": (
+                    "Each insight must contain:\n"
+                    "1. A summary of findings.\n"
+                    "2. A visualization with:\n"
+                    "   - `chart_type`: (bar, line, scatter, pie, heatmap, etc.).\n"
+                    "   - `x_label`, `y_label`: Axis labels.\n"
+                    "   - `data`: List of `{ \"x\": <value>, \"y\": <value> }` objects for consistency."
+                )
+            },
+            {
+                "role": "user",
+                "content": (
+                    "Format response as:\n"
+                    "{\n"
+                    '  "insights": [\n'
+                    "    {\n"
+                    '      "summary": "Insight explanation.",\n'
+                    '      "visualization": {\n'
+                    '        "title": "Graph Title",\n'
+                    '        "chart_type": "bar",\n'
+                    '        "x_label": "Category",\n'
+                    '        "y_label": "Value",\n'
+                    '        "data": [{"x": "A", "y": 120}, {"x": "B", "y": 300}]\n'
+                    "      }\n"
+                    "    }\n"
+                    "  ]\n"
+                    "}"
+                )
+            },
+            {
+                "role": "user",
+                "content": f"Dataset: {json.dumps(data)}"
+            },
+            {
+                "role": "user",
+                "content": f"Additional user prompt: {user_prompt}"
+            }
+        ]
+
 
         # Call OpenAI API (new method)
         client = OpenAI(api_key=OPENAI_API_KEY)
@@ -207,6 +197,77 @@ def analyze_sentiment():
 
     except Exception as e:
         return jsonify({"error": "Internal Server Error", "details": str(e)}), 500
+    
+   
+   
+def scrape_website(url):
+    """Scrapes the given URL and collects all HTML tag data."""
+    headers = {
+        "User -Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+    }
+    
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()  # Raise an error for bad responses (4xx, 5xx)
+    except requests.RequestException as e:
+        return {"error": f"Failed to fetch {url}", "details": str(e)}
+
+    soup = BeautifulSoup(response.text, "html.parser")
+    
+    scraped_data = {"url": url, "data": {}}
+
+    # Collect all tags and their text content
+    for tag in soup.find_all(True):  # True finds all tags
+        tag_name = tag.name
+        tag_content = tag.get_text(strip=True)
+        
+        if tag_name not in scraped_data["data"]:
+            scraped_data["data"][tag_name] = []
+        
+        scraped_data["data"][tag_name].append(tag_content)
+
+    return scraped_data
+
+def format_data_with_gpt(scraped_data):
+    """Uses OpenAI GPT-4 to format and structure scraped data."""
+    prompt = f"""
+    Here is the raw scraped data: {json.dumps(scraped_data, indent=2)}
+    Clean and structure this data into a well-organized JSON format.
+    """
+    
+    client = OpenAI(api_key=OPENAI_API_KEY)
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": "You are a data processing assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0
+    )
+    
+    formatted_data = response.choices[0].message['content']
+    return json.loads(formatted_data)
+
+@app.route("/scrape", methods=["POST"])
+def scrape():
+   
+    data = request.get_json()
+    urls = data.get("urls", [])
+    fields = data.get("fields", [])
+
+    # Validate input
+    if not urls or not isinstance(urls, list):
+        return jsonify({"error": "Invalid input. Expecting a list of URLs."}), 400
+    if not fields or not isinstance(fields, list):
+        return jsonify({"error": "Invalid input. Expecting a list of fields."}), 400
+
+    # Scrape data from multiple URLs
+    scraped_results = {url: scrape_website(url) for url in urls}
+
+    # Format data using GPT
+    # formatted_results = format_data_with_gpt(scraped_results)
+
+    return jsonify(scraped_results)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Helpers\LogHelper;
 use App\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
+use App\Imports\DataAnalysisImport;
 use App\Imports\ExcelAnalysisImport;
 use App\Imports\ExcelDataForecastImport;
 use App\Imports\ForeCastingDataImport;
@@ -15,6 +16,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
@@ -107,6 +109,60 @@ class AnalysisController extends Controller
         return $response;
     }
 
+    #---- ANALYSIS DATA USING AI AND PYTHON NEW  -----#
+    public function analysisV1(Request $request)
+    {
+        $startTime = microtime(true); // Start time for Laravel request
+
+        $validator = Validator::make($request->all(), [
+            'file_id' => 'required|exists:user_files,id',
+            'prompt' => 'nullable'
+        ]);
+
+        if ($validator->fails()) {
+            return ResponseHelper::ERROR($validator->errors()->first());
+        }
+
+        try {
+            $fileStartTime = microtime(true); // Start time for file processing
+
+            $file = UserFile::where('user_id', Auth::id())->where('id', $request->file_id)->first()->file;
+            $filePath = storage_path('app/public/' . $file);
+
+            $import = new DataAnalysisImport();
+            Excel::import($import, $filePath);
+            $data = $import->getJsonData();
+
+            $fileEndTime = microtime(true); // End time for file processing
+            $fileProcessingTime = $fileEndTime - $fileStartTime;
+            Log::info("File processing time: {$fileProcessingTime} seconds");
+        } catch (ValidationException $e) {
+            return ResponseHelper::ERROR($e->getMessage());
+        }
+
+        $pythonStartTime = microtime(true); // Start time for Python API request
+
+        $response = Http::timeout(300)->withHeaders([
+            'Accept' => 'application/json',
+        ])->post($this->PYTHON_URL . '/data', [
+            'data' => $data,
+            'prompt' => 'profit and loss'
+        ]);
+
+        $pythonEndTime = microtime(true); // End time for Python API request
+        $pythonResponseTime = $pythonEndTime - $pythonStartTime;
+        Log::info("Python API response time: {$pythonResponseTime} seconds");
+
+        LogHelper::logAction(Auth::id(), 'Data analysis request');
+
+        $endTime = microtime(true); // End time for full Laravel request
+        $totalExecutionTime = $endTime - $startTime;
+        Log::info("Total Laravel request execution time: {$totalExecutionTime} seconds");
+
+        return $response;
+    }
+
+
     #---- UPLOAD FILE ----#
     public function upload(Request $request)
     {
@@ -157,7 +213,7 @@ class AnalysisController extends Controller
         }
 
         try {
-            $file = UserFile::find($request->file_id)->file;
+            $file = UserFile::where('user_id', Auth::id())->where('id', $request->file_id)->first()->file;
             $filePath = storage_path('app/public/' . $file);
 
             $import = new ForeCastingDataImport(Str::lower($request->date_column), Str::lower($request->value_column));
@@ -202,7 +258,7 @@ class AnalysisController extends Controller
             ])->post($this->PYTHON_URL . '/sentiment-analysis', [
                 'data' => $request->text
             ]);
-            
+
             return $response;
         } catch (Exception) {
             ResponseHelper::ERROR('Something went wrong');

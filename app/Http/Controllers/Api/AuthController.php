@@ -36,14 +36,12 @@ class AuthController extends Controller
             if ($user) {
                 $user->token = $user->createToken($user->name . '-AuthToken')->plainTextToken;
             }
-            LogHelper::logAction($user->id, 'User Registration');
+        LogHelper::logAction($user->id, 'User Registration');
             return ResponseHelper::SUCCESS('User register successfuly', $user);
         } catch (Exception $e) {
             return ResponseHelper::ERROR($this->exceptionMessage);
         }
     }
-
-
 
     #--- User Login ---#
     public function login(Request $request)
@@ -70,10 +68,9 @@ class AuthController extends Controller
         }
     }
 
-
     #---- LOGOUT ----#
     public function logout(Request $request)
-    {
+   {
         LogHelper::logAction(Auth::id(), 'User Logout');
         Auth::user()->tokens()->delete();
         return ResponseHelper::SUCCESS('User logout successfuly');

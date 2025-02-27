@@ -42,14 +42,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
 
     Route::post('upload-file', [AnalysisController::class, 'upload']);
-    
+
     Route::post('data-analysis', [AnalysisController::class, 'analysis']);
+    Route::post('v1/data-analysis', [AnalysisController::class, 'analysisV1']);
 
     Route::post('data-forecasting', [AnalysisController::class, 'index']);
 
     Route::post('v1/data-forecasting', [AnalysisController::class, 'forecastingVersion1']);
     Route::post('sentiment-analysis', [AnalysisController::class, 'sentimentAnalysis']);
 });
-
-
-
