@@ -20,4 +20,7 @@ export const API = {
   UPDATE_ROLE: "/role/update",
   UPLOAD_FILE: "/data-analysis?file",
   FORCASTING: "/data-forecasting",
+  UPLOAD_EXCEL_FILE: "/upload-file",
+  GET_FORCASTING: "/v1/data-forecasting",
+  ANALYSIS: "/v1/data-analysis",
 };

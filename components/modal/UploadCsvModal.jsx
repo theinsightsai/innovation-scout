@@ -58,7 +58,6 @@ const UploadCsvModal = ({
     if (selectedService?.identifier === "ANALYZE") {
       setData(null);
       try {
-        // dispatch(showLoader());
         setLoading(true);
         if (!postApi) {
           ToastMessage("error", ERROR_TEXT.API_LOAD_ERROR);

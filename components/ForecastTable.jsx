@@ -21,6 +21,8 @@ const columnNamesMap = {
 };
 
 export default function ForecastTable({ foreCastingData }) {
+  console.log("foreCastingData=>", foreCastingData);
+
   const rowsPerPage = 10; // Set number of rows per page
   const [page, setPage] = useState(1);
 
