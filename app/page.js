@@ -43,7 +43,7 @@ const TypingEffect = ({ text, onComplete }) => {
     }
   }, [index, text, onComplete]);
 
-  return <ListItemText primary={displayText} />;
+  return <div style={{ fontSize: "15px" }}>{displayText}</div>;
 };
 
 const Input = styled("input")({
@@ -124,11 +124,12 @@ export default function Home() {
       if (response?.error) {
         ToastMessage("error", response?.message);
       } else if (!response?.error) {
+        console.log("response==>", response);
         setMessages([
           ...messages,
           { text: prmopt, sender: "user", data: null },
           {
-            text: prmopt,
+            text: response?.data?.summary,
             sender: "bot",
             data: response?.data,
             isChartContent: true,
@@ -191,8 +192,6 @@ export default function Home() {
     setFile(null);
   };
 
-  console.log("messages==>", messages);
-
   return (
     <Box
       sx={{
@@ -250,14 +249,14 @@ export default function Home() {
                 >
                   {msg?.isChartContent ? (
                     <TypingEffect
-                      text={"It is a long established fact that a reader ."}
+                      text={msg.text}
                       onComplete={() => {
                         msg.showVisualization = true;
                         setRefresh(!refresh);
                       }}
                     />
                   ) : (
-                    <ListItemText primary={msg.text} />
+                    <div style={{ fontSize: "15px" }}>{msg.text}</div>
                   )}
                   {msg?.isChartContent && msg.showVisualization && (
                     <AnaVisual data={msg.data} />
